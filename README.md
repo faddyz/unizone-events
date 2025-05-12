@@ -1,24 +1,24 @@
-# README
+# Unizone 🎉
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Unizone, kullanıcıların etkinlik oluşturabileceği, keşfedebileceği ve detaylarını görüntüleyebileceği modern bir web uygulamasıdır.
 
-Things you may want to cover:
+## 🚀 Özellikler
 
-* Ruby version
+- 📝 Kullanıcılar etkinlik oluşturabilir.
+- 🗓️ Tüm etkinlikler listelenir ve detayları görüntülenebilir.
+- 🔍 Etkinlik arama ve filtreleme.
+- 👤 Devise ile kullanıcı girişi.
+- 🛡️ Pundit ile yetkilendirme sistemi.
+- ⚙️ Active Storage ile görsel yükleme.
 
-* System dependencies
+## 🧑‍💻 Kullanılan Teknolojiler
 
-* Configuration
+- Ruby on Rails
+- PostgreSQL
+- Tailwind CSS
+- Devise (authentication)
+- Pundit (authorization)
+- Active Storage
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+🌐 Canlı Demo
+https://unizone-events.onrender.com
