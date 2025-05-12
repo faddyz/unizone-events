@@ -1,0 +1,620 @@
+<div class="relative">
+  <!-- Hero Section - Arka plan daha yumuşak ve site ile uyumlu -->
+  <div class="relative h-[35vh] min-h-[250px] flex items-center">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-blue-900/30 to-indigo-900/40 rounded-b-[40px] backdrop-blur-[5px] overflow-hidden">
+      <!-- Gradient Overlay - Daha hafif ve saydam -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent"></div>
+      
+      <!-- Decorative Particles - Daha şık hale getirildi -->
+      <div class="absolute inset-0 z-0 opacity-40 overflow-hidden">
+        <% 25.times do |i| %>
+          <div class="absolute w-<%= rand(1..2) %> h-<%= rand(1..2) %> bg-cyan-<%= [200, 300, 400].sample %> rounded-full animate-float-multidirection" 
+               style="top: <%= rand(-10..110) %>%;
+                      left: <%= rand(-5..105) %>%;
+                      animation-delay: <%= rand(0..5000) %>ms;
+                      animation-duration: <%= rand(6000..12000) %>ms;
+                      transform-origin: <%= rand(360) %>deg;
+                      box-shadow: 0 0 <%= rand(1..3) %>px rgba(165, 243, 252, 0.7);">
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- Floating Stars - Şık yıldızlar -->
+      <% colors = ['white', 'cyan', 'purple', 'indigo', 'blue'] %>
+      <% 10.times do |i| %>
+        <% color = colors.sample %>
+        <% scale = rand(50..100) / 100.0 %>
+        <div class="star absolute animate-bling star-<%= color %>"
+             style="top: <%= rand(5..95) %>%;
+                    left: <%= rand(5..95) %>%;
+                    transform: rotate(35deg) scale(<%= scale %>);
+                    animation-delay: <%= rand(0..6000) %>ms;
+                    animation-duration: <%= rand(3000..6000) %>ms;">
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Event Title & Main Info -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+      <div class="animate-fade-in-up">
+        <!-- Category Badge -->
+        <div class="flex justify-center mb-3">
+          <span class="inline-flex items-center gap-2 bg-<%= @event.category_color %>-800/70 text-<%= @event.category_color %>-200 px-4 py-2 rounded-lg text-sm font-bold backdrop-blur-md border border-<%= @event.category_color %>-500/40 shadow-lg transform hover:scale-105 transition-all">
+            <%= @event.category_title %>
+          </span>
+        </div>
+        
+        <!-- Title - Düzeltilmiş başlık (uzun metinler için) -->
+        <h1 class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-cyan-300 via-cyan-400 to-purple-300 mb-3 leading-tight animate-hologram drop-shadow-[0_0_10px_rgba(103,232,249,0.3)] break-words hyphens-auto overflow-wrap-anywhere max-w-4xl mx-auto">
+          <%= @event.title %>
+        </h1>
+        
+        <!-- Date and Location Preview -->
+        <div class="flex flex-wrap items-center justify-center gap-3 text-cyan-200 mt-4">
+          <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full border border-white/15 backdrop-blur-lg max-w-[90%] md:max-w-xs overflow-hidden">
+            <%= render 'icons/calendar', class: "w-4 h-4 text-purple-300 flex-shrink-0" %>
+            <span class="font-medium text-sm truncate"><%= @event.date.strftime('%d %B %Y - %H:%M') %></span>
+          </div>
+          
+          <!-- Konum - Daha esnek badge tasarımı -->
+          <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg border border-white/15 backdrop-blur-lg max-w-[90%] md:max-w-xs">
+            <%= render 'icons/location', class: "w-4 h-4 text-cyan-300 flex-shrink-0" %>
+            <span class="font-medium text-sm break-words"><%= @event.location %></span>
+          </div>
+          
+          <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full border border-white/15 backdrop-blur-lg max-w-[90%] md:max-w-xs overflow-hidden">
+            <svg class="w-4 h-4 text-amber-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+            </svg>
+            <span class="font-medium text-sm truncate"><%= @event.free? ? 'ÜCRETSİZ' : number_to_currency(@event.price, unit: '₺') %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content - Tasarımı iyileştirildi -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 pt-10 pb-24">
+    <% if notice %>
+      <div class="mb-8 p-4 bg-gradient-to-r from-cyan-500/20 to-green-500/20 rounded-2xl border border-cyan-300/30 backdrop-blur-lg animate-fade-in">
+        <p class="text-cyan-300 text-lg font-medium flex items-center gap-2">
+          <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <%= notice %>
+        </p>
+      </div>
+    <% end %>
+
+    <!-- Etkinlik Kartı -->
+    <div class="mb-12">
+      <%= render @event %>
+    </div>
+
+    <!-- Geri Sayım Sayacı - Animasyonlu, responsive tasarım -->
+    <% if @event.date > Time.current %>
+      <div class="mb-8">
+        <div id="countdown-timer" 
+             class="bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-indigo-900/30 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/15 hover:border-cyan-300/30 transition-all duration-300 shadow-lg"
+             data-event-date="<%= @event.date.to_i * 1000 %>">
+          <h3 class="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Etkinliğe Kalan Süre
+          </h3>
+          
+          <div class="grid grid-cols-4 gap-2 md:gap-4 text-center">
+            <div class="bg-white/10 rounded-xl px-2 py-4 backdrop-blur-sm border border-white/20 hover:border-cyan-300/30 transition-all">
+              <div id="days" class="text-2xl md:text-4xl font-bold text-cyan-300 mb-1">00</div>
+              <div class="text-xs md:text-sm text-white/70">Gün</div>
+            </div>
+            
+            <div class="bg-white/10 rounded-xl px-2 py-4 backdrop-blur-sm border border-white/20 hover:border-cyan-300/30 transition-all">
+              <div id="hours" class="text-2xl md:text-4xl font-bold text-cyan-300 mb-1">00</div>
+              <div class="text-xs md:text-sm text-white/70">Saat</div>
+            </div>
+            
+            <div class="bg-white/10 rounded-xl px-2 py-4 backdrop-blur-sm border border-white/20 hover:border-cyan-300/30 transition-all">
+              <div id="minutes" class="text-2xl md:text-4xl font-bold text-cyan-300 mb-1">00</div>
+              <div class="text-xs md:text-sm text-white/70">Dakika</div>
+            </div>
+            
+            <div class="bg-white/10 rounded-xl px-2 py-4 backdrop-blur-sm border border-white/20 hover:border-cyan-300/30 transition-all">
+              <div id="seconds" class="text-2xl md:text-4xl font-bold text-cyan-300 mb-1">00</div>
+              <div class="text-xs md:text-sm text-white/70">Saniye</div>
+            </div>
+          </div>
+          
+          <!-- Decorative particles -->
+          <div class="relative mt-4 h-1 w-full overflow-hidden">
+            <div class="absolute inset-0 flex justify-between">
+              <% 10.times do |i| %>
+                <div class="w-1 h-1 rounded-full bg-cyan-300/70 animate-pulse-slow" 
+                     style="animation-delay: <%= i * 300 %>ms"></div>
+              <% end %>
+            </div>
+          </div>
+          
+          <div id="countdown-expired" class="hidden text-center mt-4">
+            <div class="inline-block bg-gradient-to-r from-cyan-500/30 to-purple-500/30 px-4 py-2 rounded-lg text-white font-medium border border-cyan-300/30 animate-pulse-slow">
+              Etkinlik başlamak üzere!
+            </div>
+          </div>
+        </div>
+      </div>
+    <% elsif @event.date <= Time.current && @event.date > 1.day.ago %>
+      <div class="mb-8">
+        <div class="bg-gradient-to-br from-amber-800/30 via-red-800/20 to-orange-800/30 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/15 shadow-lg text-center">
+          <h3 class="text-lg md:text-xl font-bold text-white mb-4 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Etkinlik Şu Anda Gerçekleşiyor!
+          </h3>
+          
+          <div class="inline-block bg-gradient-to-r from-amber-500/30 to-red-500/30 px-6 py-3 rounded-lg text-white font-medium border border-amber-300/30 animate-pulse">
+            Harika vakit geçirmenizi dileriz!
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Katılım Butonları - Şık ve interaktif tasarım -->
+    <div class="mb-8">
+      <div class="bg-gradient-to-br from-cyan-900/30 via-blue-900/20 to-purple-900/30 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/15 hover:border-cyan-300/30 transition-all duration-300 shadow-lg">
+        <h3 class="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Katılım Durumu
+        </h3>
+        
+        <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20 flex-1 flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-cyan-400/20 flex items-center justify-center text-cyan-300">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-sm text-cyan-300/80 font-medium">Katılımcılar</div>
+              <p class="text-xl font-bold text-white" id="attendees-count"><%= @event.attendees_count %></p>
+            </div>
+          </div>
+          
+          <div class="flex -space-x-2">
+            <% @event.attending_users.limit(5).each do |user| %>
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-<%= ['cyan', 'blue', 'purple', 'indigo', 'violet'].sample %>-500/60 to-<%= ['cyan', 'blue', 'purple', 'indigo', 'violet'].sample %>-600/60 border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold ring-2 ring-black/10">
+                <%= user.name.present? ? user.name.first.upcase : user.email.first.upcase %>
+              </div>
+            <% end %>
+            
+            <% if @event.attendees_count > 5 %>
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500/60 to-purple-600/60 border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold ring-2 ring-black/10">
+                +<%= @event.attendees_count - 5 %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <% if current_user %>
+          <!-- Katılım Butonları (Giriş yapmış kullanıcılar için) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Katılıyorum Butonu -->
+            <button type="button" 
+                    class="relative overflow-hidden group bg-gradient-to-r from-cyan-600/60 to-cyan-400/60 hover:from-cyan-500/70 hover:to-cyan-300/70 text-white rounded-xl border border-cyan-400/30 transition-all p-4 flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/30 <%= current_user&.attending?(@event) ? 'ring-4 ring-white/30' : '' %>"
+                    data-action="attending"
+                    data-event-id="<%= @event.id %>">
+              <div class="absolute inset-0 bg-cyan-400/20 <%= current_user&.attending?(@event) ? 'scale-x-100' : 'scale-x-0' %> group-hover:scale-x-100 transition-transform origin-left"></div>
+              <svg class="w-5 h-5 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="font-bold relative z-10">Katılıyorum</span>
+            </button>
+            
+            <!-- Belki Butonu -->
+            <button type="button" 
+                    class="relative overflow-hidden group bg-gradient-to-r from-indigo-600/60 to-indigo-400/60 hover:from-indigo-500/70 hover:to-indigo-300/70 text-white rounded-xl border border-indigo-400/30 transition-all p-4 flex items-center justify-center gap-2 shadow-lg hover:shadow-indigo-500/30 <%= current_user&.maybe_attending?(@event) ? 'ring-4 ring-white/30' : '' %>"
+                    data-action="maybe"
+                    data-event-id="<%= @event.id %>">
+              <div class="absolute inset-0 bg-indigo-400/20 <%= current_user&.maybe_attending?(@event) ? 'scale-x-100' : 'scale-x-0' %> group-hover:scale-x-100 transition-transform origin-left"></div>
+              <svg class="w-5 h-5 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="font-bold relative z-10">Belki</span>
+            </button>
+            
+            <!-- Katılmıyorum Butonu -->
+            <button type="button" 
+                    class="relative overflow-hidden group bg-gradient-to-r from-purple-600/60 to-purple-400/60 hover:from-purple-500/70 hover:to-purple-300/70 text-white rounded-xl border border-purple-400/30 transition-all p-4 flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/30 <%= current_user&.declined?(@event) ? 'ring-4 ring-white/30' : '' %>"
+                    data-action="declined"
+                    data-event-id="<%= @event.id %>">
+              <div class="absolute inset-0 bg-purple-400/20 <%= current_user&.declined?(@event) ? 'scale-x-100' : 'scale-x-0' %> group-hover:scale-x-100 transition-transform origin-left"></div>
+              <svg class="w-5 h-5 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span class="font-bold relative z-10">Katılmıyorum</span>
+            </button>
+          </div>
+        <% else %>
+          <!-- Giriş Yapılmamış Kullanıcılar İçin Özel Buton -->
+          <div class="text-center">
+            <p class="text-white/70 mb-4">Bu etkinliğe katılmak için giriş yapmanız gerekiyor.</p>
+            <%= link_to new_user_session_path, class: "inline-block relative overflow-hidden group bg-gradient-to-r from-cyan-600/80 to-purple-600/80 hover:from-cyan-500 hover:to-purple-500 text-white rounded-xl border border-white/20 transition-all px-8 py-4 flex items-center justify-center gap-3 shadow-lg hover:shadow-cyan-500/30 hover:-translate-y-1 duration-300" do %>
+              <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+              <svg class="w-6 h-6 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              <span class="font-bold text-lg relative z-10">Giriş Yap ve Katıl</span>
+            <% end %>
+            <p class="text-white/50 mt-4 text-sm">Hesabınız yok mu? <%= link_to "Kayıt ol", new_user_registration_path, class: "text-cyan-300 hover:text-cyan-200 underline" %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Action Butonları - Daha şık tasarım -->
+    <div class="bg-gradient-to-br from-white/5 via-blue-900/20 to-purple-900/30 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/15 hover:border-cyan-300/30 transition-all duration-300 shadow-lg group">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-5">
+        <%= link_to events_path, class: "flex items-center gap-2 text-cyan-300 hover:text-cyan-200 transition-all group" do %>
+          <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <span class="font-medium text-lg">Tüm Etkinliklere Dön</span>
+        <% end %>
+        
+        <div class="flex items-center gap-4 mt-4 sm:mt-0">
+          <% if policy(@event).edit? %>
+            <%= link_to edit_event_path(@event), 
+                  class: "px-5 py-2.5 bg-gradient-to-r from-cyan-500/60 to-blue-500/60 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl border border-white/10 transition-all flex items-center gap-2 hover:-translate-y-1 duration-300 shadow-lg hover:shadow-cyan-400/30" do %>
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+              <span class="font-medium">Düzenle</span>
+            <% end %>
+          <% end %>
+          <% if policy(@event).destroy? %>
+            <%= button_to event_path(@event),
+                  method: :delete,
+                  data: { turbo_confirm: "Bu etkinliği silmek istediğinizden emin misiniz? Bu işlem geri alınamaz." },
+                  class: "px-5 py-2.5 bg-red-400/10 hover:bg-red-400/20 text-red-300 rounded-xl border border-red-300/30 hover:border-red-300/50 transition-all flex items-center gap-2 hover:-translate-y-1 duration-300" do %>
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              <span class="font-medium">Sil</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Benzer Etkinlikler Bölümü -->
+    <% similar_events = @event.similar_events %>
+    <% if similar_events.any? %>
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center group">
+          <span class="bg-gradient-to-r from-cyan-400 to-purple-400 w-1.5 h-8 rounded mr-4 group-hover:h-10 transition-all"></span>
+          Benzer Etkinlikler
+        </h2>
+        
+        <div class="relative">
+          <!-- Yatay kaydırma ile kart galerisi -->
+          <div class="overflow-x-auto flex space-x-4 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-cyan-500 scrollbar-track-transparent">
+            <% similar_events.each do |similar_event| %>
+              <div class="snap-center flex-shrink-0 w-64 md:w-72 hover:scale-[1.02] transition-all duration-300">
+                <%= link_to event_path(similar_event), class: "block h-full" do %>
+                  <div class="bg-gradient-to-br from-white/5 via-blue-900/20 to-purple-900/30 backdrop-blur-xl rounded-xl p-4 border border-white/15 hover:border-cyan-300/30 transition-all duration-300 shadow-lg h-full flex flex-col">
+                    <!-- Etkinlik Görseli -->
+                    <div class="relative h-40 rounded-lg overflow-hidden mb-4 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
+                      <% if similar_event.image.attached? %>
+                        <%= image_tag similar_event.image, class: "w-full h-full object-cover" %>
+                      <% else %>
+                        <div class="w-full h-full flex items-center justify-center">
+                          <svg class="w-12 h-12 text-cyan-300/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                          </svg>
+                        </div>
+                      <% end %>
+                      
+                      <!-- Tarih Badge -->
+                      <div class="absolute top-2 left-2">
+                        <div class="flex flex-col items-center bg-black/60 backdrop-blur-lg rounded-lg border border-cyan-400/30 px-2 py-1 shadow-lg shadow-black/30">
+                          <span class="text-cyan-300 text-xs font-bold uppercase"><%= similar_event.date.strftime("%b") %></span>
+                          <span class="text-white text-lg font-extrabold"><%= similar_event.date.strftime("%d") %></span>
+                        </div>
+                      </div>
+                      
+                      <!-- Kategori Badge -->
+                      <div class="absolute top-2 right-2">
+                        <span class="inline-flex items-center bg-<%= similar_event.category_color %>-800/70 text-<%= similar_event.category_color %>-200 px-2 py-1 rounded-md text-xs font-bold backdrop-blur-md border border-<%= similar_event.category_color %>-500/40">
+                          <%= similar_event.category_title %>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <!-- Etkinlik Bilgileri -->
+                    <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 break-words hyphens-auto overflow-wrap-anywhere"><%= similar_event.title %></h3>
+                    <div class="flex-grow">
+                      <p class="text-white/80 text-sm mb-4 line-clamp-2"><%= similar_event.description.truncate(100) %></p>
+                    </div>
+                    
+                    <!-- Konum ve Fiyat - Alt alta düzende -->
+                    <div class="mt-auto">
+                      <!-- Fiyat Bilgisi -->
+                      <div class="flex justify-end mb-1">
+                        <span class="<%= similar_event.free? ? 'text-green-300' : 'text-amber-300' %> font-medium flex-shrink-0">
+                          <%= similar_event.free? ? 'ÜCRETSİZ' : number_to_currency(similar_event.price, unit: '₺') %>
+                        </span>
+                      </div>
+                      
+                      <!-- Konum Bilgisi -->
+                      <div class="flex items-center text-cyan-200 min-w-0">
+                        <%= render 'icons/location', class: "w-3 h-3 mr-1 text-cyan-300 flex-shrink-0" %>
+                        <span class="text-sm break-words line-clamp-2"><%= similar_event.location %></span>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    
+    <!-- Organizatörün Diğer Etkinlikleri -->
+    <% organizer_events = @event.organizer_other_events %>
+    <% if organizer_events.any? %>
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center group">
+          <span class="bg-gradient-to-r from-amber-400 to-orange-400 w-1.5 h-8 rounded mr-4 group-hover:h-10 transition-all"></span>
+          Organizatörün Diğer Etkinlikleri
+        </h2>
+        
+        <div class="relative">
+          <!-- Yatay kaydırma ile kart galerisi -->
+          <div class="overflow-x-auto flex space-x-4 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-amber-500 scrollbar-track-transparent">
+            <% organizer_events.each do |organizer_event| %>
+              <div class="snap-center flex-shrink-0 w-64 md:w-72 hover:scale-[1.02] transition-all duration-300">
+                <%= link_to event_path(organizer_event), class: "block h-full" do %>
+                  <div class="bg-gradient-to-br from-white/5 via-orange-900/10 to-amber-900/20 backdrop-blur-xl rounded-xl p-4 border border-white/15 hover:border-amber-300/30 transition-all duration-300 shadow-lg h-full flex flex-col">
+                    <!-- Etkinlik Görseli -->
+                    <div class="relative h-40 rounded-lg overflow-hidden mb-4 bg-gradient-to-br from-amber-900/30 to-orange-900/30">
+                      <% if organizer_event.image.attached? %>
+                        <%= image_tag organizer_event.image, class: "w-full h-full object-cover" %>
+                      <% else %>
+                        <div class="w-full h-full flex items-center justify-center">
+                          <svg class="w-12 h-12 text-amber-300/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                          </svg>
+                        </div>
+                      <% end %>
+                      
+                      <!-- Tarih Badge -->
+                      <div class="absolute top-2 left-2">
+                        <div class="flex flex-col items-center bg-black/60 backdrop-blur-lg rounded-lg border border-amber-400/30 px-2 py-1 shadow-lg shadow-black/30">
+                          <span class="text-amber-300 text-xs font-bold uppercase"><%= organizer_event.date.strftime("%b") %></span>
+                          <span class="text-white text-lg font-extrabold"><%= organizer_event.date.strftime("%d") %></span>
+                        </div>
+                      </div>
+                      
+                      <!-- Kategori Badge -->
+                      <div class="absolute top-2 right-2">
+                        <span class="inline-flex items-center bg-<%= organizer_event.category_color %>-800/70 text-<%= organizer_event.category_color %>-200 px-2 py-1 rounded-md text-xs font-bold backdrop-blur-md border border-<%= organizer_event.category_color %>-500/40">
+                          <%= organizer_event.category_title %>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <!-- Etkinlik Bilgileri -->
+                    <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 break-words hyphens-auto overflow-wrap-anywhere"><%= organizer_event.title %></h3>
+                    <div class="flex-grow">
+                      <p class="text-white/80 text-sm mb-4 line-clamp-2"><%= organizer_event.description.truncate(100) %></p>
+                    </div>
+                    
+                    <!-- Konum ve Fiyat - Alt alta düzende -->
+                    <div class="mt-auto">
+                      <!-- Fiyat Bilgisi -->
+                      <div class="flex justify-end mb-1">
+                        <span class="<%= organizer_event.free? ? 'text-green-300' : 'text-amber-300' %> font-medium flex-shrink-0">
+                          <%= organizer_event.free? ? 'ÜCRETSİZ' : number_to_currency(organizer_event.price, unit: '₺') %>
+                        </span>
+                      </div>
+                      
+                      <!-- Konum Bilgisi -->
+                      <div class="flex items-center text-amber-200 min-w-0">
+                        <%= render 'icons/location', class: "w-3 h-3 mr-1 text-amber-300 flex-shrink-0" %>
+                        <span class="text-sm break-words line-clamp-2"><%= organizer_event.location %></span>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :footer_scripts do %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const countdownTimer = document.getElementById('countdown-timer');
+      if (!countdownTimer) return;
+      
+      const daysEl = document.getElementById('days');
+      const hoursEl = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+      const expiredEl = document.getElementById('countdown-expired');
+      
+      const eventDateMs = parseInt(countdownTimer.dataset.eventDate);
+      
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = eventDateMs - now;
+        
+        // Eğer tarih geçtiyse
+        if (distance < 0) {
+          if (expiredEl) {
+            expiredEl.classList.remove('hidden');
+          }
+          
+          daysEl.innerHTML = '00';
+          hoursEl.innerHTML = '00';
+          minutesEl.innerHTML = '00';
+          secondsEl.innerHTML = '00';
+          return;
+        }
+        
+        // Zaman hesaplamaları
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        // Görüntüleme formatı (iki basamaklı)
+        daysEl.innerHTML = days < 10 ? `0${days}` : days;
+        hoursEl.innerHTML = hours < 10 ? `0${hours}` : hours;
+        minutesEl.innerHTML = minutes < 10 ? `0${minutes}` : minutes;
+        secondsEl.innerHTML = seconds < 10 ? `0${seconds}` : seconds;
+        
+        // Son 1 saate girince sayacı vurgula
+        if (distance < 3600000) {
+          countdownTimer.classList.add('from-red-800/30', 'to-orange-800/30', 'border-red-300/30');
+          countdownTimer.classList.remove('from-purple-900/30', 'to-indigo-900/30');
+          
+          if (expiredEl) {
+            expiredEl.classList.remove('hidden');
+          }
+        }
+      }
+      
+      // İlk çalıştırma
+      updateCountdown();
+      
+      // Her saniye güncelle
+      setInterval(updateCountdown, 1000);
+      
+      // Katılım butonları için JavaScript kodu - Sadece katılım butonlarını seç
+      const attendanceButtons = document.querySelectorAll('button[data-action="attending"], button[data-action="maybe"], button[data-action="declined"]');
+      
+      attendanceButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Kullanıcı giriş yapmadıysa giriş sayfasına yönlendir
+          <% unless current_user %>
+            window.location.href = '<%= new_user_session_path %>';
+            return;
+          <% end %>
+          
+          const action = this.getAttribute('data-action');
+          const eventId = this.getAttribute('data-event-id');
+          
+          // Tüm butonlardan active sınıfını kaldır
+          attendanceButtons.forEach(btn => {
+            btn.classList.remove('ring-4');
+            btn.classList.remove('ring-white/30');
+            
+            // Dolgu efektini kaldır
+            const fillEffect = btn.querySelector('.absolute');
+            if (fillEffect) {
+              fillEffect.classList.remove('scale-x-100');
+              fillEffect.classList.add('scale-x-0');
+            }
+          });
+          
+          // Seçilen butona active sınıfını ekle
+          this.classList.add('ring-4');
+          this.classList.add('ring-white/30');
+          
+          // Dolgu efektini göster
+          const fillEffect = this.querySelector('.absolute');
+          if (fillEffect) {
+            fillEffect.classList.remove('scale-x-0');
+            fillEffect.classList.add('scale-x-100');
+          }
+          
+          // AJAX isteği
+          fetch(`/events/${eventId}/attendance`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ status: action })
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Başarılı işlem
+            if (data.status === 'success') {
+              // Katılımcı sayısını güncelle
+              document.getElementById('attendees-count').textContent = data.attendees_count;
+              
+              // Kullanıcıya geri bildirim
+              let message = '';
+              if (action === 'attending') {
+                message = 'Katılımınız onaylandı! 🎉';
+              } else if (action === 'maybe') {
+                message = 'Cevabınız kaydedildi! 👍';
+              } else if (action === 'declined') {
+                message = 'Cevabınız kaydedildi! 👌';
+              }
+              
+              // Toast bildirimi göster
+              showToast(message);
+            } else {
+              // Hata durumu
+              showToast('Bir hata oluştu: ' + data.message, 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showToast('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+          });
+        });
+      });
+      
+      // Basit toast bildirimi fonksiyonu
+      function showToast(message, type = 'success') {
+        // Mevcut bir toast varsa kaldır
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+          existingToast.remove();
+        }
+        
+        // Toast tipi
+        let bgColor = 'bg-gradient-to-r from-cyan-500/90 to-blue-600/90';
+        if (type === 'error') {
+          bgColor = 'bg-gradient-to-r from-red-500/90 to-red-600/90';
+        }
+        
+        // Yeni toast oluştur
+        const toast = document.createElement('div');
+        toast.className = `toast-notification fixed bottom-5 right-5 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-500 translate-y-20 opacity-0`;
+        toast.innerHTML = message;
+        
+        document.body.appendChild(toast);
+        
+        // Toast'u göster
+        setTimeout(() => {
+          toast.classList.remove('translate-y-20', 'opacity-0');
+        }, 100);
+        
+        // Toast'u gizle
+        setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+          
+          // DOM'dan kaldır
+          setTimeout(() => {
+            toast.remove();
+          }, 500);
+        }, 3000);
+      }
+    });
+  </script>
+<% end %>
+
+<%= render 'shared/delete_confirmation_modal' %>

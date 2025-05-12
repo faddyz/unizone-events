@@ -1,0 +1,62 @@
+<div id="<%= dom_id event %>" class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border-2 border-white/15 hover:border-cyan-300/40 transition-all duration-500 shadow-2xl hover:shadow-cyan-400/20">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-4">
+      <h2 class="text-3xl font-extrabold text-white break-words max-w-full line-clamp-2">
+        <%= event.title %>
+      </h2>
+      <span class="bg-<%= event.category_color %>-100/20 text-<%= event.category_color %>-300 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-lg border border-white/10">
+        <%= event.category.titleize %>
+      </span>
+    </div>
+    <span class="px-4 py-2 text-sm rounded-full <%= event.approved? ? 'bg-green-400/20 text-green-300' : 'bg-yellow-400/20 text-yellow-300' %> backdrop-blur-lg border border-white/10">
+      <%= event.approved? ? '✓ Onaylandı' : '⏳ Beklemede' %>
+    </span>
+  </div>
+
+  <!-- Content -->
+  <div class="space-y-6 text-white/85">
+    <p class="text-lg leading-relaxed"><%= event.description %></p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="flex items-center bg-white/5 p-4 rounded-xl">
+        <%= render "icons/calendar", class: "w-6 h-6 mr-3 text-cyan-300 flex-shrink-0" %>
+        <span class="text-lg font-medium"><%= event.date.strftime("%d %B %Y • %H:%M") %></span>
+      </div>
+      
+      <div class="flex items-center bg-white/5 p-4 rounded-xl">
+        <%= render 'icons/location', class: "w-6 h-6 mr-3 text-cyan-300 flex-shrink-0" %>
+        <span class="text-lg font-medium"><%= event.location %></span>
+      </div>
+    </div>
+
+    <!-- Price Section -->
+    <div class="mt-8 p-6 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-xl border border-white/10">
+      <div class="flex items-center justify-between">
+        <span class="text-2xl font-bold <%= event.free? ? 'text-green-300' : 'text-amber-300' %>">
+          <%= event.free? ? 'ÜCRETSİZ' : number_to_currency(event.price, unit: '₺', precision: 0) %>
+        </span>
+        <%= render 'icons/ticket', class: "w-8 h-8 text-cyan-300" %>
+      </div>
+    </div>
+
+    <!-- Admin Info -->
+    <div class="p-6 bg-white/5 rounded-xl border border-white/10">
+      <h3 class="text-lg font-bold text-cyan-300 mb-4">Admin Bilgileri</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm text-white/60">Oluşturan</p>
+          <p class="text-white"><%= event.user.email %></p>
+        </div>
+        <div>
+          <p class="text-sm text-white/60">Oluşturulma Tarihi</p>
+          <p class="text-white"><%= event.created_at.strftime('%d %B %Y • %H:%M') %></p>
+        </div>
+        <div>
+          <p class="text-sm text-white/60">Son Güncelleme</p>
+          <p class="text-white"><%= event.updated_at.strftime('%d %B %Y • %H:%M') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

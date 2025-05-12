@@ -1,0 +1,58 @@
+<nav class="bg-white/5 backdrop-blur-xl border-b border-white/10 fixed w-full z-50 shadow-2xl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <%= link_to root_path, class: "flex items-center group" do %>
+          <svg class="h-8 w-8 text-cyan-300 group-hover:text-cyan-400 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <span class="ml-2 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-300">Unizone</span>
+        <% end %>
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-6">
+        <%= link_to 'Etkinlikler', events_path, 
+              class: "px-4 py-2 text-white/90 hover:text-cyan-300 font-medium rounded-lg transition-all" %>
+        <%= link_to 'Yeni Etkinlik', new_event_path, 
+              class: "bg-cyan-400/20 hover:bg-cyan-400/30 text-cyan-300 px-6 py-2 rounded-xl border border-cyan-300/30 transition-all flex items-center gap-2" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+          <span>Yeni Etkinlik</span>
+        <% end %>
+
+        <!-- Kullanıcı Menüsü -->
+        <% if user_signed_in? %>
+          <div class="relative group ml-4">
+            <button class="flex items-center gap-2 text-white/90 hover:text-cyan-300">
+              <span class="hidden lg:inline"><%= current_user.email %></span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <div class="absolute right-0 mt-2 w-48 bg-white/5 backdrop-blur-xl rounded-xl shadow-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-all">
+              <% if current_user.admin? %>
+                <%= link_to "Admin Paneli", admin_events_path, 
+                      class: "block px-4 py-3 text-white/90 hover:bg-white/10 border-b border-white/5" %>
+              <% end %>
+              <%= button_to "Çıkış Yap", destroy_user_session_path, 
+                    method: :delete, 
+                    class: "w-full text-left px-4 py-3 text-red-300 hover:bg-red-400/10 rounded-b-xl",
+                    data: { turbo: false } %>
+            </div>
+          </div>
+        <% else %>
+          <div class="flex items-center gap-4">
+            <%= link_to 'Giriş Yap', new_user_session_path, 
+                  class: "px-4 py-2 text-white/90 hover:text-cyan-300 font-medium" %>
+            <%= link_to 'Kayıt Ol', new_user_registration_path, 
+                  class: "bg-cyan-400/20 hover:bg-cyan-400/30 text-cyan-300 px-6 py-2 rounded-xl border border-cyan-300/30 transition-all" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>

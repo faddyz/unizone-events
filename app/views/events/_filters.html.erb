@@ -1,0 +1,169 @@
+<%= form_with(url: explore_events_path, method: :get, class: "space-y-6 glassmorphism p-5 rounded-2xl border-2 border-white/20 hover:border-cyan-300/40 transition-all duration-300 backdrop-blur-xl", data: { turbo_frame: "_top" }) do |f| %>
+  <!-- Arama Kutusu -->
+  <div class="space-y-3">
+    <h3 class="text-lg font-medium text-cyan-300 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      Arama
+    </h3>
+    <div class="relative">
+      <%= f.search_field :query, value: params[:query], placeholder: "Etkinlik ara...", class: "w-full p-3 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 text-sm font-medium" %>
+    </div>
+  </div>
+
+  <!-- Kategori Seçimi -->
+  <div class="space-y-3 border-t border-white/10 pt-6">
+    <h3 class="text-lg font-medium text-cyan-300 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+      </svg>
+      Kategoriler
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" class="category-toggle-all text-xs py-1.5 px-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition border border-white/20 focus:ring-2 focus:ring-cyan-300 focus:outline-none">
+        Tümünü Seç
+      </button>
+      <button type="button" class="category-toggle-none text-xs py-1.5 px-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition border border-white/20 focus:ring-2 focus:ring-cyan-300 focus:outline-none">
+        Hiçbirini Seçme
+      </button>
+    </div>
+    <div class="grid grid-cols-1 gap-2 mt-3 category-checkboxes">
+      <% Event.categories.keys.each do |category| %>
+        <div class="flex items-center">
+          <% 
+            color = Event.new(category: category).category_color 
+            title = Event.new(category: category).category_title
+          %>
+          <%= f.check_box "category[]", { multiple: true, id: "category_#{category}", checked: params[:category]&.include?(category) }, category, nil %>
+          <%= f.label "category_#{category}", class: "ml-3 text-white flex items-center" do %>
+            <span class="w-2 h-2 rounded-full bg-<%= color %>-400 mr-2"></span>
+            <%= title %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Tarih Filtresi -->
+  <div class="space-y-3 border-t border-white/10 pt-6">
+    <h3 class="text-lg font-medium text-cyan-300 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      Tarih
+    </h3>
+    <div class="space-y-2">
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "all", checked: params[:date_filter].blank? || params[:date_filter] == "all", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_all, "Tüm Etkinlikler", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "upcoming", checked: params[:date_filter] == "upcoming", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_upcoming, "Gelecek Etkinlikler", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "past", checked: params[:date_filter] == "past", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_past, "Geçmiş Etkinlikler", class: "ml-3 text-white" %>
+      </div>
+      <div class="mt-3 border-t border-white/5 pt-3"></div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "today", checked: params[:date_filter] == "today", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_today, "Bugün", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "tomorrow", checked: params[:date_filter] == "tomorrow", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_tomorrow, "Yarın", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "this_week", checked: params[:date_filter] == "this_week", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_this_week, "Bu Hafta", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "this_weekend", checked: params[:date_filter] == "this_weekend", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_this_weekend, "Bu Hafta Sonu", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "this_month", checked: params[:date_filter] == "this_month", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_this_month, "Bu Ay", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :date_filter, "next_month", checked: params[:date_filter] == "next_month", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :date_filter_next_month, "Gelecek Ay", class: "ml-3 text-white" %>
+      </div>
+    </div>
+    
+    <!-- Özel Tarih Aralığı -->
+    <div class="mt-4 space-y-2">
+      <h4 class="text-sm font-medium text-white">Özel Tarih Aralığı:</h4>
+      <div class="space-y-2">
+        <div>
+          <%= f.label :start_date, "Başlangıç:", class: "block text-sm text-white/70 mb-1" %>
+          <%= f.date_field :start_date, value: params[:start_date], class: "w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 text-sm" %>
+        </div>
+        <div>
+          <%= f.label :end_date, "Bitiş:", class: "block text-sm text-white/70 mb-1" %>
+          <%= f.date_field :end_date, value: params[:end_date], class: "w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 text-sm" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fiyat Filtresi -->
+  <div class="space-y-3 border-t border-white/10 pt-6">
+    <h3 class="text-lg font-medium text-cyan-300 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
+      </svg>
+      Fiyat
+    </h3>
+    <div class="space-y-2">
+      <div class="flex items-center">
+        <%= f.radio_button :price_filter, "all", checked: params[:price_filter].blank? || params[:price_filter] == "all", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :price_filter_all, "Tüm Etkinlikler", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :price_filter, "free", checked: params[:price_filter] == "free", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :price_filter_free, "Ücretsiz", class: "ml-3 text-white" %>
+      </div>
+      <div class="flex items-center">
+        <%= f.radio_button :price_filter, "paid", checked: params[:price_filter] == "paid", class: "h-4 w-4 border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+        <%= f.label :price_filter_paid, "Ücretli", class: "ml-3 text-white" %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Filtre Uygula Butonu -->
+  <div class="pt-4 border-t border-white/10">
+    <%= f.submit "Filtrele", class: "w-full px-4 py-3 bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-cyan-300/30 border border-white/10 text-base tracking-wide backdrop-blur-lg" %>
+  </div>
+  
+  <!-- Temizle -->
+  <div class="text-center">
+    <%= link_to "Filtreleri Temizle", explore_events_path, class: "text-cyan-300 hover:text-cyan-200 transition-colors text-sm" %>
+  </div>
+<% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleAllBtn = document.querySelector('.category-toggle-all');
+    const toggleNoneBtn = document.querySelector('.category-toggle-none');
+    const categoryCheckboxes = document.querySelectorAll('.category-checkboxes input[type="checkbox"]');
+    
+    if (toggleAllBtn) {
+      toggleAllBtn.addEventListener('click', function() {
+        categoryCheckboxes.forEach(checkbox => {
+          checkbox.checked = true;
+        });
+      });
+    }
+    
+    if (toggleNoneBtn) {
+      toggleNoneBtn.addEventListener('click', function() {
+        categoryCheckboxes.forEach(checkbox => {
+          checkbox.checked = false;
+        });
+      });
+    }
+  });
+</script> 

@@ -1,0 +1,245 @@
+<div class="relative min-h-screen">
+  <!-- Gradient Background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-purple-900/95 via-blue-900/90 to-indigo-900/95 -z-10"></div>
+  
+  <!-- Parallax Particles (hafif) -->
+  <div class="absolute inset-0 opacity-10 -z-5">
+    <% 15.times do |i| %>
+      <div class="absolute w-1.5 h-1.5 bg-cyan-300/60 rounded-full animate-float-slow" 
+           style="top: <%= rand(-10..110) %>%;
+                  left: <%= rand(-5..105) %>%;
+                  animation-delay: <%= rand(0..5000) %>ms;
+                  animation-duration: <%= rand(8000..15000) %>ms;">
+      </div>
+    <% end %>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-4">
+      <div>
+        <h1 class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-cyan-400 to-purple-300 mb-2 leading-tight drop-shadow-[0_0_10px_rgba(103,232,249,0.3)]">
+          Admin Paneli
+        </h1>
+        <p class="text-cyan-200/80">Etkinlik yönetimi, onaylama ve düzenleme</p>
+      </div>
+      
+      <!-- Filtreleme Butonları -->
+      <div class="flex flex-wrap items-center gap-3">
+        <%= link_to admin_events_path(filter_type: 'all'), 
+              class: "px-5 py-2 rounded-xl #{@filter_type == 'all' || @filter_type.nil? ? 'bg-cyan-400/30 border-cyan-300/50' : 'bg-white/5 border-white/20'} border transition-colors hover:bg-cyan-400/20 text-white" do %>
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Tüm Etkinlikler
+          </span>
+        <% end %>
+        
+        <%= link_to admin_events_path(filter_type: 'pending'), 
+              class: "px-5 py-2 rounded-xl #{@filter_type == 'pending' ? 'bg-yellow-400/30 border-yellow-300/50' : 'bg-white/5 border-white/20'} border transition-colors hover:bg-yellow-400/20 text-white" do %>
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Onay Bekleyenler
+          </span>
+        <% end %>
+        
+        <%= link_to admin_events_path(filter_type: 'approved'), 
+              class: "px-5 py-2 rounded-xl #{@filter_type == 'approved' ? 'bg-green-400/30 border-green-300/50' : 'bg-white/5 border-white/20'} border transition-colors hover:bg-green-400/20 text-white" do %>
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Onaylanmış
+          </span>
+        <% end %>
+        
+        <%= link_to new_event_path, 
+              class: "px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500/80 to-indigo-500/80 hover:from-cyan-400 hover:to-indigo-400 text-white border border-white/10 transition-all flex items-center gap-2" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Yeni Etkinlik
+        <% end %>
+      </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:border-cyan-300/20 transition-colors">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-cyan-200 font-medium">Toplam Etkinlik</h3>
+          <div class="p-2 bg-cyan-400/20 rounded-lg">
+            <svg class="w-5 h-5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-white">
+          <%= Event.count %>
+        </div>
+      </div>
+      
+      <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:border-yellow-300/20 transition-colors">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-yellow-200 font-medium">Onay Bekleyen</h3>
+          <div class="p-2 bg-yellow-400/20 rounded-lg">
+            <svg class="w-5 h-5 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-white">
+          <%= Event.pending.count %>
+        </div>
+      </div>
+      
+      <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:border-green-300/20 transition-colors">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-green-200 font-medium">Onaylanmış</h3>
+          <div class="p-2 bg-green-400/20 rounded-lg">
+            <svg class="w-5 h-5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-white">
+          <%= Event.approved.count %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Etkinlik Tablosu -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-xl">
+      <% if @events.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-white/10">
+            <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Etkinlik</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Organizatör</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Kategori</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Tarih</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Durum</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase tracking-wider">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/10">
+              <% @events.each do |event| %>
+                <tr class="hover:bg-white/5 transition-colors group">
+                  <td class="px-6 py-4 whitespace-normal">
+                    <div class="flex items-center gap-3">
+                      <% if event.image.attached? %>
+                        <div class="w-12 h-12 rounded-md overflow-hidden flex-shrink-0 bg-white/10">
+                          <%= image_tag event.image, class: "w-full h-full object-cover" %>
+                        </div>
+                      <% else %>
+                        <div class="w-12 h-12 rounded-md overflow-hidden flex-shrink-0 bg-white/10 flex items-center justify-center">
+                          <svg class="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      <% end %>
+                      <div class="max-w-xs">
+                        <div class="text-sm font-medium text-white line-clamp-2">
+                          <%= event.title %>
+                        </div>
+                        <div class="text-xs text-white/60 line-clamp-1 mt-1">
+                          <%= event.location %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="flex items-center gap-2 text-sm text-white/80">
+                      <div class="w-7 h-7 rounded-full bg-purple-400/20 flex items-center justify-center text-purple-300">
+                        <%= event.user.email[0].upcase %>
+                      </div>
+                      <span class="truncate max-w-[100px]"><%= event.user.email %></span>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-3 py-1 bg-<%= event.category_color %>-400/20 text-<%= event.category_color %>-300 rounded-full text-xs">
+                      <%= event.category_title %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-white/80">
+                    <%= event.date.strftime("%d %B %Y • %H:%M") %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-3 py-1 text-xs rounded-full inline-flex items-center gap-1 
+                          <%= event.approved? ? 'bg-green-400/20 text-green-300' : 'bg-yellow-400/20 text-yellow-300' %>">
+                      <% if event.approved? %>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Onaylandı
+                      <% else %>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Beklemede
+                      <% end %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="opacity-80 group-hover:opacity-100 flex items-center gap-3">
+                      <%= link_to admin_event_path(event), class: "text-cyan-300 hover:text-cyan-400 transition-colors" do %>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      <% end %>
+                      
+                      <%= link_to edit_admin_event_path(event), class: "text-blue-300 hover:text-blue-400 transition-colors" do %>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      <% end %>
+                      
+                      <% unless event.approved? %>
+                        <%= button_to approve_admin_event_path(event), method: :post, class: "text-green-300 hover:text-green-400 transition-colors" do %>
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7" />
+                          </svg>
+                        <% end %>
+                      <% end %>
+                      
+                      <button type="button"
+                            data-action="delete-confirmation#showModal"
+                            data-title="Bu etkinliği silmek istediğinizden emin misiniz?"
+                            data-message="Bu işlem geri alınamaz. Etkinlik ve katılım bilgileri tamamen silinecektir."
+                            data-url="<%= admin_event_path(event) %>"
+                            class="text-red-300 hover:text-red-400 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center p-10">
+          <svg class="w-16 h-16 text-white/20 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+          <h3 class="text-xl text-white/80 font-medium mb-2">Henüz etkinlik bulunamadı</h3>
+          <p class="text-white/50 mb-6">Seçilen filtreye göre henüz hiç etkinlik bulunmuyor.</p>
+          <%= link_to new_event_path, class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-white gap-2" do %>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Yeni Etkinlik Ekle
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/delete_confirmation_modal' %> 

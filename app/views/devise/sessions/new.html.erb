@@ -1,0 +1,157 @@
+<div class="relative min-h-screen flex items-center justify-center">
+  <!-- Arka plan gradyeni -->
+  <div class="absolute inset-0 bg-gradient-to-br from-purple-900/95 via-blue-900/90 to-indigo-900/95 -z-10"></div>
+  
+  <!-- Animasyonlu Parçacıklar -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none">
+    <% 25.times do |i| %>
+      <div class="absolute w-<%= rand(1..2) %> h-<%= rand(1..2) %> bg-<%= ['cyan', 'purple', 'indigo', 'blue'].sample %>-300/80 rounded-full animate-float-multidirection" 
+           style="top: <%= rand(10..90) %>%;
+                  left: <%= rand(10..90) %>%;
+                  animation-delay: <%= rand(0..8000) %>ms;
+                  animation-duration: <%= rand(8000..15000) %>ms;
+                  transform-origin: <%= rand(360) %>deg">
+      </div>
+    <% end %>
+    
+    <!-- Parlayan yıldızlar efekti -->
+    <% colors = ['white', 'cyan', 'purple', 'indigo', 'blue'] %>
+    <% 10.times do |i| %>
+      <% color = colors.sample %>
+      <% scale = rand(50..100) / 100.0 %>
+      <div class="star absolute animate-bling star-<%= color %>"
+           style="top: <%= rand(5..95) %>%;
+                  left: <%= rand(5..95) %>%;
+                  transform: rotate(35deg) scale(<%= scale %>);
+                  animation-delay: <%= rand(0..6000) %>ms;
+                  animation-duration: <%= rand(3000..6000) %>ms;">
+      </div>
+    <% end %>
+  </div>
+
+  <div class="w-full max-w-md mx-4 relative z-10">
+    <!-- Logo & Title -->
+    <div class="mb-8 flex flex-col items-center">
+      <div class="relative group mb-4">
+        <svg class="w-16 h-16 text-cyan-300 animate-pulse-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14v7l-9-11h7v-7l9 11h-7z" class="text-purple-400"/>
+        </svg>
+        <div class="absolute -inset-2 bg-cyan-400/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      </div>
+      <h1 class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-cyan-300 via-cyan-400 to-purple-300 mb-2 leading-tight animate-hologram drop-shadow-[0_0_10px_rgba(103,232,249,0.3)]">
+        Giriş Yap
+      </h1>
+      <p class="text-cyan-200 text-lg max-w-sm text-center">
+        Hesabınıza giriş yaparak etkinliklere katılabilirsiniz
+      </p>
+    </div>
+    
+    <!-- Form Card -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-8 border-2 border-white/15 hover:border-cyan-300/40 transition-all duration-500 shadow-2xl hover:shadow-cyan-400/20">
+      <% if flash[:alert] || flash[:notice] %>
+        <div class="mb-6 <%= flash[:alert] ? 'bg-red-400/20 text-red-300' : 'bg-green-400/20 text-green-300' %> rounded-xl p-4 border <%= flash[:alert] ? 'border-red-400/30' : 'border-green-400/30' %> flex items-start gap-3">
+          <% if flash[:alert] %>
+            <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div>
+              <p class="font-medium"><%= flash[:alert] %></p>
+              <p class="text-sm opacity-70 mt-1">Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.</p>
+            </div>
+          <% else %>
+            <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+              <p class="font-medium"><%= flash[:notice] %></p>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="space-y-5">
+          <!-- Email Field -->
+          <div class="form-group">
+            <%= f.label :email, "E-posta", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+            <div class="relative group">
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", 
+                  class: "w-full px-5 py-4 bg-white/10 border-2 #{resource.errors[:email].any? ? 'border-red-400/50' : 'border-white/20'} rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                  placeholder: "ornek@mail.com" %>
+              <div class="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-cyan-300 to-purple-400 group-hover:w-full transition-all duration-500"></div>
+            </div>
+            <% if resource.errors[:email].any? %>
+              <p class="text-red-400 text-sm mt-2 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <%= resource.errors[:email].first %>
+              </p>
+            <% end %>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <%= f.label :password, "Şifre", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+            <div class="relative group">
+              <%= f.password_field :password, autocomplete: "current-password", 
+                  class: "w-full px-5 py-4 bg-white/10 border-2 #{resource.errors[:password].any? ? 'border-red-400/50' : 'border-white/20'} rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                  placeholder: "••••••••" %>
+              <div class="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-cyan-300 to-purple-400 group-hover:w-full transition-all duration-500"></div>
+            </div>
+            <% if resource.errors[:password].any? %>
+              <p class="text-red-400 text-sm mt-2 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <%= resource.errors[:password].first %>
+              </p>
+            <% end %>
+          </div>
+
+          <!-- Remember Me -->
+          <% if devise_mapping.rememberable? %>
+            <div class="flex items-center">
+              <%= f.check_box :remember_me, class: "h-5 w-5 rounded border-white/30 bg-white/10 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0" %>
+              <%= f.label :remember_me, "Beni Hatırla", class: "ml-3 block text-white" %>
+            </div>
+          <% end %>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <%= f.submit "Giriş Yap", 
+                class: "w-full px-6 py-4 bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-cyan-300/30 border border-white/10 text-lg tracking-wide backdrop-blur-lg moving-gradient" %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Links -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 pt-6">
+        <%= link_to new_password_path(resource_name), class: "text-cyan-300 hover:text-cyan-200 transition-colors flex items-center gap-2 group" do %>
+          <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+          </svg>
+          <span>Şifremi Unuttum</span>
+        <% end %>
+        
+        <%= link_to new_user_registration_path, class: "text-white bg-white/10 hover:bg-white/20 px-5 py-2 rounded-xl transition-all flex items-center gap-2 group" do %>
+          <svg class="w-5 h-5 text-cyan-300 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
+          <span>Yeni Hesap Oluştur</span>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Back to Home Link -->
+    <div class="mt-8 text-center">
+      <%= link_to root_path, class: "inline-flex items-center gap-2 text-cyan-300 hover:text-cyan-200 font-medium transition-colors" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Anasayfaya Dön
+      <% end %>
+    </div>
+  </div>
+</div> 

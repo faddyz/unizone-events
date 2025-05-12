@@ -1,0 +1,60 @@
+<footer class="bg-white/5 backdrop-blur-xl border-t border-white/10 mt-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- Logo & Açıklama -->
+      <div class="space-y-4">
+        <%= link_to root_path, class: "flex items-center gap-2" do %>
+          <svg class="w-8 h-8 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <span class="text-xl font-bold text-white">Unizone</span>
+        <% end %>
+        <p class="text-white/60 text-sm leading-relaxed">
+          Şehrinizin en özel etkinliklerini keşfedin. Yeni deneyimler sizi bekliyor!
+        </p>
+      </div>
+
+      <!-- Hızlı Linkler -->
+      <div class="space-y-3">
+        <h3 class="text-white font-medium mb-4">Hızlı Erişim</h3>
+        <%= link_to 'Etkinlikler', events_path, class: "block text-white/60 hover:text-cyan-300 transition-all" %>
+        <%= link_to 'Yeni Etkinlik', new_event_path, class: "block text-white/60 hover:text-cyan-300 transition-all" %>
+        <%= link_to 'Gizlilik Politikası', privacy_path, class: "block text-white/60 hover:text-cyan-300 transition-all" %>
+      </div>
+
+      <!-- İletişim -->
+      <div class="space-y-3">
+        <h3 class="text-white font-medium mb-4">İletişim</h3>
+        <p class="text-white/60">info@unizone.com</p>
+        <p class="text-white/60">+90 555 555 55 55</p>
+        <div class="flex items-center gap-4 mt-4">
+          <%= link_to '#' do %>
+            <svg class="w-6 h-6 text-white/60 hover:text-cyan-300 transition-all" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+            </svg>
+          <% end %>
+          <!-- Diğer sosyal medya ikonları -->
+        </div>
+      </div>
+
+      <!-- Bülten -->
+      <div class="space-y-4">
+        <h3 class="text-white font-medium">Yeniliklerden Haberdar Ol</h3>
+        <%= form_with url: newsletter_path, class: "flex gap-2" do %>
+          <%= email_field_tag :email, nil, 
+                class: "flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/40", 
+                placeholder: "E-posta adresin" %>
+          <%= submit_tag "Kaydol", 
+                class: "px-4 py-2 bg-cyan-400/20 hover:bg-cyan-400/30 text-cyan-300 rounded-lg border border-cyan-300/30 transition-all" %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Alt Çizgi -->
+    <div class="border-t border-white/10 mt-12 pt-8 text-center">
+      <p class="text-white/50 text-sm">
+        © 2024 Unizone. Tüm hakları saklıdır.
+      </p>
+    </div>
+  </div>
+</footer>
