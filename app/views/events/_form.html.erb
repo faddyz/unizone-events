@@ -1,0 +1,165 @@
+<div class="space-y-8">
+  <%= form_with(model: event, html: { class: "space-y-8", multipart: true }) do |form| %>
+    <% if event.errors.any? %>
+      <div class="p-6 bg-red-400/20 rounded-2xl backdrop-blur-lg border-2 border-red-300/30 mb-6">
+        <h2 class="text-xl font-bold text-red-300 mb-4"><%= pluralize(event.errors.count, "hata") %> nedeniyle kaydedilemedi:</h2>
+        <ul class="list-disc pl-6 text-red-200 space-y-2">
+          <% event.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Form Grid - 2 kolonlu layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Title - Tam genişlik -->
+      <div class="form-group md:col-span-2">
+        <%= form.label :title, "Etkinlik Başlığı *", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <div class="relative group">
+          <%= form.text_field :title,
+                class: "w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                placeholder: "Etkinliğinizin adını girin" %>
+          <div class="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-cyan-300 to-purple-400 group-hover:w-full transition-all duration-500"></div>
+        </div>
+      </div>
+
+      <!-- Image Upload - Tam genişlik -->
+      <div class="form-group md:col-span-2" data-controller="image-preview">
+        <%= form.label :image, "Etkinlik Görseli", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <div class="relative">
+          <div class="p-6 border-2 border-dashed border-cyan-300/30 rounded-xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all cursor-pointer text-center group">
+            <div id="image-upload-placeholder" class="flex flex-col items-center">
+              <svg class="w-12 h-12 text-cyan-300/70 group-hover:text-cyan-300 transition-colors mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p class="text-cyan-200 font-medium mb-1">Görsel yüklemek için tıklayın</p>
+              <p class="text-cyan-300/60 text-sm">PNG, JPG veya JPEG (max. 5MB)</p>
+            </div>
+            
+            <div id="image-preview-container" class="hidden flex flex-col items-center">
+              <img id="preview-image" src="#" alt="Görsel Önizleme" class="max-h-48 rounded-lg shadow-lg mb-3">
+              <p class="text-cyan-200 font-medium mb-1">Görsel seçildi</p>
+              <button type="button" id="remove-image" class="text-red-300 hover:text-red-400 text-sm">Görseli Kaldır</button>
+            </div>
+            
+            <%= form.file_field :image, 
+                  id: "event-image-upload",
+                  class: "absolute inset-0 w-full h-full opacity-0 cursor-pointer", 
+                  accept: "image/png,image/jpeg,image/jpg" %>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Category -->
+      <div class="form-group">
+        <%= form.label :category, "Kategori *", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <div class="relative">
+          <%= form.select :category,
+                options_for_select(
+                  Event.categories.keys.map { |c| [Event.new(category: c).category_title, c] }, 
+                  selected: event.category
+                ),
+                { include_blank: false },
+                class: "w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg appearance-none cursor-pointer" %>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-cyan-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="form-group">
+        <%= form.label :date, "Tarih ve Saat *", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <%= form.datetime_local_field :date,
+              class: "w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg" %>
+      </div>
+
+      <!-- Location -->
+      <div class="form-group">
+        <%= form.label :location, "Konum *", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <%= form.text_field :location,
+              class: "w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+              placeholder: "Adres veya Online" %>
+      </div>
+
+      <!-- Price -->
+      <div class="form-group">
+        <%= form.label :price, "Ücret (₺)", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <div class="relative">
+          <%= form.number_field :price,
+                class: "w-full px-6 py-4 pl-12 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                placeholder: "0",
+                min: 0,
+                step: "0.01" %>
+          <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+            <span class="text-cyan-300 font-medium">₺</span>
+          </div>
+          <p class="mt-2 text-cyan-300/70 text-sm">Ücretsiz etkinlik için boş bırakın veya 0 girin</p>
+        </div>
+      </div>
+
+      <!-- Description - Tam genişlik -->
+      <div class="form-group md:col-span-2">
+        <%= form.label :description, "Açıklama *", class: "block text-lg font-medium text-cyan-300 mb-2" %>
+        <%= form.text_area :description,
+              class: "w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+              rows: 6,
+              placeholder: "Etkinliğinizin detaylarını paylaşın..." %>
+      </div>
+
+      <!-- Submit Button - Tam genişlik -->
+      <div class="pt-4 md:col-span-2">
+        <%= form.submit class: "w-full px-6 py-4 bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-cyan-300/30 border border-white/10 text-lg tracking-wide backdrop-blur-lg" %>
+      </div>
+    </div>
+  <% end %>
+</div> 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('event-image-upload');
+    const imagePlaceholder = document.getElementById('image-upload-placeholder');
+    const previewContainer = document.getElementById('image-preview-container');
+    const previewImage = document.getElementById('preview-image');
+    const removeButton = document.getElementById('remove-image');
+    
+    // Eğer mevcut görsel varsa onu göster
+    if (imageInput.getAttribute('data-has-image') === 'true') {
+      imagePlaceholder.classList.add('hidden');
+      previewContainer.classList.remove('hidden');
+    }
+    
+    // Görsel seçildiğinde
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          previewImage.src = e.target.result;
+          imagePlaceholder.classList.add('hidden');
+          previewContainer.classList.remove('hidden');
+        };
+        
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+    
+    // Görseli kaldırma butonu
+    removeButton.addEventListener('click', function() {
+      imageInput.value = '';
+      previewImage.src = '#';
+      previewContainer.classList.add('hidden');
+      imagePlaceholder.classList.remove('hidden');
+    });
+    
+    // Mevcut görseli gösterme
+    if ('<%= event.image.attached? %>' === 'true') {
+      imagePlaceholder.classList.add('hidden');
+      previewContainer.classList.remove('hidden');
+      previewImage.src = '<%= url_for(event.image) if event.image.attached? %>';
+    }
+  });
+</script> 

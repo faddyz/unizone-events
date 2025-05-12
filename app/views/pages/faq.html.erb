@@ -1,0 +1,243 @@
+<% content_for :page_title do %>
+  <title>Sık Sorulan Sorular | Unizone - Etkinlik Platformu</title>
+<% end %>
+
+<div class="relative overflow-hidden pb-16">
+  <!-- Arkaplan Efekti -->
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
+  </div>
+
+  <!-- Başlık Alanı -->
+  <div class="relative z-10 pt-16 pb-12 mt-4 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-300 to-purple-400 text-transparent bg-clip-text mb-4">Sık Sorulan Sorular</h1>
+    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Platform hakkında merak ettiklerinizi burada bulabilirsiniz. Cevabını bulamadığınız sorularınız için bize ulaşabilirsiniz.</p>
+  </div>
+
+  <!-- FAQ İçeriği -->
+  <div class="relative z-10 max-w-4xl mx-auto px-4">
+    <div class="space-y-6" x-data="{ active: null }">
+      
+      <!-- FAQ Item 1 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 1 ? active = 1 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Etkinlik oluşturmak için ne yapmam gerekiyor?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 1}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 1"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Etkinlik oluşturmak için öncelikle platforma üye olmanız gerekmektedir. Ardından sayfanın üst kısmında bulunan "Yeni Etkinlik" butonuna tıklayarak gerekli bilgileri doldurabilir ve etkinliğinizi oluşturabilirsiniz. Etkinliğiniz, yönetici onayından sonra platformda yer alacaktır.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 2 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 2 ? active = 2 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Etkinliklere nasıl katılabilirim?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 2}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 2"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Etkinlikler sayfasından ilgilendiğiniz etkinliğe tıklayarak detay sayfasını görüntüleyebilirsiniz. Bu sayfada "Katıl", "Belki" veya "Katılmayacağım" seçeneklerinden birini seçerek etkinliğe olan katılım durumunuzu belirtebilirsiniz. Katıldığınız etkinlikleri profil sayfanızdan takip edebilirsiniz.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 3 ? active = 3 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Etkinliğimi düzenleyebilir miyim?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 3}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 3"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Evet, oluşturduğunuz etkinlikleri düzenleyebilirsiniz. Etkinlik detay sayfasında, eğer etkinliğin organizatörü sizseniz, düzenleme seçeneği görünecektir. Bu seçeneğe tıklayarak etkinlik bilgilerini güncelleyebilirsiniz. Önemli değişiklikler yaptığınızda, etkinliğinizin tekrar onay sürecine girmesi gerekebilir.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 4 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 4 ? active = 4 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Etkinliklerim için katılım listesini nasıl görebilirim?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 4}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 4"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Düzenlediğiniz etkinliğin detay sayfasında, etkinliğin organizatörü olarak "Katılımcıları Görüntüle" seçeneğini göreceksiniz. Bu seçeneğe tıklayarak kimlerin etkinliğinize katılacağını, kimlerin belki yanıtını verdiğini ve kimlerin katılmayacağını görebilirsiniz.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 5 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 5 ? active = 5 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Etkinlik ücretleri nasıl ödeniyor?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 5}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 5"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Şu an için platformumuz üzerinden ödeme işlemi gerçekleştirilmemektedir. Ücretli etkinliklerde, etkinlik detaylarında belirtilen ödeme yöntemleri ile organizatöre doğrudan ödeme yapmanız gerekir. İlerleyen süreçte platform üzerinden ödeme alma özelliği eklenecektir.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 6 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 6 ? active = 6 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Etkinlik iptal edilirse ne olur?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 6}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 6"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Eğer bir etkinlik organizatör tarafından iptal edilirse, etkinliğe katılım gösterenler otomatik olarak e-mail yoluyla bilgilendirilecektir. Ücretli etkinliklerde ödeme iadesi organizatör sorumluluğundadır. Platform olarak etkinlik iptallerinde aracılık yapmamaktayız.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 7 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 7 ? active = 7 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Şifremi unuttum, ne yapmalıyım?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 7}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 7"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Giriş sayfasında "Şifremi unuttum" seçeneğine tıklayarak şifre sıfırlama işlemini başlatabilirsiniz. Kayıtlı e-posta adresinize bir şifre sıfırlama bağlantısı gönderilecektir. Bu bağlantıya tıklayarak yeni şifrenizi belirleyebilirsiniz.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 8 -->
+      <div class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden">
+        <button 
+          @click="active !== 8 ? active = 8 : active = null"
+          class="flex justify-between items-center w-full px-6 py-5 text-left"
+        >
+          <span class="text-lg font-semibold text-white">Hesabımı nasıl silebilirim?</span>
+          <svg 
+            class="w-5 h-5 text-cyan-400 transition-transform" 
+            :class="{'rotate-180': active === 8}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div 
+          x-show="active === 8"
+          x-collapse
+          class="px-6 pb-5 text-gray-300"
+        >
+          <p>Hesabınızı silmek için profil sayfanızda "Hesap Ayarları" seçeneğine tıklayın. Bu sayfanın alt kısmında "Hesabımı Sil" seçeneğini bulabilirsiniz. Hesabınızı silmeden önce, oluşturduğunuz tüm etkinlikleri iptal etmeniz veya başka bir organizatöre devretmeniz gerektiğini unutmayın.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- İletişim Bölümü -->
+  <div class="relative z-10 mt-16 text-center">
+    <h2 class="text-2xl font-bold text-white mb-4">Başka sorularınız mı var?</h2>
+    <p class="text-gray-300 mb-6">Burada cevabını bulamadığınız sorular için bize ulaşabilirsiniz.</p>
+    <a href="mailto:iletisim@unizone.com" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg text-white font-medium hover:from-cyan-400 hover:to-purple-400 transition-all shadow-lg hover:shadow-cyan-500/30">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+      </svg>
+      İletişime Geç
+    </a>
+  </div>
+</div> 

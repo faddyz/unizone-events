@@ -1,0 +1,141 @@
+<div class="relative">
+  <!-- Hero Section -->
+  <div class="relative h-[80vh] min-h-[600px] flex items-start pt-16 md:pt-24">
+   <div class="absolute inset-0 bg-gradient-to-br from-purple-900/95 via-blue-900/70 to-indigo-900/95 backdrop-blur-[8px] rounded-b-[40px] overflow-hidden">
+     <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 mt-8 md:mt-12">
+      <div class="animate-fade-in-up">
+        <!-- Logo & Title -->
+        <div class="mb-8 md:mb-12 flex flex-col items-center">
+          <svg class="w-16 h-16 md:w-24 md:h-24 mb-4 md:mb-6 text-cyan-300 animate-pulse-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14v7l-9-11h7v-7l9 11h-7z" class="text-purple-400"/>
+          </svg>
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-300 mb-4 leading-tight animate-hologram">
+            UNIZONE
+            <span class="block text-xl md:text-2xl lg:text-3xl font-medium text-cyan-200 mt-2 md:mt-4">
+              Şehrinizin Sosyal Kalbi
+            </span>
+          </h1>
+        </div>
+
+        <!-- Scroll İndikatörü -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-0"> 
+         <div class="w-6 h-10 rounded-xl border-2 border-cyan-300/60 flex justify-center">
+            <div class="w-1 h-3 bg-cyan-300/80 mt-1 rounded-full animate-scroll-pulse"></div>
+          </div>
+        </div>
+
+        <!-- Dynamic Tags -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12">
+          <% ["Konserler", "Festivaller", "Workshop'lar", "Partiler"].each do |tag| %>
+            <span class="px-3 py-1.5 md:px-4 md:py-2 bg-cyan-400/20 text-cyan-300 rounded-full border border-cyan-300/30 text-xs md:text-sm font-medium backdrop-blur-lg hover:scale-105 transition-transform">
+              #<%= tag %>
+            </span>
+          <% end %>
+        </div>
+
+        <!-- Animated CTA -->
+        <div class="animate-bounce-slow mt-6 md:mt-8 mb-12">
+          <%= link_to events_path(anchor: "events"), class: "inline-flex items-center gap-2 md:gap-3 group" do %>
+            <span class="text-cyan-300 text-base md:text-lg font-semibold">Keşfetmeye Başla</span>
+            <svg class="w-6 h-6 md:w-8 md:h-8 text-cyan-300 group-hover:rotate-90 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parallax Particles -->
+    <div class="absolute inset-0 z-0 opacity-40 hover:opacity-60 transition-opacity duration-300">
+      <% 60.times do |i| %>
+        <div class="absolute w-2 h-2 bg-cyan-300/80 rounded-full animate-float-multidirection cursor-pointer hover:scale-150 hover:bg-purple-400 transition-all" 
+             style="top: <%= rand(-10..110) %>%;
+                    left: <%= rand(-5..105) %>%;
+                    animation-delay: <%= rand(0..5000) %>ms;
+                    animation-duration: <%= rand(4000..12000) %>ms;
+                    transform-origin: <%= rand(360) %>deg">
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Geliştirilmiş Arama Çubuğu -->
+  <div class="max-w-4xl mx-auto px-4 -mt-36 mb-20 relative z-10">
+    <%= form_with(url: events_path, method: :get, class: "bg-white/20 backdrop-blur-xl rounded-2xl shadow-2xl p-5 flex flex-col md:flex-row gap-3 border-2 border-white/25 hover:border-cyan-300/40 transition-all duration-300") do %>
+      <div class="flex-1 relative">
+        <svg class="w-7 h-7 absolute left-4 top-1/2 -translate-y-1/2 text-cyan-300/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <%= text_field_tag :query, params[:query], 
+              class: "w-full pl-14 pr-5 py-4 rounded-xl border-2 border-white/20 bg-white/15 text-white placeholder-cyan-100/70 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 text-lg font-medium", 
+              placeholder: "Konser, festival veya etkinlik ara..." %>
+      </div>
+
+      <div class="relative">
+        <%= select_tag :category, 
+              options_for_select(Event.categories.keys.map { |c| [c.titleize, c] }, params[:category]),
+              include_blank: "Tüm Kategoriler",
+              class: "w-full md:w-56 pl-5 pr-10 py-4 rounded-xl border-2 border-white/20 bg-white/15 text-white font-medium focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 cursor-pointer",
+              data: { controller: "dropdown" } %>
+      </div>
+      
+      <%= submit_tag "Ara", 
+            class: "px-8 py-4 bg-cyan-400/95 hover:bg-cyan-300 text-white font-bold rounded-xl transition-all whitespace-nowrap backdrop-blur-lg text-lg tracking-wide shadow-lg hover:shadow-cyan-300/20" %>
+    <% end %>
+  </div>
+
+  <!-- Yenilenmiş Etkinlik Kartları -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <% @events.each do |event| %>
+        <div class="group bg-white/10 backdrop-blur-lg rounded-2xl p-6 border-2 border-white/15 hover:border-cyan-300/40 transition-all duration-500 shadow-2xl hover:shadow-cyan-400/20 relative overflow-hidden transform hover:-translate-y-2 flex flex-col min-h-[420px]">
+          <!-- Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-br from-cyan-400/15 to-purple-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          <!-- Kart İçeriği -->
+          <div class="relative z-10 flex-1">
+            <!-- Date & Category Badge -->
+            <div class="h-56 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 relative mb-5 rounded-xl overflow-hidden">
+              <div class="absolute top-4 right-4 flex items-center gap-3">
+                <span class="bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-sm font-bold text-cyan-300">
+                  <%= event.date.strftime("%d %b") %>
+                </span>
+                <span class="bg-<%= event.category_color %>-100/20 text-<%= event.category_color %>-300 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-lg border border-white/10">
+                  <%= event.category_title %>
+                </span>
+              </div>
+            </div>
+
+            <h3 class="text-2xl font-extrabold mb-4 text-white tracking-tight line-clamp-2 leading-snug"><%= event.title %></h3>
+            <p class="text-base text-white/85 mb-5 line-clamp-3 leading-relaxed min-h-[72px]"><%= event.description %></p>
+            
+            <!-- Detaylar -->
+            <div class="space-y-3 text-base border-t border-white/15 pt-4 mt-auto">
+              <div class="flex items-center">
+                <%= render 'icons/location', class: "w-5 h-5 mr-3 text-cyan-300 flex-shrink-0" %>
+                <span class="text-white/90 font-medium whitespace-normal line-clamp-2 break-words">
+                 <%= event.location %>
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <%= link_to event_path(event), class: "flex items-center text-cyan-300 hover:text-cyan-200 font-bold group" do %>
+                  <span class="mr-2">Detayları Gör</span>
+                  <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                <% end %>
+                <span class="<%= event.free? ? 'text-green-300' : 'text-amber-300' %> font-bold">
+                  <%= event.free? ? 'ÜCRETSİZ' : number_to_currency(event.price, unit: "₺", precision: 0) %>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

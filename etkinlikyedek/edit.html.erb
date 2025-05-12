@@ -1,0 +1,11 @@
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="max-w-3xl mx-auto px-4">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+      <%= action_name == 'new' ? 'Yeni Etkinlik Oluştur' : 'Etkinliği Düzenle' %>
+    </h1>
+    
+    <div class="bg-white rounded-xl shadow-md p-8">
+      <%= render 'form', event: @event %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <% if notice %>
+    <div class="mb-6 p-4 bg-green-50 rounded-lg text-green-700"><%= notice %></div>
+  <% end %>
+
+  <!-- Event Card -->
+  <div class="mb-8">
+    <%= render @event %>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="pt-6 flex items-center justify-end gap-4">
+    <%= link_to events_path, class: "text-gray-600 hover:text-gray-800 flex items-center gap-1" do %>
+      <%= render 'icons/arrow_left', class: "w-4 h-4" %>
+      Etkinliklere Dön
+    <% end %>
+    
+    <% if policy(@event).edit? %>
+  <%= link_to edit_event_path(@event), class: "btn-secondary" do %>
+    <i class="fas fa-pencil-alt w-4 h-4"></i>
+    Düzenle
+  <% end %>
+<% end %>
+
+<% if current_user&.admin? %> 
+  <%= button_to "Etkinliği Sil", event_path(@event), 
+        method: :delete, 
+        data: { confirm: "Emin misiniz?" }, 
+        class: "btn-danger" %>
+<% end %>
+  </div>
+</div>

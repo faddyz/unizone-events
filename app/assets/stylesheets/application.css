@@ -1,0 +1,318 @@
+@import "tailwindcss";
+
+/* Tüm özel animasyonlar ve stil kodları burada toplanmıştır */
+
+/* Float animasyonları - Basitleştirilmiş */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+  }
+  
+@keyframes float-subtle {
+    0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes float-multidirection {
+  0%, 100% { 
+    transform: 
+      translate(0, 0) 
+      rotate(0deg);
+  }
+  25% { 
+    transform: 
+      translate(10px, -15px) 
+      rotate(5deg);
+  }
+  50% { 
+    transform: 
+      translate(-10px, 10px) 
+      rotate(-5deg);
+  }
+  75% { 
+    transform: 
+      translate(5px, 10px) 
+      rotate(2deg);
+  }
+}
+
+/* Yeni: Bling efekti - daha yumuşak ve yavaş */
+@keyframes bling {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+    filter: blur(0px);
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.8;
+    filter: blur(0.5px);
+    box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Yeni: Çizgi çizme animasyonu */
+@keyframes draw-line {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Pulse ve fade animasyonları - Süreleri azaltıldı */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.7; }
+  }
+
+  @keyframes subtle-pulse {
+    0%, 100% { opacity: 1; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Bounce animasyonu - Basitleştirildi */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Hologram efekti - Hafifletildi */
+@keyframes hologram {
+  0% { text-shadow: 0 0 5px rgba(103,232,249,0.1), 0 0 10px rgba(103,232,249,0.1); }
+  50% { text-shadow: 0 0 15px rgba(103,232,249,0.3), 0 0 20px rgba(103,232,249,0.2); }
+  100% { text-shadow: 0 0 5px rgba(103,232,249,0.1), 0 0 10px rgba(103,232,249,0.1); }
+}
+
+/* Animasyon sınıfları - Azaltılmış süreler */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-subtle {
+  animation: float-subtle 2s ease-in-out infinite;
+}
+
+.animate-float-multidirection {
+  animation: float-multidirection 8s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2.5s ease-in-out infinite;
+  }
+  
+  .animate-subtle-pulse {
+  animation: subtle-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2.5s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease-out;
+}
+
+.animate-hologram {
+  animation: hologram 2.5s ease-in-out infinite;
+}
+
+/* Animasyon gecikmeleri */
+.delay-1000 {
+  animation-delay: 1000ms;
+  }
+  
+  /* Özel gölge efekti */
+  .shadow-cyan-300\/30 {
+    box-shadow: 0 10px 30px -10px rgba(103, 232, 249, 0.3);
+  }
+
+/* Form elemanları için stiller */
+select option {
+  background: #fff !important;
+  color: #222 !important;
+  padding: 12px !important;
+}
+
+/* Etkinlik kartları için stiller */
+.event-card {
+  @apply flex flex-col h-full; /* Tüm kartı dikey düzenle */
+}
+
+.event-content {
+  @apply flex-1; /* İçeriği esnek yap */
+}
+
+.details-section {
+  @apply mt-auto; /* Detayları en alta sabitle */
+}
+
+/* Sayfalandırma için yumuşak kaydırma */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Her kategori rengi için özel sınıflar - pozitif olarak belirtilmiş */
+.text-purple-300 { color: rgb(216, 180, 254); }
+.text-pink-300 { color: rgb(249, 168, 212); }
+.text-blue-300 { color: rgb(147, 197, 253); }
+.text-orange-300 { color: rgb(253, 186, 116); }
+.text-cyan-300 { color: rgb(103, 232, 249); }
+.text-amber-300 { color: rgb(252, 211, 77); }
+.text-green-300 { color: rgb(134, 239, 172); }
+.text-indigo-300 { color: rgb(165, 180, 252); }
+.text-violet-300 { color: rgb(196, 181, 253); }
+.text-fuchsia-300 { color: rgb(240, 171, 252); }
+.text-rose-300 { color: rgb(253, 164, 175); }
+.text-sky-300 { color: rgb(125, 211, 252); }
+.text-emerald-300 { color: rgb(110, 231, 183); }
+.text-slate-300 { color: rgb(203, 213, 225); }
+
+/* Optimize edilmiş arka planlar için kategori renkleri */
+.from-purple-400\/20 { background-image: linear-gradient(to right, rgba(192, 132, 252, 0.2), rgba(147, 51, 234, 0.1)); }
+.from-pink-400\/20 { background-image: linear-gradient(to right, rgba(244, 114, 182, 0.2), rgba(219, 39, 119, 0.1)); }
+.from-blue-400\/20 { background-image: linear-gradient(to right, rgba(96, 165, 250, 0.2), rgba(37, 99, 235, 0.1)); }
+.from-orange-400\/20 { background-image: linear-gradient(to right, rgba(251, 146, 60, 0.2), rgba(234, 88, 12, 0.1)); }
+.from-cyan-400\/20 { background-image: linear-gradient(to right, rgba(34, 211, 238, 0.2), rgba(6, 182, 212, 0.1)); }
+.from-amber-400\/20 { background-image: linear-gradient(to right, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.1)); }
+.from-green-400\/20 { background-image: linear-gradient(to right, rgba(74, 222, 128, 0.2), rgba(22, 163, 74, 0.1)); }
+.from-indigo-400\/20 { background-image: linear-gradient(to right, rgba(129, 140, 248, 0.2), rgba(79, 70, 229, 0.1)); }
+.from-violet-400\/20 { background-image: linear-gradient(to right, rgba(167, 139, 250, 0.2), rgba(124, 58, 237, 0.1)); }
+.from-fuchsia-400\/20 { background-image: linear-gradient(to right, rgba(232, 121, 249, 0.2), rgba(192, 38, 211, 0.1)); }
+.from-rose-400\/20 { background-image: linear-gradient(to right, rgba(251, 113, 133, 0.2), rgba(225, 29, 72, 0.1)); }
+.from-sky-400\/20 { background-image: linear-gradient(to right, rgba(56, 189, 248, 0.2), rgba(14, 165, 233, 0.1)); }
+.from-emerald-400\/20 { background-image: linear-gradient(to right, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.1)); }
+.from-slate-400\/20 { background-image: linear-gradient(to right, rgba(148, 163, 184, 0.2), rgba(100, 116, 139, 0.1)); }
+
+/* Yeni animasyon sınıfları */
+.animate-bling {
+  animation: bling 3.5s ease-in-out infinite;
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.4);
+}
+
+.animate-draw-line {
+  animation: draw-line 1.5s ease-out forwards;
+}
+
+/* 3D kartlar için dönüşüm */
+.hover-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.hover-3d:hover .card-3d-inner {
+  transform: rotateY(5deg) rotateX(5deg);
+}
+
+.card-3d-inner {
+  transition: transform 0.6s ease;
+}
+
+/* Cam morfoloji efekti */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Hareket eden gradient arka plan */
+.moving-gradient {
+  background-size: 400% 400%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% { 
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Hover durumunda renk değişimi */
+.hover-color-shift {
+  transition: filter 0.5s ease;
+}
+
+.hover-color-shift:hover {
+  filter: hue-rotate(45deg);
+}
+
+/* Yıldız şekli için CSS */
+.star {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-right: 5px solid transparent;
+  border-bottom: 7px solid white;
+  border-left: 5px solid transparent;
+  transform: rotate(35deg);
+  opacity: 0.6;
+}
+
+.star:before {
+  content: '';
+  position: absolute;
+  height: 0;
+  width: 0;
+  top: -4.5px;
+  left: -3px;
+  border-bottom: 8px solid white;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  transform: rotate(-35deg);
+}
+
+.star:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 0px;
+  height: 0px;
+  border-right: 5px solid transparent;
+  border-bottom: 7px solid white;
+  border-left: 5px solid transparent;
+  transform: rotate(-70deg);
+}
+
+/* Renkli yıldızlar */
+.star-cyan, 
+.star-cyan:before, 
+.star-cyan:after {
+  border-bottom-color: rgb(103, 232, 249); /* cyan-300 */
+}
+
+.star-purple, 
+.star-purple:before, 
+.star-purple:after {
+  border-bottom-color: rgb(216, 180, 254); /* purple-300 */
+}
+
+.star-indigo, 
+.star-indigo:before, 
+.star-indigo:after {
+  border-bottom-color: rgb(165, 180, 252); /* indigo-300 */
+}
+
+.star-blue, 
+.star-blue:before, 
+.star-blue:after {
+  border-bottom-color: rgb(147, 197, 253); /* blue-300 */
+}
+
+/* Özel opacity sınıfı */
+.opacity-35 {
+  opacity: 0.35;
+  }

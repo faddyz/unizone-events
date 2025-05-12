@@ -1,0 +1,202 @@
+<nav class="bg-white/5 backdrop-blur-xl border-b border-white/10 fixed w-full z-50 shadow-2xl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo - Hero section ile aynı stilde güncellendi -->
+      <div class="flex-shrink-0">
+        <%= link_to root_path, class: "flex items-center group" do %>
+          <div class="relative mr-2 group">
+            <svg class="h-8 w-8 text-cyan-300 animate-pulse-slow animate-hologram" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14v7l-9-11h7v-7l9 11h-7z" class="text-purple-400"/>
+            </svg>
+            <div class="absolute -inset-1 bg-cyan-400/10 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+          </div>
+          <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-cyan-400 to-purple-300 animate-hologram">Unizone</span>
+        <% end %>
+      </div>
+
+      <!-- Desktop Menu - İyileştirilmiş tasarım -->
+      <div class="hidden md:flex items-center space-x-6">
+        <%= link_to explore_events_path, 
+              class: "px-4 py-2 text-white/90 hover:text-cyan-300 font-medium rounded-lg transition-all relative group" do %>
+          Tüm Etkinlikler
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
+        <% end %>
+        
+        <% if user_signed_in? %>
+          <%= link_to new_event_path, 
+                class: "relative overflow-hidden bg-gradient-to-r from-cyan-500/80 to-purple-500/80 hover:from-cyan-400 hover:to-purple-400 text-white px-6 py-2 rounded-xl border border-white/10 transition-all flex items-center gap-2 shadow-lg hover:shadow-cyan-400/30 moving-gradient" do %>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <span>Yeni Etkinlik</span>
+          <% end %>
+
+          <!-- Kullanıcı Menüsü - Geliştirilmiş UI -->
+          <div class="relative ml-4" x-data="{ open: false }">
+            <button 
+              @click="open = !open" 
+              @keydown.escape.window="open = false"
+              @click.outside="open = false"
+              type="button" 
+              class="flex items-center gap-2 text-white/90 hover:text-cyan-300 group"
+              id="user-menu-button" 
+              aria-expanded="true" 
+              aria-haspopup="true">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400/30 to-purple-400/30 flex items-center justify-center text-white border border-white/20 group-hover:border-cyan-300/40 transition-all">
+                <%= current_user.name.present? ? current_user.name.first.upcase : current_user.email.first.upcase %>
+              </div>
+              <span class="hidden lg:inline"><%= current_user.name.present? ? current_user.name : current_user.email %></span>
+              <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <div 
+              x-show="open"
+              x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="transform opacity-0 scale-95"
+              x-transition:enter-end="transform opacity-100 scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="transform opacity-100 scale-100"
+              x-transition:leave-end="transform opacity-0 scale-95"
+              class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-xl bg-white/10 backdrop-blur-xl shadow-lg border border-white/20"
+              role="menu" 
+              aria-orientation="vertical" 
+              aria-labelledby="user-menu-button" 
+              tabindex="-1">
+              <div role="none">
+                <% if current_user.admin? %>
+                  <%= link_to admin_events_path, 
+                        class: "block px-4 py-3 text-white hover:bg-white/10 border-b border-white/10 group",
+                        role: "menuitem", tabindex: "-1" do %>
+                    <div class="flex items-center gap-2">
+                      <svg class="w-5 h-5 text-cyan-300 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                      </svg>
+                      <span>Admin Paneli</span>
+                    </div>
+                  <% end %>
+                <% end %>
+                
+                <%= link_to account_path, 
+                      class: "block px-4 py-3 text-white hover:bg-white/10 border-b border-white/10 group",
+                      role: "menuitem", tabindex: "-1" do %>
+                  <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-300 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Hesap Ayarlarım</span>
+                  </div>
+                <% end %>
+                
+                <%= button_to destroy_user_session_path, 
+                      method: :delete, 
+                      class: "w-full text-left px-4 py-3 text-red-300 hover:bg-red-400/10 rounded-b-xl group",
+                      role: "menuitem", tabindex: "-1",
+                      data: { turbo: false } do %>
+                  <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    <span>Çıkış Yap</span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="flex items-center gap-4">
+            <%= link_to new_user_session_path, 
+                  class: "px-4 py-2 text-white/90 hover:text-cyan-300 font-medium relative group" do %>
+              Giriş Yap
+              <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
+            <% end %>
+            <%= link_to new_user_registration_path, 
+                  class: "relative overflow-hidden bg-gradient-to-r from-cyan-500/80 to-purple-500/80 hover:from-cyan-400 hover:to-purple-400 text-white px-6 py-2 rounded-xl border border-white/10 transition-all shadow-lg hover:shadow-cyan-400/30 moving-gradient" do %>
+              Kayıt Ol
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Mobile Menu Button - Geliştirilmiş animasyon -->
+      <div class="md:hidden" x-data="{ open: false }">
+        <button 
+          @click="open = !open"
+          type="button" 
+          class="text-white/90 hover:text-cyan-300 focus:outline-none p-2">
+          <svg x-show="!open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg x-show="open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <!-- Mobile Menu -->
+        <div 
+          x-show="open"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 transform -translate-y-4"
+          x-transition:enter-end="opacity-100 transform translate-y-0"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 transform translate-y-0"
+          x-transition:leave-end="opacity-0 transform -translate-y-4"
+          class="absolute left-0 right-0 top-16 bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-2xl p-4">
+          <div class="space-y-2 py-2">
+            <%= link_to 'Tüm Etkinlikler', explore_events_path, 
+                  class: "block px-4 py-3 text-white/90 hover:text-cyan-300 hover:bg-white/5 rounded-lg transition-all" %>
+            
+            <% if user_signed_in? %>
+              <%= link_to new_event_path, 
+                    class: "block px-4 py-3 text-cyan-300 hover:bg-cyan-400/10 rounded-lg transition-all flex items-center gap-2" do %>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                <span>Yeni Etkinlik</span>
+              <% end %>
+              
+              <% if current_user.admin? %>
+                <%= link_to admin_events_path, 
+                      class: "block px-4 py-3 text-white/90 hover:text-cyan-300 hover:bg-white/5 rounded-lg transition-all flex items-center gap-2" do %>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                  </svg>
+                  <span>Admin Paneli</span>
+                <% end %>
+              <% end %>
+              
+              <%= link_to account_path, 
+                    class: "block px-4 py-3 text-white/90 hover:text-cyan-300 hover:bg-white/5 rounded-lg transition-all flex items-center gap-2" do %>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span>Hesap Ayarlarım</span>
+              <% end %>
+              
+              <%= button_to destroy_user_session_path, 
+                    method: :delete, 
+                    class: "w-full text-left px-4 py-3 text-red-300 hover:bg-red-400/10 rounded-lg transition-all flex items-center gap-2",
+                    data: { turbo: false } do %>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                <span>Çıkış Yap</span>
+              <% end %>
+            <% else %>
+              <div class="flex flex-col gap-2">
+                <%= link_to 'Giriş Yap', new_user_session_path, 
+                      class: "block px-4 py-3 text-white/90 hover:text-cyan-300 hover:bg-white/5 rounded-lg transition-all" %>
+                <%= link_to 'Kayıt Ol', new_user_registration_path, 
+                      class: "block px-4 py-3 text-white bg-gradient-to-r from-cyan-500/80 to-purple-500/80 rounded-lg transition-all" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav> 

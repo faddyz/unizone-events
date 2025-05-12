@@ -1,0 +1,40 @@
+<div class="space-y-8">
+  <%= form_with(model: event, html: { class: "space-y-8" }) do |form| %>
+    <% if event.errors.any? %>
+      <div class="p-6 bg-red-400/20 rounded-2xl backdrop-blur-lg border-2 border-red-300/30">
+        <h2 class="text-xl font-bold text-red-300 mb-4"><%= pluralize(event.errors.count, "hata") %> engellendi:</h2>
+        <ul class="list-disc pl-6 text-red-200 space-y-2">
+          <% event.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="space-y-6">
+      <!-- Title -->
+      <div class="form-group">
+        <%= form.label :title, "Etkinlik Başlığı *", class: "block text-lg font-medium text-white mb-2" %>
+        <%= form.text_field :title,
+              class: "w-full px-6 py-3 bg-white/10 border-2 border-white/15 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+              placeholder: "Etkinlik Adı" %>
+      </div>
+
+      <!-- Category (DÜZELTİLDİ) -->
+      <div class="form-group">
+        <%= form.label :category, "Kategori *", class: "block text-lg font-medium text-white mb-2" %>
+        <%= form.select :category, 
+              options_for_select(
+                Event.categories.keys.map { |c| [c.titleize, c] }, 
+                selected: event.category
+              ),
+              { include_blank: false },
+              class: "w-full px-6 py-3 bg-white/10 border-2 border-white/15 rounded-xl text-white focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg" %>
+      </div>
+
+      <!-- Diğer form alanları aynı kalacak -->
+      <!-- ... -->
+      
+    </div>
+  <% end %>
+</div>
