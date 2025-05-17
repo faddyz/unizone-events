@@ -1,0 +1,44 @@
+<!-- Silme Onay Modalı -->
+<div data-controller="delete-confirmation"
+     data-delete-confirmation-title-value="Bu öğeyi silmek istediğinizden emin misiniz?"
+     data-delete-confirmation-message-value="Bu işlem geri alınamaz. Silinen veriler kurtarılamaz.">
+  
+  <div data-delete-confirmation-target="modal" 
+       class="fixed inset-0 z-50 overflow-y-auto hidden" 
+       aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
+      <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+      <div class="relative inline-block align-bottom bg-gray-800 rounded-xl text-left overflow-hidden shadow-2xl border border-red-500/30 transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="p-6 text-center">
+          <svg class="mx-auto mb-4 w-16 h-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          
+          <h3 data-delete-confirmation-target="title" class="text-xl font-bold text-white mb-5">
+            Bu öğeyi silmek istediğinizden emin misiniz?
+          </h3>
+          
+          <p data-delete-confirmation-target="message" class="text-gray-300 mb-6">
+            Bu işlem geri alınamaz. Silinen veriler kurtarılamaz.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <%= form_tag "", method: :delete, data: { delete_confirmation_target: "form", turbo: false } do %>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <button type="submit" class="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                Evet, sil
+              </button>
+            <% end %>
+            
+            <button type="button" 
+                    data-delete-confirmation-target="cancelButton" 
+                    class="text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-500 text-sm font-medium px-5 py-2.5 mt-3 sm:mt-0">
+              İptal
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

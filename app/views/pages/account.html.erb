@@ -1,0 +1,225 @@
+<% content_for :page_title do %>
+  <title>Hesap Ayarları | Unizone - Etkinlik Platformu</title>
+<% end %>
+
+<div class="relative overflow-hidden pb-16 min-h-[80vh]">
+
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
+  </div>
+
+  <!-- Başlık Alanı -->
+  <div class="relative z-10 pt-16 pb-12 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-300 to-purple-400 text-transparent bg-clip-text mb-4">Hesap Ayarları</h1>
+    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Kişisel bilgilerinizi düzenleyin ve hesap tercihlerinizi yönetin.</p>
+  </div>
+
+  <!-- Hesap İçeriği -->
+  <div class="relative z-10 max-w-4xl mx-auto px-4">
+    <div class="bg-gray-800/60 backdrop-blur-lg border border-gray-700 rounded-2xl overflow-hidden shadow-lg">
+      <div class="p-6 sm:p-8">
+        <!-- Profil Bölümü -->
+        <div class="mb-8">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400/30 to-purple-400/30 flex items-center justify-center text-white border-2 border-white/20 text-3xl font-bold">
+              <%= @user.name.present? ? @user.name.first.upcase : @user.email.first.upcase %>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white"><%= @user.name.present? ? @user.name : "Kullanıcı" %></h2>
+              <p class="text-gray-300 mt-1"><%= @user.email %></p>
+              <% if @user.created_at.present? %>
+                <p class="text-gray-400 text-sm mt-2">Üyelik: <%= @user.created_at.strftime("%d.%m.%Y") %> tarihinden beri üye</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profil Bilgileri Güncelleme Formu -->
+        <div class="bg-gray-700/30 backdrop-blur-sm border border-gray-600/30 rounded-xl p-6 mb-8">
+          <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+            <svg class="w-5 h-5 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Profil Bilgilerim
+          </h3>
+
+          <% if flash[:profile_error].present? %>
+            <div class="p-4 mb-4 bg-red-400/20 rounded-xl backdrop-blur-lg border-2 border-red-300/30">
+              <p class="text-red-300"><%= flash[:profile_error] %></p>
+            </div>
+          <% elsif flash[:profile_notice].present? %>
+            <div class="p-4 mb-4 bg-green-400/20 rounded-xl backdrop-blur-lg border-2 border-green-300/30">
+              <p class="text-green-300"><%= flash[:profile_notice] %></p>
+            </div>
+          <% end %>
+
+          <%= form_with(url: update_profile_path, method: :put, html: { class: "mt-4" }) do |f| %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-gray-300 font-medium mb-2" for="name">Ad Soyad</label>
+                <%= f.text_field :name, 
+                                 value: @user.name,
+                                 autofocus: true, 
+                                 class: "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                                 placeholder: "Ad Soyad" %>
+              </div>
+              <div>
+                <label class="block text-gray-300 font-medium mb-2" for="email">E-posta</label>
+                <%= f.email_field :email, 
+                                  value: @user.email,
+                                  class: "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                                  placeholder: "E-posta" %>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-cyan-500/30">
+                Bilgilerimi Güncelle
+              </button>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Şifre Değiştirme Formu -->
+        <div class="bg-gray-700/30 backdrop-blur-sm border border-gray-600/30 rounded-xl p-6 mb-8">
+          <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+            <svg class="w-5 h-5 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Şifremi Değiştir
+          </h3>
+          
+          <p class="text-gray-300 mb-4 text-sm">Şifrenizi değiştirmek için lütfen mevcut şifrenizi ve yeni belirlemek istediğiniz şifreyi girin. Şifrenizi değiştirmeyecekseniz bu bölümü boş bırakabilirsiniz.</p>
+
+          <% if flash[:password_error].present? %>
+            <div class="p-4 mb-4 bg-red-400/20 rounded-xl backdrop-blur-lg border-2 border-red-300/30">
+              <p class="text-red-300"><%= flash[:password_error] %></p>
+            </div>
+          <% elsif flash[:password_notice].present? %>
+            <div class="p-4 mb-4 bg-green-400/20 rounded-xl backdrop-blur-lg border-2 border-green-300/30">
+              <p class="text-green-300"><%= flash[:password_notice] %></p>
+            </div>
+          <% end %>
+
+          <%= form_with(url: update_password_path, method: :put, html: { class: "mt-4" }) do |f| %>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-gray-300 font-medium mb-2" for="current_password">Mevcut Şifre</label>
+                <%= f.password_field :current_password, 
+                                   autocomplete: "current-password", 
+                                   class: "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                                   placeholder: "Mevcut şifrenizi girin" %>
+                <p class="mt-1 text-cyan-300/70 text-xs">Güvenlik için mevcut şifrenizi girmelisiniz.</p>
+              </div>
+              <div>
+                <label class="block text-gray-300 font-medium mb-2" for="password">Yeni Şifre</label>
+                <%= f.password_field :password, 
+                                   autocomplete: "new-password", 
+                                   class: "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                                   placeholder: "En az 6 karakter" %>
+                <p class="mt-1 text-cyan-300/70 text-xs">Minimum 6 karakter uzunluğunda olmalıdır.</p>
+              </div>
+              <div>
+                <label class="block text-gray-300 font-medium mb-2" for="password_confirmation">Yeni Şifre Tekrar</label>
+                <%= f.password_field :password_confirmation, 
+                                   autocomplete: "new-password", 
+                                   class: "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300 backdrop-blur-lg",
+                                   placeholder: "Şifrenizi tekrar girin" %>
+                <p class="mt-1 text-cyan-300/70 text-xs">Yeni şifrenizi tekrar girin.</p>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-cyan-500/30">
+                Şifremi Güncelle
+              </button>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Hesabı Silme -->
+        <div class="bg-gray-700/30 backdrop-blur-sm border border-red-900/30 rounded-xl p-6">
+          <h3 class="text-xl font-bold text-red-300 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Hesabımı Sil
+          </h3>
+
+          <p class="text-gray-300 mb-6">Bu işlem geri alınamaz. Hesabınızı sildiğinizde, tüm verileriniz ve oluşturduğunuz etkinlikler kalıcı olarak silinecektir.</p>
+          
+          <button type="button" id="showDeleteModal" class="px-6 py-3 bg-red-600/50 hover:bg-red-500/60 text-white font-medium rounded-xl transition-all border border-red-500/30">
+            Hesabımı Sil
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hesap Silme Modal -->
+<div id="deleteAccountModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="relative inline-block align-bottom bg-gray-800 rounded-xl text-left overflow-hidden shadow-2xl border border-red-500/30 transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="p-6 text-center">
+        <svg class="mx-auto mb-4 w-16 h-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="text-xl font-bold text-white mb-5">Hesabınızı silmek istediğinizden emin misiniz?</h3>
+        <p class="text-gray-300 mb-6">Bu işlem geri alınamaz. Hesabınız ve tüm ilişkili veriler kalıcı olarak silinecektir.</p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+          <%= button_to user_registration_path, 
+                method: :delete, 
+                data: { turbo: false }, 
+                class: "text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center" do %>
+            Evet, hesabımı sil
+          <% end %>
+          
+          <button type="button" id="cancelDelete" class="text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-500 text-sm font-medium px-5 py-2.5 mt-3 sm:mt-0">
+            İptal
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :footer_scripts do %>
+<script>
+  // Basit modal kontrolü
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('deleteAccountModal');
+    const showButton = document.getElementById('showDeleteModal');
+    const cancelButton = document.getElementById('cancelDelete');
+    
+    showButton.addEventListener('click', function() {
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    });
+    
+    cancelButton.addEventListener('click', function() {
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    });
+    
+
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    });
+    
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    });
+  });
+</script>
+<% end %> 

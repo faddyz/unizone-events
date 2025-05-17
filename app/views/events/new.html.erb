@@ -1,0 +1,50 @@
+<div class="relative min-h-screen">
+  <!-- Background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-purple-900/95 via-blue-900/90 to-indigo-900/95 -z-10"></div>
+  
+
+  <div class="absolute inset-0 opacity-20 -z-5">
+    <% 20.times do |i| %>
+      <div class="absolute w-2 h-2 bg-cyan-300/80 rounded-full animate-float-multidirection cursor-pointer hover:scale-150 hover:bg-purple-400 transition-all" 
+           style="top: <%= rand(-10..110) %>%;
+                  left: <%= rand(-5..105) %>%;
+                  animation-delay: <%= rand(0..5000) %>ms;
+                  animation-duration: <%= rand(4000..12000) %>ms;
+                  transform-origin: <%= rand(360) %>deg">
+      </div>
+    <% end %>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 py-12 relative z-10">
+    <!-- Logo & Title -->
+    <div class="mb-8 flex flex-col items-center">
+      <div class="relative group mb-4">
+        <svg class="w-16 h-16 text-cyan-300 animate-pulse-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14v7l-9-11h7v-7l9 11h-7z" class="text-purple-400"/>
+        </svg>
+        <div class="absolute -inset-2 bg-cyan-400/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      </div>
+      <h1 class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-cyan-300 via-cyan-400 to-purple-300 mb-2 leading-tight animate-hologram drop-shadow-[0_0_10px_rgba(103,232,249,0.3)]">
+        <%= action_name == 'new' ? 'Yeni Etkinlik Oluştur' : 'Etkinliği Düzenle' %>
+      </h1>
+      <p class="text-cyan-200 text-lg max-w-xl text-center">
+        Etkinliğinizi oluşturun ve binlerce katılımcıyla buluşturun!
+      </p>
+    </div>
+    
+    <div class="bg-white/10 backdrop-blur-xl rounded-2xl p-8 border-2 border-white/15 hover:border-cyan-300/40 transition-all duration-500 shadow-2xl hover:shadow-cyan-400/20">
+      <%= render 'form', event: @event %>
+    </div>
+    
+    <!-- Geri Dön Butonu -->
+    <div class="mt-8 text-center">
+      <%= link_to events_path, class: "inline-flex items-center gap-2 text-cyan-300 hover:text-cyan-200 font-medium transition-colors" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Etkinlik Listesine Dön
+      <% end %>
+    </div>
+  </div>
+</div> 
