@@ -381,134 +381,112 @@
   line-height: 1.35;
 }
 
-.event-discovery-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.35rem;
-  border: 1px solid rgba(15, 15, 18, 0.08);
-  background:
-    radial-gradient(circle at 100% 0%, rgba(215, 255, 57, 0.1), transparent 34%),
-    rgba(255, 255, 255, 0.72);
-  padding: 1rem;
-  box-shadow:
-    0 1px 2px rgba(15, 15, 18, 0.04),
-    0 12px 32px rgba(15, 15, 18, 0.06);
-  backdrop-filter: blur(18px);
-}
-
-.event-discovery-grid {
+.event-discovery-divider {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: minmax(2rem, 1fr) auto minmax(2rem, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.55rem 0 0.95rem;
+  opacity: 0.75;
 }
 
-@media (min-width: 768px) {
-  .event-discovery-card {
-    padding: 1.15rem;
-  }
-
-  .event-discovery-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.72fr);
-    align-items: stretch;
-  }
+.event-discovery-divider span {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 15, 18, 0.16), transparent);
 }
 
-.event-discovery-card .event-card {
-  border-radius: 1rem;
-  box-shadow: 0 10px 26px rgba(15, 15, 18, 0.07);
-}
-
-.event-discovery-card .event-poster {
-  aspect-ratio: 2.35 / 1;
-}
-
-.event-discovery-card .event-card-body {
-  min-height: 7.4rem;
-  padding: 0.9rem;
-}
-
-.event-discovery-card .event-card-time {
-  font-size: 0.62rem;
-}
-
-.event-discovery-card .event-card-heading {
-  margin-top: 0.35rem;
-  font-size: 0.98rem;
-}
-
-.event-discovery-card .event-card-meta {
-  margin-top: 0.8rem;
-  padding-top: 0.75rem;
-}
-
-.event-discovery-more {
-  display: grid;
-  position: relative;
-  overflow: hidden;
-  min-height: 10.6rem;
-  align-content: end;
-  gap: 0.35rem;
-  border-radius: 1.1rem;
-  border: 1px solid rgba(15, 15, 18, 0.08);
-  background:
-    radial-gradient(circle at 86% 16%, rgba(47, 107, 255, 0.14), transparent 34%),
-    linear-gradient(145deg, rgba(15, 15, 18, 0.96), rgba(24, 24, 28, 0.9));
-  padding: 1rem;
-  color: white;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.event-discovery-more:hover {
-  transform: translateY(-3px);
-  border-color: rgba(215, 255, 57, 0.44);
+.event-discovery-divider i {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: var(--radius-pill);
+  background: var(--citron);
   box-shadow:
-    0 20px 44px rgba(15, 15, 18, 0.14),
-    inset 0 0 0 1px rgba(215, 255, 57, 0.1);
+    0 0 18px rgba(215, 255, 57, 0.68),
+    0 0 0 5px rgba(215, 255, 57, 0.12);
 }
 
-.event-discovery-more strong,
-.event-discovery-more span,
-.event-discovery-more svg {
-  position: relative;
+.event-compact-section {
+  margin-top: 1.35rem;
 }
 
-.event-discovery-more strong {
-  max-width: 13rem;
-  font-family: var(--font-display);
-  font-size: 1.28rem;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1;
+.event-compact-section + .event-compact-section {
+  margin-top: 1.25rem;
 }
 
-.event-discovery-more span:not(.event-discovery-more-kicker) {
-  max-width: 17rem;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 0.8rem;
-  font-weight: 650;
-  line-height: 1.45;
+.event-compact-section h2 {
+  font-size: clamp(1.6rem, 3vw, 2.15rem);
+  line-height: 0.95;
 }
 
-.event-discovery-more-kicker {
-  color: var(--citron);
-  font-family: var(--font-mono);
+.event-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 15.5rem));
+  align-items: start;
+  gap: 0.9rem;
+}
+
+.event-compact-grid .event-card {
+  max-width: 15.5rem;
+  border-radius: 0.95rem;
+  box-shadow: 0 8px 22px rgba(15, 15, 18, 0.07);
+}
+
+.event-compact-grid .event-poster {
+  aspect-ratio: 1.75 / 1;
+}
+
+.event-compact-grid .event-card-body {
+  min-height: 6.5rem;
+  padding: 0.78rem;
+}
+
+.event-compact-grid .event-card-time {
   font-size: 0.58rem;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
-.event-discovery-more svg {
-  margin-top: 0.5rem;
-  color: var(--citron);
-  transition: transform 220ms var(--ease-out-expressive);
+.event-compact-grid .event-card-heading {
+  margin-top: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.12;
 }
 
-.event-discovery-more:hover svg {
-  transform: translateX(4px);
+.event-compact-grid .event-card-meta {
+  margin-top: 0.7rem;
+  padding-top: 0.65rem;
+}
+
+.event-compact-grid .event-card-location,
+.event-compact-grid .event-card-price {
+  font-size: 0.76rem;
+}
+
+.event-compact-grid .event-attendance {
+  min-height: 1.55rem;
+  padding-right: 0.5rem;
+  font-size: 0.72rem;
+}
+
+.event-compact-grid .event-avatar {
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 0.54rem;
+}
+
+.event-compact-grid .event-card-action {
+  width: 1.7rem;
+  height: 1.7rem;
+  transform: none;
+  opacity: 1;
+}
+
+@media (max-width: 639px) {
+  .event-compact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .event-compact-grid .event-card {
+    max-width: none;
+  }
 }
 
 .event-action-card {
