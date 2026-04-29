@@ -3,6 +3,90 @@ class Event < ApplicationRecord
 
   VALID_TICKET_URL = /\Ahttps?:\/\/[^\s]+\z/i
 
+  CITY_OPTIONS = [
+    "Adana",
+    "Adıyaman",
+    "Afyonkarahisar",
+    "Ağrı",
+    "Aksaray",
+    "Amasya",
+    "Ankara",
+    "Antalya",
+    "Ardahan",
+    "Artvin",
+    "Aydın",
+    "Balıkesir",
+    "Bartın",
+    "Batman",
+    "Bayburt",
+    "Bilecik",
+    "Bingöl",
+    "Bitlis",
+    "Bolu",
+    "Burdur",
+    "Bursa",
+    "Çanakkale",
+    "Çankırı",
+    "Çorum",
+    "Denizli",
+    "Diyarbakır",
+    "Düzce",
+    "Edirne",
+    "Elazığ",
+    "Erzincan",
+    "Erzurum",
+    "Eskişehir",
+    "Gaziantep",
+    "Giresun",
+    "Gümüşhane",
+    "Hakkari",
+    "Hatay",
+    "Iğdır",
+    "Isparta",
+    "İstanbul",
+    "İzmir",
+    "Kahramanmaraş",
+    "Karabük",
+    "Karaman",
+    "Kars",
+    "Kastamonu",
+    "Kayseri",
+    "Kırıkkale",
+    "Kırklareli",
+    "Kırşehir",
+    "Kilis",
+    "Kocaeli",
+    "Konya",
+    "Kütahya",
+    "Malatya",
+    "Manisa",
+    "Mardin",
+    "Mersin",
+    "Muğla",
+    "Muş",
+    "Nevşehir",
+    "Niğde",
+    "Ordu",
+    "Osmaniye",
+    "Rize",
+    "Sakarya",
+    "Samsun",
+    "Siirt",
+    "Sinop",
+    "Sivas",
+    "Şanlıurfa",
+    "Şırnak",
+    "Tekirdağ",
+    "Tokat",
+    "Trabzon",
+    "Tunceli",
+    "Uşak",
+    "Van",
+    "Yalova",
+    "Yozgat",
+    "Zonguldak"
+  ].freeze
+
   friendly_id :title, use: :slugged
 
   belongs_to :user
@@ -59,7 +143,10 @@ class Event < ApplicationRecord
     networking: "Meetups"
   }.freeze
 
-  validates :title, :description, :date, :location, :category, presence: true
+  attribute :city, :string, default: "İstanbul"
+
+  validates :title, :description, :date, :location, :city, :category, presence: true
+  validates :city, inclusion: { in: CITY_OPTIONS }
   validates :price, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
   validates :capacity, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
   validates :ticket_url, format: { with: VALID_TICKET_URL, allow_blank: true }
@@ -68,13 +155,14 @@ class Event < ApplicationRecord
   scope :by_query, ->(query) do
     query = query.to_s.downcase.strip
     where(
-      "LOWER(title) LIKE :query OR LOWER(description) LIKE :query OR LOWER(location) LIKE :query",
+      "LOWER(title) LIKE :query OR LOWER(description) LIKE :query OR LOWER(location) LIKE :query OR LOWER(city) LIKE :query",
       query: "%#{query}%"
     )
   end
 
   scope :by_date, ->(date) { where("date >= ?", date) if date.present? }
   scope :by_category, ->(categories) { where(category: categories) if categories.present? }
+  scope :by_city, ->(city) { where(city: city) if city.present? }
   scope :upcoming, -> { where("date >= ?", Time.current).order(date: :asc) }
   scope :published_visible, -> { published.where("date >= ?", 1.day.ago) }
 

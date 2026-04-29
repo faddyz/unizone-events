@@ -7,16 +7,17 @@
   position: relative;
   overflow: hidden;
   margin-top: 0.75rem;
-  border: 1px solid rgba(15, 15, 18, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.25rem;
   background:
-    radial-gradient(circle at 12% 18%, rgba(215, 255, 57, 0.2), transparent 24rem),
-    radial-gradient(circle at 88% 0%, rgba(93, 168, 255, 0.14), transparent 26rem),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.36));
-  padding: 1.6rem;
+    radial-gradient(circle at 10% 20%, rgba(215, 255, 57, 0.14), transparent 23rem),
+    radial-gradient(circle at 82% 0%, rgba(93, 168, 255, 0.13), transparent 24rem),
+    linear-gradient(135deg, rgba(8, 8, 10, 0.97), rgba(17, 18, 23, 0.94));
+  padding: 1.35rem;
+  color: white;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 18px 48px rgba(15, 15, 18, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 48px rgba(15, 15, 18, 0.12);
 }
 
 .explore-header::before {
@@ -24,8 +25,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(15, 15, 18, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 15, 18, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(90deg, black, transparent 82%);
   pointer-events: none;
@@ -38,7 +39,7 @@
 
 .explore-header h1 {
   margin-top: 0.45rem;
-  color: var(--page-text);
+  color: white;
   font-family: var(--font-display);
   font-size: clamp(2rem, 4.4vw, 4.15rem);
   font-weight: 800;
@@ -49,24 +50,71 @@
 .explore-header p:not(.section-eyebrow) {
   margin-top: 0.65rem;
   max-width: 40rem;
-  color: rgba(15, 15, 18, 0.6);
+  color: rgba(255, 255, 255, 0.62);
   font-size: 0.98rem;
   font-weight: 650;
   line-height: 1.55;
 }
 
+.explore-category-shell {
+  margin-top: 1rem;
+}
+
+.explore-category-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+  color: rgba(15, 15, 18, 0.5);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.explore-category-actions {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.explore-category-button {
+  width: 2.15rem;
+  min-height: 2.15rem;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.is-at-start .explore-category-button.is-left,
+.is-at-end .explore-category-button.is-right,
+:not(.is-scrollable) > .explore-category-head .explore-category-actions {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.explore-category-stage {
+  position: relative;
+}
+
 .explore-category-strip {
   display: flex;
   gap: 0.52rem;
-  margin-top: 1rem;
   overflow-x: auto;
-  padding-bottom: 0.3rem;
+  padding: 0.08rem 0.18rem 0.45rem;
   scroll-padding-inline: 1rem;
+  scroll-snap-type: x proximity;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
 }
 
 .explore-category-strip::-webkit-scrollbar {
   display: none;
+}
+
+.explore-category-strip.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
 }
 
 .explore-category-pill {
@@ -82,6 +130,7 @@
   background:
     radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--category-pill-accent) 16%, transparent), transparent 52%),
     rgba(255, 255, 255, 0.72);
+  background-clip: padding-box;
   padding: 0.48rem 0.82rem 0.48rem 0.5rem;
   color: rgba(15, 15, 18, 0.72);
   font-size: 0.76rem;
@@ -92,6 +141,10 @@
     background-color var(--transition-fast),
     color var(--transition-fast),
     box-shadow var(--transition-fast);
+  scroll-snap-align: start;
+  box-shadow:
+    inset 0 0 0 1px transparent,
+    0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .explore-category-icon {
@@ -112,7 +165,13 @@
     radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--category-pill-accent) 26%, transparent), transparent 52%),
     white;
   color: var(--page-text);
-  box-shadow: 0 12px 28px rgba(15, 15, 18, 0.12);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--category-pill-accent) 26%, transparent),
+    0 12px 28px rgba(15, 15, 18, 0.12);
+}
+
+.explore-category-side {
+  display: none;
 }
 
 .explore-category-pill.is-active .explore-category-icon {
@@ -337,6 +396,11 @@
 .explore-filter-submit:hover {
   transform: translateY(-1px);
   box-shadow: 0 12px 28px rgba(15, 15, 18, 0.2);
+}
+
+.explore-filter-submit.is-loading {
+  opacity: 0.68;
+  pointer-events: none;
 }
 
 .explore-advanced {
@@ -722,19 +786,59 @@
 @media (min-width: 1024px) {
   .explore-header {
     margin-top: 0.5rem;
-    padding-block: 2rem;
+    padding-block: 1.55rem;
   }
 
-  .explore-controls {
-    position: sticky;
-    top: 5.5rem;
+  .explore-category-actions {
+    display: none;
+  }
+
+  .explore-category-stage::before,
+  .explore-category-stage::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0.35rem;
+    z-index: 3;
+    width: 3.5rem;
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  .explore-category-stage::before {
+    left: -0.15rem;
+    background: linear-gradient(90deg, var(--page-bg), transparent);
+  }
+
+  .explore-category-stage::after {
+    right: -0.15rem;
+    background: linear-gradient(270deg, var(--page-bg), transparent);
+  }
+
+  .explore-category-side {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .explore-category-side.is-left {
+    left: -1.35rem;
+  }
+
+  .explore-category-side.is-right {
+    right: -1.35rem;
   }
 
   .explore-controls.is-floating {
-    transform: translateY(-0.25rem);
+    position: fixed;
+    top: 5.15rem;
+    left: 50%;
+    width: min(100% - 3rem, 80rem);
+    z-index: 80;
+    transform: translateX(-50%) translateY(-0.25rem);
     padding: 0.5rem;
     box-shadow:
-      0 8px 26px rgba(15, 15, 18, 0.1),
+      0 18px 54px rgba(15, 15, 18, 0.16),
       0 0 0 1px rgba(255, 255, 255, 0.48);
   }
 
@@ -768,11 +872,12 @@
   .explore-filter-main {
     grid-template-columns:
       minmax(15rem, 1.42fr)
+      minmax(8.4rem, 0.58fr)
       minmax(9.5rem, 0.72fr)
       minmax(9rem, 0.62fr)
       minmax(7.8rem, 0.48fr)
       minmax(8rem, 0.48fr)
-      6.2rem;
+      5.2rem;
     align-items: center;
   }
 

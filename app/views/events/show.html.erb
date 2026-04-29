@@ -148,8 +148,8 @@
         <dd><%= l(@event.date, format: :long) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 100ms">
-        <dt>Nerede</dt>
-        <dd><%= @event.location %></dd>
+        <dt>Mekan / Şehir</dt>
+        <dd><%= event_place_text(@event) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 160ms">
         <dt>Ücret</dt>
@@ -226,8 +226,8 @@
             <dd><%= l(@event.date, format: :long) %></dd>
           </div>
           <div>
-            <dt><%= render "icons/location", class: "size-4" %> Konum</dt>
-            <dd><%= @event.location %></dd>
+            <dt><%= render "icons/location", class: "size-4" %> Mekan / Şehir</dt>
+            <dd><%= event_place_text(@event) %></dd>
           </div>
           <div>
             <dt><%= render "icons/ticket", class: "size-4" %> Ücret</dt>

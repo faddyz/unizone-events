@@ -5,6 +5,7 @@ export default class extends Controller {
     "title",
     "category",
     "date",
+    "city",
     "location",
     "price",
     "capacity",
@@ -16,6 +17,7 @@ export default class extends Controller {
     "previewDate",
     "previewMonth",
     "previewDay",
+    "previewCity",
     "previewLocation",
     "previewPrice",
     "previewCapacity",
@@ -37,6 +39,7 @@ export default class extends Controller {
   refresh() {
     const title = this.valueFor("title")
     const description = this.valueFor("description")
+    const city = this.cityLabel()
     const location = this.valueFor("location")
     const category = this.categoryLabel()
     const parsedDate = this.parsedDate()
@@ -49,6 +52,7 @@ export default class extends Controller {
     this.setText("previewDate", parsedDate ? this.longDate(parsedDate) : "Tarih seçilmedi")
     this.setText("previewMonth", parsedDate ? this.month(parsedDate) : "Ay")
     this.setText("previewDay", parsedDate ? String(parsedDate.getDate()) : "--")
+    this.setText("previewCity", city || "Şehir seçilmedi")
     this.setText("previewLocation", location || "Konum seçilmedi")
     this.setText("previewPrice", price)
     this.setText("previewCapacity", capacity)
@@ -59,7 +63,7 @@ export default class extends Controller {
     this.refreshChecklist({
       title: Boolean(title) && this.hasCategoryTarget,
       date: Boolean(parsedDate),
-      location: Boolean(location),
+      location: Boolean(city) && Boolean(location),
       story: description.length >= 24,
       image: this.hasImageInputTarget && (this.imageInputTarget.files.length > 0 || this.imageInputTarget.dataset.existing === "true")
     })
@@ -85,6 +89,12 @@ export default class extends Controller {
     if (!this.hasCategoryTarget) return ""
 
     return this.categoryTarget.selectedOptions[0]?.textContent.trim() || ""
+  }
+
+  cityLabel() {
+    if (!this.hasCityTarget) return ""
+
+    return this.cityTarget.selectedOptions[0]?.textContent.trim() || ""
   }
 
   parsedDate() {

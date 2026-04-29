@@ -4,7 +4,7 @@
   form_description = local_assigns.fetch(:form_description, "Detayları adım adım netleştir.")
   steps = [
     { label: "Temel", title: "Sahne adı ve kategori", summary: "İnsanların akışta ilk göreceği sinyali netleştir.", icon: "edit" },
-    { label: "Zaman/Yer", title: "Plan yapılabilir detaylar", summary: "Tarih, saat, konum ve kontenjan bilgisini temiz gir.", icon: "calendar" },
+    { label: "Zaman/Yer", title: "Plan yapılabilir detaylar", summary: "Tarih, saat, şehir, mekan ve kontenjan bilgisini temiz gir.", icon: "calendar" },
     { label: "Hikaye", title: "Katılma sebebi", summary: "Etkinliğin atmosferini ve kayıt akışını görünür yap.", icon: "ticket" },
     { label: "Afiş", title: "Son kontrol", summary: "Görseli ekle, yayına giden akışı kontrol et ve kaydet.", icon: "check_circle" }
   ]
@@ -14,6 +14,7 @@
   preview_price = event_price_text(model)
   preview_capacity = model.capacity.present? ? "#{model.capacity} kişi" : "Kontenjan açık"
   preview_ticket = model.ticket_url.present? ? "Dış kayıt hazır" : "Unizone RSVP"
+  preview_city = model.city.presence || "Şehir seçilmedi"
   preview_description = model.description.presence || "Etkinliğin atmosferi, akışı ve katılımcıların ne bekleyebileceği burada canlanacak."
 %>
 
@@ -119,7 +120,11 @@
               <dd data-event-preview-target="previewDate"><%= preview_date %></dd>
             </div>
             <div>
-              <dt>Nerede</dt>
+              <dt>Şehir</dt>
+              <dd data-event-preview-target="previewCity"><%= preview_city %></dd>
+            </div>
+            <div>
+              <dt>Mekan</dt>
               <dd data-event-preview-target="previewLocation"><%= model.location.presence || "Konum seçilmedi" %></dd>
             </div>
             <div>
@@ -143,7 +148,7 @@
         <ul>
           <li data-event-preview-target="checkItem" data-check="title">Başlık ve kategori hazır</li>
           <li data-event-preview-target="checkItem" data-check="date">Tarih ve saat net</li>
-          <li data-event-preview-target="checkItem" data-check="location">Konum anlaşılır</li>
+          <li data-event-preview-target="checkItem" data-check="location">Şehir ve mekan anlaşılır</li>
           <li data-event-preview-target="checkItem" data-check="story">Hikaye karar verdiriyor</li>
           <li data-event-preview-target="checkItem" data-check="image">Afiş görseli eklendi</li>
         </ul>

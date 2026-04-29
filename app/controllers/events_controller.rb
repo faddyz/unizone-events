@@ -40,6 +40,7 @@ class EventsController < ApplicationController
   def search_params
     params.permit(
       :query,
+      :city,
       :date,
       :date_filter,
       :start_date,
@@ -66,6 +67,11 @@ class EventsController < ApplicationController
       next unless Event.categories.key?(category)
 
       filters << { key: "category", value: category, label: "Kategori: #{Event.new(category: category).category_title}" }
+    end
+
+    city = params[:city].to_s
+    if Event::CITY_OPTIONS.include?(city)
+      filters << { key: "city", value: city, label: "Şehir: #{city}" }
     end
 
     date_labels = {

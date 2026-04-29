@@ -42,7 +42,13 @@
       </div>
     </div>
 
-    <%= form_with url: explore_events_path, method: :get, class: "explore-filter-form" do |form| %>
+    <%= form_with url: explore_events_path,
+          method: :get,
+          class: "explore-filter-form",
+          data: {
+            explore_filters_target: "form",
+            action: "change->explore-filters#submit input->explore-filters#queueSubmit"
+          } do |form| %>
       <%= form.hidden_field :view, value: view_mode if view_mode == "list" %>
 
       <div class="explore-filter-main">
@@ -52,6 +58,14 @@
                 value: params[:query],
                 class: "explore-filter-input",
                 placeholder: "Etkinlik, mekan veya konu ara" %>
+        </div>
+
+        <div class="explore-filter-field">
+          <%= form.label :city, "Şehir", class: "sr-only" %>
+          <%= form.select :city,
+                options_for_select([["Tüm şehirler", ""]] + Event::CITY_OPTIONS.map { |city| [city, city] }, params[:city]),
+                {},
+                class: "explore-filter-select" %>
         </div>
 
         <div class="explore-filter-field">
@@ -104,7 +118,7 @@
                 class: "explore-filter-select" %>
         </div>
 
-        <%= form.submit "Uygula", class: "explore-filter-submit focus-ring" %>
+        <%= form.submit "Ara", class: "explore-filter-submit focus-ring", data: { explore_filters_target: "submit" } %>
       </div>
 
       <details class="explore-advanced">
@@ -170,7 +184,7 @@
               </svg>
             <% end %>
           <% end %>
-          <%= link_to "Temizle", explore_events_path(explore_filter_params_with(query: nil, category: nil, date_filter: nil, time_filter: nil, price_filter: nil, availability_filter: nil, registration_filter: nil, sort_by: nil)), class: "explore-clear-link focus-ring" %>
+          <%= link_to "Temizle", explore_events_path(explore_filter_params_with(query: nil, city: nil, category: nil, date_filter: nil, time_filter: nil, price_filter: nil, availability_filter: nil, registration_filter: nil, sort_by: nil)), class: "explore-clear-link focus-ring" %>
         </div>
       <% else %>
         <p class="explore-filter-hint">Filtre seçince sonuç sayısı ve aktif seçimler burada görünür.</p>

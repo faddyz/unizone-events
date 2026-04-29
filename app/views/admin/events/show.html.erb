@@ -10,7 +10,7 @@
         <span class="<%= event_category_badge_classes(@event) %>"><%= event_category_title(@event) %></span>
       </div>
       <h1 class="font-display text-4xl font-extrabold tracking-tight"><%= @event.title %></h1>
-      <p class="text-sm font-medium text-white/70"><%= @event.user.name.presence || @event.user.email %> · <%= l(@event.date, format: :long) %> · <%= @event.location %></p>
+      <p class="text-sm font-medium text-white/70"><%= @event.user.name.presence || @event.user.email %> · <%= l(@event.date, format: :long) %> · <%= event_place_text(@event) %></p>
     </div>
     <div class="relative mt-5 flex flex-wrap gap-2 lg:mt-0">
       <%= link_to "Düzenle", edit_admin_event_path(@event), class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>

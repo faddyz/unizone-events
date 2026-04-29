@@ -28,6 +28,7 @@ tr:
         title: "Etkinlik adı"
         category: "Kategori"
         date: "Tarih ve saat"
+        city: "Şehir"
         location: "Konum"
         price: "Ücret"
         ticket_url: "Bilet / kayıt bağlantısı"

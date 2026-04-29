@@ -201,7 +201,7 @@
 .event-card-location {
   display: inline-flex;
   min-width: 0;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.42rem;
   color: rgba(15, 15, 18, 0.58);
   font-size: 0.86rem;
@@ -209,8 +209,38 @@
   line-height: 1.25;
 }
 
+.event-card-location svg {
+  margin-top: 0.08rem;
+}
+
+.event-card-place {
+  display: grid;
+  min-width: 0;
+  gap: 0.16rem;
+}
+
+.event-card-venue,
+.event-card-city {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.event-card-venue {
+  color: rgba(15, 15, 18, 0.64);
+}
+
+.event-card-city {
+  color: rgba(15, 15, 18, 0.42);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .event-card-price {
   flex: 0 0 auto;
+  padding-top: 0.08rem;
   font-size: 0.86rem;
   font-weight: 800;
   line-height: 1;

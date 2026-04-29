@@ -29,6 +29,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       description: "A focused build session for polished community projects.",
       category: "technology",
       date: 2.days.from_now,
+      city: "İstanbul",
       location: "Demo Lab",
       price: 0,
       status: "published"
@@ -39,6 +40,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       description: "A paid night of live music and compact stage sets.",
       category: "music",
       date: 5.days.from_now,
+      city: "Ankara",
       location: "Main Stage",
       price: 25,
       status: "published"
@@ -49,6 +51,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       description: "A same-day review table for designers and builders.",
       category: "art",
       date: Time.zone.now.change(hour: 18, min: 0),
+      city: "İzmir",
       location: "Studio Room",
       price: 0,
       status: "published"
@@ -65,6 +68,12 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes results_html, paid_event.title
     refute_includes results_html, free_event.title
+
+    get explore_events_path(city: "Ankara")
+    assert_response :success
+    assert_includes results_html, paid_event.title
+    refute_includes results_html, free_event.title
+    assert_includes response.body, "Şehir: Ankara"
 
     get explore_events_path(date_filter: "today")
     assert_response :success
@@ -90,6 +99,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       description: "An evening event that uses the built-in RSVP flow.",
       category: "networking",
       date: 4.days.from_now.change(hour: 19, min: 0),
+      city: "İstanbul",
       location: "Community Room",
       price: 0,
       capacity: 3,
@@ -101,6 +111,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       description: "A morning workshop with external registration.",
       category: "workshop",
       date: 4.days.from_now.change(hour: 9, min: 0),
+      city: "İstanbul",
       location: "Workshop Studio",
       price: 15,
       ticket_url: "https://example.com/workshop",
@@ -112,6 +123,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       description: "A tiny room event with no available seats.",
       category: "art",
       date: 5.days.from_now.change(hour: 20, min: 0),
+      city: "İstanbul",
       location: "Tiny Room",
       price: 5,
       capacity: 1,

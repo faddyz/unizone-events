@@ -36,7 +36,7 @@
               <div class="flex items-start justify-between gap-3">
                 <div>
                   <h3 class="font-body text-lg font-bold text-stone-950"><%= link_to attendance.event.title, event_path(attendance.event), class: "hover:text-coral focus-ring" %></h3>
-                  <p class="mt-1 text-sm font-medium text-stone-600"><%= l(attendance.event.date, format: :long) %> · <%= attendance.event.location %></p>
+                  <p class="mt-1 text-sm font-medium text-stone-600"><%= l(attendance.event.date, format: :long) %> · <%= event_place_text(attendance.event) %></p>
                 </div>
                 <span class="<%= attendance_status_badge_classes(attendance.status) %>"><%= attendance_status_label(attendance.status) %></span>
               </div>

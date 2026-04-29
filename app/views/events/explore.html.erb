@@ -14,20 +14,49 @@
     </div>
   </header>
 
-  <section class="page-shell explore-category-strip" aria-label="Kategoriler">
-    <%= link_to explore_events_path(explore_filter_params_with(category: nil)),
-          class: "explore-category-pill #{selected_categories.blank? ? "is-active" : ""} focus-ring" do %>
-      <span class="explore-category-icon"><%= render "icons/sparkles", class: "size-4" %></span>
-      <span>Tümü</span>
-    <% end %>
+  <section class="page-shell explore-category-shell" aria-label="Kategoriler" data-controller="carousel">
+    <div class="explore-category-head">
+      <span>Kategoriye göre hızlı daralt</span>
+      <div class="explore-category-actions">
+        <button type="button" class="carousel-button explore-category-button is-left focus-ring" data-action="carousel#previous" aria-label="Önceki kategoriler">
+          <%= render "icons/arrow_left", class: "size-4" %>
+        </button>
+        <button type="button" class="carousel-button explore-category-button is-right focus-ring" data-action="carousel#next" aria-label="Sonraki kategoriler">
+          <%= render "icons/arrow_left", class: "size-4 rotate-180" %>
+        </button>
+      </div>
+    </div>
 
-    <% @categories.each do |label, category| %>
-      <%= link_to explore_events_path(explore_filter_params_with(category: category)),
-            class: "explore-category-pill #{event_category_tone_class(category)} #{selected_categories.include?(category) ? "is-active" : ""} focus-ring" do %>
-        <span class="explore-category-icon"><%= render "icons/#{event_category_icon(category)}", class: "size-4" %></span>
-        <span><%= label %></span>
-      <% end %>
-    <% end %>
+    <div class="explore-category-stage">
+      <button type="button" class="carousel-side-button explore-category-side is-left focus-ring" data-action="carousel#previous" aria-label="Önceki kategoriler">
+        <%= render "icons/arrow_left", class: "size-5" %>
+      </button>
+
+      <div class="explore-category-strip"
+           data-carousel-target="viewport"
+           data-controller="drag-scroll"
+           data-action="pointerdown->drag-scroll#start pointermove->drag-scroll#move pointerup->drag-scroll#stop pointercancel->drag-scroll#stop pointerleave->drag-scroll#stop dragstart->drag-scroll#preventNativeDrag">
+        <%= link_to explore_events_path(explore_filter_params_with(category: nil)),
+              class: "explore-category-pill #{selected_categories.blank? ? "is-active" : ""} focus-ring",
+              draggable: "false" do %>
+          <span class="explore-category-icon"><%= render "icons/sparkles", class: "size-4" %></span>
+          <span>Tümü</span>
+        <% end %>
+
+        <% @categories.each do |label, category| %>
+          <%= link_to explore_events_path(explore_filter_params_with(category: category)),
+                class: "explore-category-pill #{event_category_tone_class(category)} #{selected_categories.include?(category) ? "is-active" : ""} focus-ring",
+                draggable: "false" do %>
+            <span class="explore-category-icon"><%= render "icons/#{event_category_icon(category)}", class: "size-4" %></span>
+            <span><%= label %></span>
+          <% end %>
+        <% end %>
+      </div>
+
+      <button type="button" class="carousel-side-button explore-category-side is-right focus-ring" data-action="carousel#next" aria-label="Sonraki kategoriler">
+        <%= render "icons/arrow_left", class: "size-5 rotate-180" %>
+      </button>
+    </div>
   </section>
 
   <section class="page-shell explore-workbench">
@@ -68,8 +97,8 @@
 
               <dl class="explore-list-facts">
                 <div>
-                  <dt>Nerede</dt>
-                  <dd><%= truncate(event.location, length: 34) %></dd>
+                  <dt>Mekan / Şehir</dt>
+                  <dd><%= truncate(event_place_text(event), length: 42) %></dd>
                 </div>
                 <div>
                   <dt>Ücret</dt>

@@ -41,8 +41,8 @@
             <dd class="mt-1 font-bold"><%= l(@event.date, format: :long) %></dd>
           </div>
           <div>
-            <dt class="section-eyebrow text-stone-400">Konum</dt>
-            <dd class="mt-1 font-bold"><%= @event.location %></dd>
+            <dt class="section-eyebrow text-stone-400">Mekan / Şehir</dt>
+            <dd class="mt-1 font-bold"><%= event_place_text(@event) %></dd>
           </div>
           <div>
             <dt class="section-eyebrow text-stone-400">Ücret</dt>
