@@ -1,12 +1,55 @@
 <% content_for :title, "Etkinlik Oluştur" %>
 
-<section class="page-shell max-w-5xl space-y-6">
-  <%= render "shared/page_header",
-        eyebrow: "Etkinlik Oluştur",
-        title: "Kıvılcımı yak, detayları birlikte netleştir.",
-        description: "Önce taslak olarak kaydet. Hazır olduğunda incelemeye gönder; takvimin temiz ve güvenilir kalmasına yardımcı olalım." %>
+<section class="event-creator-page">
+  <header class="event-creator-hero">
+    <div class="hero-atmosphere absolute inset-0 opacity-75"></div>
+    <div class="hero-stage-wash absolute inset-0 opacity-70"></div>
+    <div class="hero-ribbon hero-ribbon-citron"></div>
+    <div class="hero-ribbon hero-ribbon-blue"></div>
+    <div class="soft-grid absolute inset-0 opacity-35"></div>
+    <div class="hero-noise absolute inset-0"></div>
 
-  <div class="cinema-panel rounded-[1.35rem] p-5 sm:p-6">
-    <%= render "events/form", model: @event, url: organizer_events_path, submit_label: "Taslak oluştur", cancel_path: organizer_events_path %>
-  </div>
+    <div class="event-creator-hero-inner page-shell">
+      <div class="event-creator-hero-copy">
+        <%= link_to organizer_events_path, class: "event-creator-back-link focus-ring" do %>
+          <%= render "icons/arrow_left", class: "size-4" %>
+          Etkinliklerime dön
+        <% end %>
+        <p class="section-eyebrow text-citron">Etkinlik Oluştur</p>
+        <h1 class="font-display mt-3 text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl">Fikrini şehirde görünür bir plana çevir.</h1>
+        <p class="mt-5 max-w-3xl text-base font-medium leading-7 text-white/68 sm:text-lg">
+          Net başlık, güçlü hikaye, temiz pratik bilgiler. Formu tamamla; etkinlik doğrudan inceleme kuyruğuna düşsün.
+        </p>
+      </div>
+
+      <div class="event-creator-hero-signals" aria-label="Yayın akışı">
+        <div>
+          <span>01</span>
+          <strong>Hazırla</strong>
+          <p>Detayları tek akışta toparla.</p>
+        </div>
+        <div>
+          <span>02</span>
+          <strong>İncelemede</strong>
+          <p>Kaydedince sıraya alınır.</p>
+        </div>
+        <div>
+          <span>03</span>
+          <strong>Yayında</strong>
+          <p>Katılımcılar planını keşfetsin.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="event-creator-body page-shell">
+    <%= render "events/form",
+          model: @event,
+          url: organizer_events_path,
+          submit_label: "İncelemeye gönder",
+          cancel_path: organizer_events_path,
+          mode: :new,
+          form_title: "Etkinlik stüdyosu",
+          form_description: "Dört kısa adımda incelemeye hazır bir etkinlik oluştur." %>
+  </section>
 </section>

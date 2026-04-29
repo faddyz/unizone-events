@@ -1,12 +1,58 @@
 <% content_for :title, "Etkinliği Düzenle" %>
 
-<section class="page-shell max-w-5xl space-y-6">
-  <%= render "shared/page_header",
-        eyebrow: "Etkinliklerim",
-        title: "#{truncate(@event.title, length: 48)} etkinliğini düzenle",
-        description: @event.published? ? "Yayındaki etkinlikte yapılan değişiklikler yeniden incelemeye gider." : "Detayları güncelle ve etkinliği bir sonraki adıma taşı." %>
+<section class="event-creator-page">
+  <header class="event-creator-hero is-editing">
+    <div class="hero-atmosphere absolute inset-0 opacity-70"></div>
+    <div class="hero-stage-wash absolute inset-0 opacity-65"></div>
+    <div class="hero-ribbon hero-ribbon-citron"></div>
+    <div class="hero-ribbon hero-ribbon-blue"></div>
+    <div class="soft-grid absolute inset-0 opacity-35"></div>
+    <div class="hero-noise absolute inset-0"></div>
 
-  <div class="cinema-panel rounded-[1.35rem] p-5 sm:p-6">
-    <%= render "events/form", model: @event, url: organizer_event_path(@event), submit_label: "Değişiklikleri kaydet", cancel_path: organizer_event_path(@event) %>
-  </div>
+    <div class="event-creator-hero-inner page-shell">
+      <div class="event-creator-hero-copy">
+        <%= link_to organizer_event_path(@event), class: "event-creator-back-link focus-ring" do %>
+          <%= render "icons/arrow_left", class: "size-4" %>
+          Etkinliğe dön
+        <% end %>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="<%= event_status_badge_classes(@event) %>"><%= event_status_label(@event) %></span>
+          <span class="<%= event_category_badge_classes(@event) %>"><%= event_category_title(@event) %></span>
+        </div>
+        <h1 class="font-display mt-3 text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl"><%= truncate(@event.title, length: 60) %></h1>
+        <p class="mt-5 max-w-3xl text-base font-medium leading-7 text-white/68 sm:text-lg">
+          <%= @event.published? ? "Yayındaki etkinlikte yapılan değişiklikler yeniden incelemeye gider." : "Detayları güçlendir, akışı netleştir ve etkinliği bir sonraki adıma hazırla." %>
+        </p>
+      </div>
+
+      <div class="event-creator-hero-signals" aria-label="Etkinlik durumu">
+        <div>
+          <span>Durum</span>
+          <strong><%= event_status_label(@event) %></strong>
+          <p><%= event_lifecycle_hint(@event) %></p>
+        </div>
+        <div>
+          <span>RSVP</span>
+          <strong><%= @event.total_responses_count %></strong>
+          <p>Yayındayken hareket burada birikir.</p>
+        </div>
+        <div>
+          <span>Kayıt</span>
+          <strong><%= @event.ticket_url.present? ? "Dış bağlantı" : "Unizone" %></strong>
+          <p>Aksiyon yüzeyi net kalsın.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="event-creator-body page-shell">
+    <%= render "events/form",
+          model: @event,
+          url: organizer_event_path(@event),
+          submit_label: "Değişiklikleri kaydet",
+          cancel_path: organizer_event_path(@event),
+          mode: :edit,
+          form_title: "Etkinliği yeniden ayarla",
+          form_description: "Mevcut bilgileri koruyarak başlık, hikaye ve pratik detayları incelt." %>
+  </section>
 </section>
