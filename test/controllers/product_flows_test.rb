@@ -33,6 +33,45 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @draft_event.title
     assert_includes response.body, @published_event.title
     assert_includes response.body, "İlgileniyorum"
+    assert_includes response.body, "Etkinlik bul"
+    assert_includes response.body, "Son RSVP"
+  end
+
+  test "organizer workbench filters searches and surfaces key actions" do
+    rejected_event = Event.create!(
+      user: @member,
+      title: "Rejected Workshop Draft",
+      description: "A workshop draft that needs clearer public details before publishing.",
+      category: "workshop",
+      date: 4.weeks.from_now,
+      city: "İstanbul",
+      location: "Review Studio",
+      price: 0,
+      status: "rejected",
+      review_note: "Needs clearer details"
+    )
+
+    sign_in @member
+
+    get organizer_events_path(status: "draft")
+    assert_response :success
+    assert_includes response.body, @draft_event.title
+    refute_includes response.body, @published_event.title
+
+    get organizer_events_path(query: "Main Hall")
+    assert_response :success
+    assert_includes response.body, @published_event.title
+    refute_includes response.body, @draft_event.title
+
+    get organizer_events_path(status: "rejected")
+    assert_response :success
+    assert_includes response.body, rejected_event.title
+    assert_includes response.body, "Needs clearer details"
+    assert_includes response.body, "İncelemeye gönder"
+
+    get organizer_events_path(status: "published")
+    assert_response :success
+    assert_includes response.body, "Yayındaki sayfa"
   end
 
   test "organizer can create an event directly for review" do
@@ -97,6 +136,39 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
     patch cancel_admin_event_path(@submitted_event)
     assert_redirected_to admin_event_path(@submitted_event.reload)
     assert_equal "cancelled", @submitted_event.status
+  end
+
+  test "admin review panel filters searches and renders decision tools" do
+    searchable_event = Event.create!(
+      user: @member,
+      title: "Admin Searchable Studio Review",
+      description: "A submitted event for admins to search by title, city, category, host, and venue.",
+      category: "conference",
+      date: 2.weeks.from_now,
+      city: "Ankara",
+      location: "Admin Review Hall",
+      price: 0,
+      status: "submitted"
+    )
+
+    sign_in @admin
+
+    get admin_events_path(query: "Review Hall")
+    assert_response :success
+    admin_results = Nokogiri::HTML(response.body).at_css(".admin-review-results").to_html
+    assert_includes admin_results, searchable_event.title
+    refute_includes admin_results, @submitted_event.title
+
+    get admin_events_path(category: "conference", city: "Ankara")
+    assert_response :success
+    assert_includes response.body, searchable_event.title
+
+    get admin_event_path(searchable_event)
+    assert_response :success
+    assert_includes response.body, "Karar paneli"
+    assert_includes response.body, "Poster kontrolü"
+    assert_includes response.body, "Yayına al"
+    assert_includes response.body, "Düzenlemeye gönder"
   end
 
   test "member can manage account profile without touching another account" do

@@ -1,63 +1,171 @@
 <% content_for :title, "İnceleme" %>
 
-<section class="page-shell space-y-8">
-  <% actions = capture do %>
-    <div class="flex flex-wrap gap-2">
-      <% [["submitted", "İncelemede"], ["published", "Yayında"], ["rejected", "Düzenleme gerekli"], ["cancelled", "İptal"], ["all", "Tümü"]].each do |value, label| %>
-        <%= link_to label, admin_events_path(filter: value), class: "inline-flex h-9 items-center rounded-full px-3 text-sm font-black #{(@filter == value || (@filter.blank? && value == "submitted")) ? "bg-stone-950 text-citron" : "border border-stone-200 bg-white text-stone-700"}" %>
-      <% end %>
-    </div>
-  <% end %>
-  <%= render "shared/page_header",
-        eyebrow: "İnceleme",
-        title: "Takvimi temiz, güvenilir ve canlı tut.",
-        description: "Net etkinlikleri yayına al, eksik olanları kısa notla geri gönder ve pasif planları keşiften çıkar.",
-        actions: actions %>
+<% status_counts = @stats.transform_keys(&:to_s) %>
 
-  <div class="grid gap-4 md:grid-cols-4">
-    <% @stats.each do |key, value| %>
-      <%= render "shared/stat_card", label: event_status_label(Event.new(status: key.to_s)), value: value %>
+<section class="admin-review-page page-shell">
+  <header class="admin-review-hero admin-compact-hero">
+    <div class="admin-review-hero-copy">
+      <p class="section-eyebrow">Admin kontrol merkezi</p>
+      <h1>Takvimi temiz, güvenilir ve yayına hazır tut.</h1>
+      <p>Gönderilen etkinlikleri önceliklendir, eksikleri notla geri gönder, güçlü ilanları tek hamlede yayına al.</p>
+    </div>
+
+    <aside class="admin-next-review">
+      <p class="section-eyebrow">Sıradaki karar</p>
+      <% if @next_review.present? %>
+        <span class="<%= event_status_badge_classes(@next_review) %>"><%= event_status_label(@next_review) %></span>
+        <h2><%= link_to @next_review.title, admin_event_path(@next_review), class: "focus-ring" %></h2>
+        <p><%= @next_review.user.name.presence || @next_review.user.email %> · <%= l(@next_review.created_at, format: :short) %></p>
+        <%= link_to "Aç", admin_event_path(@next_review), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+      <% else %>
+        <span class="admin-live-dot"></span>
+        <h2>Kuyruk temiz.</h2>
+        <p>Yeni gönderiler geldiğinde bu alan ilk kararı öne çıkarır.</p>
+      <% end %>
+    </aside>
+  </header>
+
+  <div class="admin-signal-grid">
+    <% [
+      [ "Toplam", @stats[:total], "Sistemdeki tüm ilanlar" ],
+      [ "İnceleme", @stats[:submitted], "Karar bekleyenler" ],
+      [ "Yayında", @stats[:published], "Keşifte görünenler" ],
+      [ "Düzenleme", @stats[:rejected], "Sahibine dönenler" ]
+    ].each_with_index do |(label, value, hint), index| %>
+      <article class="admin-signal-card is-tone-<%= index + 1 %>">
+        <span class="admin-live-dot"></span>
+        <p><%= label %></p>
+        <strong><%= value %></strong>
+        <small><%= hint %></small>
+      </article>
     <% end %>
   </div>
 
-  <% if @events.any? %>
-    <div class="table-shell overflow-x-auto">
-      <table class="min-w-full divide-y divide-stone-200 text-sm">
-        <thead class="bg-stone-50 text-left section-eyebrow text-stone-500">
-          <tr>
-            <th class="px-4 py-3">Etkinlik</th>
-            <th class="px-4 py-3">Ev sahibi</th>
-            <th class="px-4 py-3">Durum</th>
-            <th class="px-4 py-3">Tarih</th>
-            <th class="px-4 py-3 text-right">Karar</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-stone-100">
-          <% @events.each do |event| %>
-            <tr class="align-top">
-              <td class="px-4 py-4">
-                <p class="font-body text-base font-bold text-stone-950"><%= link_to event.title, admin_event_path(event), class: "hover:text-coral focus-ring" %></p>
-                <p class="mt-1 max-w-xl text-stone-500"><%= truncate(event.description, length: 100) %></p>
-              </td>
-              <td class="px-4 py-4 font-semibold text-stone-600"><%= event.user.name.presence || event.user.email %></td>
-              <td class="px-4 py-4"><span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span></td>
-              <td class="px-4 py-4 font-semibold text-stone-600"><%= l(event.date, format: :short) %></td>
-              <td class="px-4 py-4">
-                <div class="flex justify-end gap-2">
-                  <%= link_to "İncele", admin_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
-                  <% unless event.published? %>
-                    <%= button_to "Yayına al", publish_admin_event_path(event), method: :patch, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+  <section class="admin-review-controls">
+    <div class="admin-filter-tabs" aria-label="Admin etkinlik durumu">
+      <% @filter_tabs.each do |value, label| %>
+        <%= link_to admin_events_path(filter: (value == "submitted" ? nil : value), query: @query.presence, category: @category, city: @city),
+              class: "admin-filter-tab #{value == @filter ? "is-active" : ""} focus-ring",
+              aria: (value == @filter ? { current: "page" } : {}) do %>
+          <span><%= label %></span>
+          <strong><%= value == "all" ? @stats[:total] : status_counts.fetch(value, 0) %></strong>
+        <% end %>
+      <% end %>
     </div>
 
-    <%= paginate @events, theme: "tailwind" %>
-  <% else %>
-    <%= render "shared/empty_state", title: "İncelenecek etkinlik yok", description: "Kullanıcılar etkinlik gönderdiğinde burada görünecek." %>
-  <% end %>
+    <%= form_with url: admin_events_path, method: :get, class: "admin-search-form", local: true do %>
+      <% unless @filter == "submitted" %>
+        <%= hidden_field_tag :filter, @filter %>
+      <% end %>
+      <label class="sr-only" for="admin-event-query">Etkinlik veya kullanıcı ara</label>
+      <div class="admin-search-field">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="m20 20-3.5-3.5"/>
+        </svg>
+        <%= text_field_tag :query, @query, id: "admin-event-query", placeholder: "Başlık, mekan, kullanıcı ara", class: "focus-ring" %>
+      </div>
+      <%= select_tag :category,
+            options_for_select([ [ "Kategori", "" ] ] + Event.categories.keys.map { |category| [ event_category_title(category), category ] }, @category),
+            class: "admin-filter-select focus-ring" %>
+      <%= select_tag :city,
+            options_for_select([ [ "Şehir", "" ] ] + Event::CITY_OPTIONS.map { |city| [ city, city ] }, @city),
+            class: "admin-filter-select focus-ring" %>
+      <%= submit_tag "Filtrele", class: "admin-search-submit focus-ring" %>
+      <% if @active_filters %>
+        <%= link_to "Temizle", admin_events_path, class: "admin-clear-link focus-ring" %>
+      <% end %>
+    <% end %>
+  </section>
+
+  <section class="admin-review-results">
+    <div class="admin-section-head">
+      <div>
+        <p class="section-eyebrow text-coral">Moderasyon kuyruğu</p>
+        <h2><%= @events.total_count %> kayıt gösteriliyor</h2>
+      </div>
+      <span><%= @filter_tabs.to_h.fetch(@filter) %></span>
+    </div>
+
+    <% if @events.any? %>
+      <div class="admin-review-grid">
+        <% @events.each do |event| %>
+          <article class="admin-event-card">
+            <div class="admin-event-poster <%= event_poster_background_classes(event) %>">
+              <% if event.image.attached? %>
+                <%= image_tag event.image, alt: event.title, loading: "lazy" %>
+                <div class="admin-event-poster-shade"></div>
+              <% else %>
+                <div class="poster-noise absolute inset-0"></div>
+              <% end %>
+              <div class="admin-date-ticket">
+                <span><%= event.date.strftime("%b") %></span>
+                <strong><%= event.date.strftime("%-d") %></strong>
+              </div>
+            </div>
+
+            <div class="admin-event-body">
+              <div class="admin-event-tags">
+                <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
+                <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
+              </div>
+
+              <h3><%= link_to event.title, admin_event_path(event), class: "focus-ring" %></h3>
+              <p><%= truncate(event.description, length: 135) %></p>
+
+              <dl class="admin-event-facts">
+                <div>
+                  <dt>Ev sahibi</dt>
+                  <dd><%= event.user.name.presence || event.user.email %></dd>
+                </div>
+                <div>
+                  <dt>Şehir</dt>
+                  <dd><%= event.city %></dd>
+                </div>
+                <div>
+                  <dt>Tarih</dt>
+                  <dd><%= l(event.date, format: :short) %></dd>
+                </div>
+                <div>
+                  <dt>RSVP</dt>
+                  <dd><%= event.total_responses_count %></dd>
+                </div>
+              </dl>
+
+              <% if event.rejected? && event.review_note.present? %>
+                <div class="admin-review-note">
+                  <span>Son not</span>
+                  <p><%= event.review_note %></p>
+                </div>
+              <% end %>
+
+              <div class="admin-event-actions">
+                <%= link_to "İncele", admin_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <%= link_to "Düzenle", edit_admin_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <% unless event.published? %>
+                  <%= button_to "Yayına al", publish_admin_event_path(event), method: :patch, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <% end %>
+                <% unless event.cancelled? %>
+                  <%= button_to "İptal et", cancel_admin_event_path(event), method: :patch, class: "admin-danger-action focus-ring" %>
+                <% end %>
+              </div>
+            </div>
+          </article>
+        <% end %>
+      </div>
+
+      <div class="admin-pagination">
+        <%= paginate @events, theme: "tailwind" %>
+      </div>
+    <% else %>
+      <div class="admin-empty-state">
+        <span class="admin-live-dot"></span>
+        <h3><%= @active_filters ? "Bu filtrelerle kayıt yok" : "İncelenecek etkinlik yok" %></h3>
+        <p><%= @active_filters ? "Filtreleri temizleyerek tüm kayıtları tekrar görebilirsin." : "Kullanıcılar etkinlik gönderdiğinde karar kuyruğu burada görünür." %></p>
+        <% if @active_filters %>
+          <%= link_to "Filtreleri temizle", admin_events_path, class: "btn-void focus-ring" %>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
 </section>

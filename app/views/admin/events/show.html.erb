@@ -1,80 +1,187 @@
 <% content_for :title, @event.title %>
 
-<section class="page-shell space-y-6">
-  <header class="relative overflow-hidden rounded-[1.5rem] bg-ink p-6 text-white lg:grid lg:grid-cols-[1fr_auto] lg:items-end lg:gap-6">
-    <div class="soft-grid absolute inset-0 opacity-35"></div>
-    <div class="hero-energy absolute inset-0 opacity-70"></div>
-    <div class="relative space-y-3">
-      <div class="flex flex-wrap items-center gap-2">
+<% host_label = @event.user.name.presence || @event.user.email %>
+<% quality_checks = [
+  [ "Başlık", @event.title.present?, "İlan adı net görünüyor." ],
+  [ "Açıklama", @event.description.to_s.length >= 40, "Katılımcının karar vermesi için yeterli bağlam var." ],
+  [ "Mekan", @event.location.present? && @event.city.present?, "Mekan ve şehir bilgisi tamam." ],
+  [ "Görsel", @event.image.attached?, "Poster veya kapak görseli eklenmiş." ],
+  [ "Kayıt", @event.ticket_url.present? || @event.capacity.present?, "Dış bilet ya da RSVP kapasite bilgisi mevcut." ]
+] %>
+
+<section class="admin-review-page admin-show-page page-shell">
+  <header class="admin-review-hero admin-show-hero admin-compact-hero">
+    <div class="admin-review-hero-copy">
+      <div class="admin-event-tags">
         <span class="<%= event_status_badge_classes(@event) %>"><%= event_status_label(@event) %></span>
         <span class="<%= event_category_badge_classes(@event) %>"><%= event_category_title(@event) %></span>
       </div>
-      <h1 class="font-display text-4xl font-extrabold tracking-tight"><%= @event.title %></h1>
-      <p class="text-sm font-medium text-white/70"><%= @event.user.name.presence || @event.user.email %> · <%= l(@event.date, format: :long) %> · <%= event_place_text(@event) %></p>
-    </div>
-    <div class="relative mt-5 flex flex-wrap gap-2 lg:mt-0">
-      <%= link_to "Düzenle", edit_admin_event_path(@event), class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>
-      <% unless @event.published? %>
-        <%= button_to "Yayına al", publish_admin_event_path(@event), method: :patch, class: "btn-electric focus-ring" %>
-      <% end %>
-      <% unless @event.cancelled? %>
-        <%= button_to "İptal et", cancel_admin_event_path(@event), method: :patch, class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>
-      <% end %>
-    </div>
-  </header>
-
-  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-    <article class="space-y-6">
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <h2 class="font-display text-2xl font-extrabold tracking-tight text-stone-950">Listeleme ön izlemesi</h2>
-        <p class="mt-3 leading-7 text-stone-700"><%= @event.description %></p>
-        <dl class="mt-5 grid gap-4 border-t border-stone-100 pt-5 sm:grid-cols-2">
-          <div>
-            <dt class="section-eyebrow text-stone-400">Ev sahibi</dt>
-            <dd class="mt-1 font-bold"><%= @event.user.email %></dd>
-          </div>
-          <div>
-            <dt class="section-eyebrow text-stone-400">Ücret</dt>
-            <dd class="mt-1 font-bold"><%= event_price_text(@event) %></dd>
-          </div>
-          <div>
-            <dt class="section-eyebrow text-stone-400">Oluşturuldu</dt>
-            <dd class="mt-1 font-bold"><%= l(@event.created_at, format: :short) %></dd>
-          </div>
-          <div>
-            <dt class="section-eyebrow text-stone-400">Yayın tarihi</dt>
-            <dd class="mt-1 font-bold"><%= @event.published_at ? l(@event.published_at, format: :short) : t("ui.not_yet") %></dd>
-          </div>
-        </dl>
-      </div>
-
-      <%= render "events/event", event: @event %>
-    </article>
-
-    <aside class="space-y-4">
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Karar</h2>
-        <p class="mt-2 text-sm font-medium leading-6 text-stone-600">Listeleme net, güvenilir ve katılımcı için yeterliyse yayına al. Eksikse kısa bir notla geri gönder.</p>
-        <% unless @event.rejected? %>
-          <%= form_with url: reject_admin_event_path(@event), method: :patch, class: "mt-4 space-y-3" do |form| %>
-            <%= form.label :review_note, "Etkinlik sahibine not", class: "block section-eyebrow text-stone-500" %>
-            <%= form.text_area :review_note, rows: 4, value: @event.review_note, class: "electric-field w-full px-3 py-2 text-sm focus:outline-none", placeholder: "Yayına çıkmadan önce ne düzeltilmeli?" %>
-            <%= form.submit "Düzenlemeye gönder", class: "w-full rounded-full border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-black text-rose-800 transition hover:bg-rose-100 focus-ring" %>
-          <% end %>
+      <h1><%= @event.title %></h1>
+      <p><%= host_label %> · <%= l(@event.date, format: :long) %> · <%= event_place_text(@event) %></p>
+      <div class="admin-review-hero-actions">
+        <%= link_to "Kuyruğa dön", admin_events_path(filter: @event.status), class: "admin-secondary-action focus-ring" %>
+        <%= link_to "Düzenle", edit_admin_event_path(@event), class: "admin-primary-action focus-ring" %>
+        <% if @event.published? %>
+          <%= link_to "Public sayfa", event_path(@event), class: "admin-secondary-action focus-ring" %>
         <% end %>
       </div>
+    </div>
 
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Akış</h2>
-        <ol class="mt-4 space-y-3 text-sm">
+    <aside class="admin-next-review">
+      <p class="section-eyebrow">Karar paneli</p>
+      <% unless @event.published? %>
+        <%= button_to "Yayına al", publish_admin_event_path(@event), method: :patch, class: "admin-decision-primary focus-ring" %>
+      <% end %>
+      <% unless @event.cancelled? %>
+        <%= button_to "İptal et", cancel_admin_event_path(@event), method: :patch, class: "admin-decision-secondary focus-ring" %>
+      <% end %>
+      <p class="admin-decision-hint">İlan güvenilir, anlaşılır ve katılımcı için yeterliyse yayına al. Eksikse aşağıdan kısa ve uygulanabilir bir not gönder.</p>
+    </aside>
+  </header>
+
+  <div class="admin-show-layout">
+    <article class="admin-show-main">
+      <% if @event.review_note.present? %>
+        <section class="admin-review-note is-large">
+          <span>Review notu</span>
+          <p><%= @event.review_note %></p>
+        </section>
+      <% end %>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Yüklenen görsel</p>
+            <h2>Poster kontrolü</h2>
+          </div>
+        </div>
+        <div class="admin-uploaded-media <%= event_poster_background_classes(@event) %>">
+          <% if @event.image.attached? %>
+            <%= image_tag @event.image, alt: @event.title, class: "admin-uploaded-image" %>
+          <% else %>
+            <div class="poster-noise absolute inset-0"></div>
+            <div class="admin-uploaded-empty">
+              <span class="admin-live-dot"></span>
+              <strong>Görsel yüklenmemiş</strong>
+              <p>Etkinlik keşif kartında kategori arka planı ile görünecek.</p>
+            </div>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">İlan içeriği</p>
+            <h2>Katılımcının göreceği hikaye</h2>
+          </div>
+        </div>
+        <p class="admin-event-description"><%= @event.description %></p>
+        <dl class="admin-detail-grid">
+          <div>
+            <dt>Ev sahibi</dt>
+            <dd><%= host_label %></dd>
+          </div>
+          <div>
+            <dt>E-posta</dt>
+            <dd><%= @event.user.email %></dd>
+          </div>
+          <div>
+            <dt>Ücret</dt>
+            <dd><%= event_price_text(@event) %></dd>
+          </div>
+          <div>
+            <dt>Kontenjan</dt>
+            <dd><%= @event.capacity.presence || "Açık" %></dd>
+          </div>
+          <div>
+            <dt>Bilet / kayıt</dt>
+            <dd><%= @event.ticket_url.presence || "Dahili RSVP" %></dd>
+          </div>
+          <div>
+            <dt>Oluşturuldu</dt>
+            <dd><%= l(@event.created_at, format: :short) %></dd>
+          </div>
+          <div>
+            <dt>Yayın tarihi</dt>
+            <dd><%= @event.published_at ? l(@event.published_at, format: :short) : t("ui.not_yet") %></dd>
+          </div>
+          <div>
+            <dt>Yanıtlar</dt>
+            <dd><%= @event.total_responses_count %></dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Ön izleme</p>
+            <h2>Keşif kartı</h2>
+          </div>
+        </div>
+        <div class="admin-preview-card">
+          <%= render "events/event", event: @event %>
+        </div>
+      </section>
+    </article>
+
+    <aside class="admin-show-side">
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Kalite kontrol</p>
+            <h2>Yayın sinyalleri</h2>
+          </div>
+        </div>
+        <ul class="admin-quality-list">
+          <% quality_checks.each do |label, done, hint| %>
+            <li class="<%= done ? "is-done" : "" %>">
+              <span></span>
+              <div>
+                <strong><%= label %></strong>
+                <p><%= hint %></p>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+
+      <section class="admin-panel admin-decision-card">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Geri gönder</p>
+            <h2>Net not yaz</h2>
+          </div>
+        </div>
+        <% unless @event.rejected? %>
+          <%= form_with url: reject_admin_event_path(@event), method: :patch, class: "admin-reject-form" do |form| %>
+            <%= form.label :review_note, "Etkinlik sahibine not", class: "section-eyebrow text-stone-500" %>
+            <%= form.text_area :review_note, rows: 5, value: @event.review_note, class: "admin-textarea focus-ring", placeholder: "Örn: Görsel daha net olmalı, konum açıklaması eksik, bilet linki çalışmıyor." %>
+            <%= form.submit "Düzenlemeye gönder", class: "admin-danger-submit focus-ring" %>
+          <% end %>
+        <% else %>
+          <p class="admin-muted-copy">Bu etkinlik zaten düzenlemeye gönderilmiş. Notu değiştirmek için düzenleme ekranını kullan.</p>
+          <%= link_to "Notu düzenle", edit_admin_event_path(@event), class: "btn-outline focus-ring" %>
+        <% end %>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Akış</p>
+            <h2>Durum geçmişi</h2>
+          </div>
+        </div>
+        <ol class="admin-flow-list">
           <% Event.statuses.keys.each_with_index do |status, index| %>
-            <li class="flex items-center gap-3">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-black <%= index + 1 <= event_lifecycle_step(@event) ? "bg-stone-950 text-citron" : "bg-stone-100 text-stone-500" %>"><%= index + 1 %></span>
-              <span class="<%= status == @event.status ? "font-black text-stone-950" : "font-semibold text-stone-600" %>"><%= event_status_label(Event.new(status: status)) %></span>
+            <li class="<%= status == @event.status ? "is-current" : "" %>">
+              <span><%= index + 1 %></span>
+              <strong><%= event_status_label(Event.new(status: status)) %></strong>
             </li>
           <% end %>
         </ol>
-      </div>
+      </section>
     </aside>
   </div>
 </section>
