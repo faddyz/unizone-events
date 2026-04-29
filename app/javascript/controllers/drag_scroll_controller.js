@@ -8,7 +8,6 @@ export default class extends Controller {
   start(event) {
     if (event.button !== undefined && event.button !== 0) return
 
-    event.preventDefault()
     this.dragging = true
     this.dragged = false
     this.pointerId = event.pointerId
