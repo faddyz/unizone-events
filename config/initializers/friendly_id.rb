@@ -16,8 +16,8 @@ FriendlyId.defaults do |config|
   # undesirable to allow as slugs. Edit this list as needed for your app.
   config.use :reserved
 
-  config.reserved_words = %w(new edit index session login logout users admin
-    stylesheets assets javascripts images)
+  config.reserved_words = %w[new edit index session login logout users admin
+    stylesheets assets javascripts images]
 
   # This adds an option to treat reserved words as conflicts rather than exceptions.
   # When there is no good candidate, a UUID will be appended, matching the existing
@@ -43,14 +43,14 @@ FriendlyId.defaults do |config|
   #    MyModel.find(1)
   #
   config.use :finders
-  
+
   # ## Slugs
   #
   # Most applications will use the :slugged module everywhere. If you wish
   # to do so, uncomment the following line.
   #
   config.use :slugged
-  
+
   # By default, FriendlyId's :slugged addon expects the slug column to be named
   # 'slug', but you can change it if you wish.
   #
@@ -102,4 +102,4 @@ FriendlyId.defaults do |config|
   #     text.to_slug.normalize! :transliterations => [:russian, :latin]
   #   end
   # }
-end 
+end

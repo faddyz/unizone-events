@@ -2,7 +2,7 @@ class AttendancesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_event
   before_action :authorize_attendance!
-  before_action :set_attendance, only: [:update, :destroy]
+  before_action :set_attendance, only: [ :update, :destroy ]
 
   def create
     attendance = current_user.attendances.find_or_initialize_by(event: @event)
@@ -28,7 +28,7 @@ class AttendancesController < ApplicationController
       render json: {
         status: "success",
         message: I18n.t("flash.rsvp_removed"),
-        attendees_count: @event.reload.attendees_count
+        **attendance_counts
       }
     else
       render json: {
@@ -62,7 +62,18 @@ class AttendancesController < ApplicationController
     render json: {
       status: "success",
       message: I18n.t("flash.rsvp_updated"),
-      attendees_count: @event.reload.attendees_count
+      **attendance_counts
+    }
+  end
+
+  def attendance_counts
+    event = @event.reload
+
+    {
+      attendees_count: event.attendees_count,
+      interested_attendees_count: event.interested_attendees_count,
+      not_going_attendees_count: event.not_going_attendees_count,
+      total_responses_count: event.total_responses_count
     }
   end
 

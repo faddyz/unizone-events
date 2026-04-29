@@ -14,6 +14,9 @@ class AttendancesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "going", @user.attendances.find_by(event: @published_event)&.status
+    response_payload = JSON.parse(response.body)
+    assert_equal 1, response_payload["attendees_count"]
+    assert_equal 0, response_payload["interested_attendees_count"]
   end
 
   test "signed in user cannot RSVP to draft event" do

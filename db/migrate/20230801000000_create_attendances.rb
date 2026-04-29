@@ -9,9 +9,9 @@ class CreateAttendances < ActiveRecord::Migration[7.0]
     end
 
     # Bir kullanıcı bir etkinliğe yalnızca bir kez katılabilir
-    add_index :attendances, [:user_id, :event_id], unique: true
-    
+    add_index :attendances, [ :user_id, :event_id ], unique: true
+
     # Status'a göre hızlı sorgulama için
     add_index :attendances, :status
   end
-end 
+end

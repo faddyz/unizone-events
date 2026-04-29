@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_26_010000) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_29_153000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,6 +68,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_26_010000) do
     t.string "status", default: "draft", null: false
     t.datetime "published_at"
     t.text "review_note"
+    t.string "ticket_url"
+    t.integer "capacity"
     t.index ["approved"], name: "index_events_on_approved"
     t.index ["slug"], name: "index_events_on_slug", unique: true
     t.index ["status"], name: "index_events_on_status"

@@ -1,6 +1,6 @@
 class Admin::EventsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :reject, :cancel]
+  before_action :set_event, only: [ :show, :edit, :update, :destroy, :publish, :reject, :cancel ]
   before_action :authorize_index!
 
   def index
@@ -74,6 +74,6 @@ class Admin::EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(:title, :description, :date, :location, :category, :price, :image, :status, :review_note)
+    params.require(:event).permit(:title, :description, :date, :location, :category, :price, :ticket_url, :capacity, :image, :status, :review_note)
   end
 end

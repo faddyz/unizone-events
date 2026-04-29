@@ -6,14 +6,14 @@ Rails.application.routes.draw do
   resource :dashboard, only: :show
 
   namespace :account do
-    resource :profile, only: [:show, :update]
+    resource :profile, only: [ :show, :update ]
     resource :password, only: :update
   end
 
-  resources :events, only: [:index, :show]
+  resources :events, only: [ :index, :show ]
   get "explore", to: "events#explore", as: :explore_events
   resources :events, only: [] do
-    resource :attendance, only: [:create, :update, :destroy]
+    resource :attendance, only: [ :create, :update, :destroy ]
   end
 
   namespace :organizer do
@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :events, except: [:new, :create] do
+    resources :events, except: [ :new, :create ] do
       member do
         patch :publish
         patch :reject

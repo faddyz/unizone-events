@@ -1,12 +1,15 @@
 class Event < ApplicationRecord
   extend FriendlyId
 
+  VALID_TICKET_URL = /\Ahttps?:\/\/[^\s]+\z/i
+
   friendly_id :title, use: :slugged
 
   belongs_to :user
 
   has_one_attached :image
 
+  before_validation :normalize_conversion_fields
   before_save :sync_status_metadata
 
   has_many :attendances, dependent: :destroy
@@ -58,6 +61,8 @@ class Event < ApplicationRecord
 
   validates :title, :description, :date, :location, :category, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
+  validates :capacity, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+  validates :ticket_url, format: { with: VALID_TICKET_URL, allow_blank: true }
   validate :acceptable_image
 
   scope :by_query, ->(query) do
@@ -162,12 +167,16 @@ class Event < ApplicationRecord
 
   private
 
+  def normalize_conversion_fields
+    self.ticket_url = ticket_url.to_s.strip.presence
+  end
+
   def acceptable_image
     return unless image.attached?
 
     errors.add(:image, I18n.t("errors.messages.image_too_large")) if image.blob.byte_size > 5.megabytes
 
-    acceptable_types = ["image/jpeg", "image/jpg", "image/png"]
+    acceptable_types = [ "image/jpeg", "image/jpg", "image/png" ]
     return if acceptable_types.include?(image.blob.content_type)
 
     errors.add(:image, I18n.t("errors.messages.image_invalid_type"))
