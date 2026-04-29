@@ -3,6 +3,21 @@ require "test_helper"
 class PagesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:one)
+    @popular_event = events(:published_event)
+  end
+
+  test "auth pages show most attended published events" do
+    Attendance.create!(user: users(:three), event: @popular_event, status: "going")
+
+    get new_user_session_path
+    assert_response :success
+    assert_includes response.body, "En çok katılım alanlar"
+    assert_includes response.body, @popular_event.title
+
+    get new_user_registration_path
+    assert_response :success
+    assert_includes response.body, "En çok katılım alanlar"
+    assert_includes response.body, @popular_event.title
   end
 
   test "signed in user can view account settings" do
