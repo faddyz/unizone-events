@@ -16,10 +16,12 @@
 .event-show-poster-card {
   position: relative;
   align-self: end;
+  isolation: isolate;
 }
 
 .event-show-poster-frame {
   position: relative;
+  z-index: 1;
   overflow: hidden;
   aspect-ratio: 4 / 5;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -35,7 +37,7 @@
   position: absolute;
   top: -1.15rem;
   right: 1.25rem;
-  z-index: 3;
+  z-index: 5;
   display: grid;
   min-width: 4.7rem;
   place-items: center;
@@ -46,6 +48,7 @@
   box-shadow:
     0 20px 44px rgba(0, 0, 0, 0.24),
     5px 5px 0 var(--citron);
+  pointer-events: none;
 }
 
 .event-show-date-ticket span {
@@ -192,9 +195,10 @@
 }
 
 .event-essential-card {
-  min-height: 8.5rem;
+  display: grid;
+  align-content: start;
   border-radius: 1.15rem;
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .event-essential-card::before {
@@ -220,13 +224,14 @@
 }
 
 .event-essential-card dd {
-  margin-top: 0.7rem;
+  margin-top: 0.45rem;
   color: var(--page-text);
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .event-section-head {
@@ -546,6 +551,34 @@
   padding: 0.55rem;
   box-shadow: 0 22px 58px rgba(15, 15, 18, 0.2);
   backdrop-filter: blur(18px);
+}
+
+@media (min-width: 640px) {
+  .event-essential-card {
+    min-height: 7.2rem;
+    padding: 1.15rem;
+  }
+
+  .event-essential-card dd {
+    margin-top: 0.6rem;
+    font-size: 1.28rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .event-essential-card {
+    min-height: 8.5rem;
+    padding: 1.25rem;
+  }
+
+  .event-essential-card dd {
+    margin-top: 0.7rem;
+    font-size: 1.35rem;
+  }
+
+  .event-mobile-actions {
+    display: none;
+  }
 }
 
 .event-mobile-primary {
