@@ -385,24 +385,29 @@
   display: grid;
   grid-template-columns: minmax(2rem, 1fr) auto minmax(2rem, 1fr);
   align-items: center;
-  gap: 0.8rem;
-  margin: 1.55rem 0 0.95rem;
-  opacity: 0.75;
+  gap: 1rem;
+  margin: 1.65rem 0 1.05rem;
+  opacity: 1;
 }
 
 .event-discovery-divider span {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(15, 15, 18, 0.16), transparent);
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(90deg, transparent, rgba(15, 15, 18, 0.28), rgba(255, 77, 61, 0.38), transparent),
+    linear-gradient(90deg, transparent, rgba(215, 255, 57, 0.42), transparent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .event-discovery-divider i {
-  width: 0.65rem;
-  height: 0.65rem;
+  width: 0.72rem;
+  height: 0.72rem;
   border-radius: var(--radius-pill);
   background: var(--citron);
   box-shadow:
-    0 0 18px rgba(215, 255, 57, 0.68),
-    0 0 0 5px rgba(215, 255, 57, 0.12);
+    0 0 20px rgba(215, 255, 57, 0.82),
+    0 0 0 6px rgba(215, 255, 57, 0.18),
+    0 0 0 1px rgba(15, 15, 18, 0.1);
 }
 
 .event-compact-section {
