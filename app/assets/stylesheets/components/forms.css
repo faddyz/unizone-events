@@ -1,0 +1,31 @@
+.electric-field {
+  min-height: 3rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(15, 15, 18, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.electric-field:focus {
+  border-color: rgba(215, 255, 57, 0.9);
+  box-shadow: 0 0 0 4px rgba(215, 255, 57, 0.22);
+}
+
+.electric-field-dark {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.09);
+  color: white;
+}
+
+.electric-field-dark::placeholder {
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.electric-field-dark option {
+  background: var(--surface);
+  color: white;
+}

@@ -1,31 +1,36 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   has_many :events, dependent: :destroy
   has_many :attendances, dependent: :destroy
 
-  has_many :attending_events, -> { where(attendances: { status: 'attending' }) },
+  has_many :going_events, -> { where(attendances: { status: "going" }) },
            through: :attendances,
            source: :event
 
-  def attending?(event)
-    attendances.exists?(event: event, status: 'attending')
+  has_many :interested_events, -> { where(attendances: { status: "interested" }) },
+           through: :attendances,
+           source: :event
+
+  def organizer?
+    events.exists?
   end
 
-  def maybe_attending?(event)
-    attendances.exists?(event: event, status: 'maybe')
+  def going?(event)
+    attendances.exists?(event: event, status: "going")
   end
 
-  def declined?(event)
-    attendances.exists?(event: event, status: 'declined')
+  def interested?(event)
+    attendances.exists?(event: event, status: "interested")
+  end
+
+  def not_going?(event)
+    attendances.exists?(event: event, status: "not_going")
   end
 
   def attendance_status(event)
-    attendance = attendances.find_by(event: event)
-    attendance ? attendance.status : nil
+    attendances.find_by(event: event)&.status
   end
 
   def admin?

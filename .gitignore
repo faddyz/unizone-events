@@ -7,6 +7,9 @@
 # Ignore bundler config.
 /.bundle
 
+# Ignore installed JavaScript dependencies.
+/node_modules
+
 # Ignore all environment files.
 /.env*
 

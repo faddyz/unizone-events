@@ -18,18 +18,16 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: faddyz
-  password: faddyz
 
 development:
   <<: *default
-  database: etkinlik_development
+  url: <%= ENV.fetch("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/unizone_development") %>
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
   # When left blank, PostgreSQL will use the default role. This is
   # the same name as the operating system user running Rails.
-  #username: etkinlik
+  #username: unizone
 
   # The password associated with the PostgreSQL role (username).
   #password:
@@ -57,7 +55,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: etkinlik_test
+  url: <%= ENV.fetch("TEST_DATABASE_URL", "postgres://postgres:postgres@localhost:5432/unizone_test") %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -82,22 +80,22 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: etkinlik_production
-    username: etkinlik
-    password: <%= ENV["ETKINLIK_DATABASE_PASSWORD"] %>
+    database: unizone_production
+    username: unizone
+    password: <%= ENV["UNIZONE_DATABASE_PASSWORD"] %>
     adapter: postgresql
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV["DATABASE_URL"] %>
   cache:
     <<: *primary_production
-    database: etkinlik_production_cache
+    database: unizone_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: etkinlik_production_queue
+    database: unizone_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: etkinlik_production_cable
+    database: unizone_production_cable
     migrations_paths: db/cable_migrate

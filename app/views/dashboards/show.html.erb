@@ -1,0 +1,82 @@
+<% content_for :title, "Planlarım" %>
+
+<section class="page-shell space-y-8">
+  <% actions = capture do %>
+    <div class="flex flex-wrap gap-2">
+      <%= link_to "Keşfet", explore_events_path, class: "btn-outline focus-ring" %>
+      <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+    </div>
+  <% end %>
+  <%= render "shared/page_header",
+        eyebrow: "Planlarım",
+        title: "Hoş geldin, #{current_user.name.presence || current_user.email}",
+        description: "Kaydettiğin etkinlikler, yaklaşan planların ve başlattığın fikirler burada.",
+        actions: actions %>
+
+  <div class="grid gap-4 md:grid-cols-4">
+    <% [["Yaklaşan", @upcoming_rsvps.count], ["Etkinliğim", @owned_events.count], ["İncelemede", @review_events.count], ["Yayında", @live_events_count]].each do |label, value| %>
+      <%= render "shared/stat_card", label: label, value: value %>
+    <% end %>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-2">
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="section-eyebrow text-coral">Takvim</p>
+          <h2 class="font-display mt-1 text-2xl font-extrabold tracking-tight text-stone-950">Yaklaşan planların</h2>
+        </div>
+        <%= link_to "Etkinlik bul", explore_events_path, class: "font-bold text-stone-700 hover:text-coral focus-ring" %>
+      </div>
+
+      <% if @upcoming_rsvps.any? %>
+        <div class="space-y-3">
+          <% @upcoming_rsvps.each do |attendance| %>
+            <article class="cinema-panel rounded-[1.25rem] p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-body text-lg font-bold text-stone-950"><%= link_to attendance.event.title, event_path(attendance.event), class: "hover:text-coral focus-ring" %></h3>
+                  <p class="mt-1 text-sm font-medium text-stone-600"><%= l(attendance.event.date, format: :long) %> · <%= attendance.event.location %></p>
+                </div>
+                <span class="<%= attendance_status_badge_classes(attendance.status) %>"><%= attendance_status_label(attendance.status) %></span>
+              </div>
+            </article>
+          <% end %>
+        </div>
+      <% else %>
+        <%= render "shared/empty_state", title: "Henüz planın yok", description: "Bir etkinlik keşfet ve RSVP vererek takvimine ekle." %>
+      <% end %>
+    </section>
+
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="section-eyebrow text-coral">Organizatör</p>
+          <h2 class="font-display mt-1 text-2xl font-extrabold tracking-tight text-stone-950">Başlattığın etkinlikler</h2>
+        </div>
+        <%= link_to "Etkinliklerim", organizer_events_path, class: "font-bold text-stone-700 hover:text-coral focus-ring" %>
+      </div>
+
+      <% if @owned_events.any? %>
+        <div class="space-y-3">
+          <% @owned_events.limit(5).each do |event| %>
+            <article class="cinema-panel rounded-[1.25rem] p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-body text-lg font-bold text-stone-950"><%= link_to event.title, organizer_event_path(event), class: "hover:text-coral focus-ring" %></h3>
+                  <p class="mt-1 text-sm font-medium text-stone-600"><%= event_lifecycle_hint(event) %></p>
+                </div>
+                <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
+              </div>
+            </article>
+          <% end %>
+        </div>
+      <% else %>
+        <% action = capture do %>
+          <%= link_to "İlk etkinliğini oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+        <% end %>
+        <%= render "shared/empty_state", title: "Henüz etkinlik oluşturmadın", description: "Taslakla başla, hazır olduğunda incelemeye gönder.", action: action %>
+      <% end %>
+    </section>
+  </div>
+</section>

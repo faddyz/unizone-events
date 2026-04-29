@@ -1,0 +1,6 @@
+<section class="cinema-panel rounded-[1.25rem] p-5">
+  <% if local_assigns[:title].present? %>
+    <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950"><%= title %></h2>
+  <% end %>
+  <%= yield %>
+</section>

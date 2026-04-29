@@ -1,21 +1,33 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  title: MyString
-  category: MyString
-  date: 2025-05-02 18:26:40
-  location: MyString
+published_event:
+  title: Published Event
+  category: technology
+  date: <%= 2.weeks.from_now %>
+  location: Main Hall
   price: 9.99
-  description: MyText
-  approved: false
+  description: Published event description
+  approved: true
+  status: published
+  published_at: <%= 1.day.ago %>
   user: one
 
-two:
-  title: MyString
-  category: MyString
-  date: 2025-05-02 18:26:40
-  location: MyString
+submitted_event:
+  title: Submitted Event
+  category: music
+  date: <%= 3.weeks.from_now %>
+  location: Side Hall
   price: 9.99
-  description: MyText
+  description: Submitted event description
   approved: false
+  status: submitted
   user: two
+
+owner_draft_event:
+  title: Owner Draft Event
+  category: art
+  date: <%= 4.weeks.from_now %>
+  location: Workshop Room
+  price: 0
+  description: Draft event description
+  approved: false
+  status: draft
+  user: one

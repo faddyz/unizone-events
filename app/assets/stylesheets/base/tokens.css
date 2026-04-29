@@ -1,0 +1,26 @@
+:root {
+  --citron: #d7ff39;
+  --electric: #e8ff47;
+  --coral: #ff4d3d;
+  --ember: #ff6b35;
+  --bluebolt: #2f6bff;
+  --blueglow: #5da8ff;
+  --grape: #b06eff;
+  --mint: #3fffa8;
+  --ice: #c8e6ff;
+  --void: #08080a;
+  --ink: #0f0f12;
+  --surface: #18181c;
+  --lift: #242429;
+  --edge: #2e2e35;
+  --page-bg: #f7f2e8;
+  --page-text: #0f0f12;
+  --text-muted: #6f6a60;
+  --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius-pill: 9999px;
+  --ease-out-expressive: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 160ms ease;
+  --transition-medium: 180ms ease;
+}

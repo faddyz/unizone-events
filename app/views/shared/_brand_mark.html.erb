@@ -1,0 +1,30 @@
+<% size = local_assigns.fetch(:size, "md") %>
+<% show_wordmark = local_assigns.fetch(:show_wordmark, true) %>
+<% tagline = local_assigns.fetch(:tagline, t("ui.brand_tagline")) %>
+<% show_tagline = local_assigns.fetch(:show_tagline, tagline.present?) %>
+<% mark_classes = {
+  "sm" => "size-9",
+  "md" => "size-11",
+  "nav" => "size-12",
+  "lg" => "size-16",
+  "xl" => "size-20",
+  "hero" => "size-20 sm:size-24"
+}.fetch(size, size.to_s) %>
+<% wordmark_classes = size.to_s.in?(["xl", "hero"]) ? "text-3xl sm:text-4xl" : (size.to_s == "nav" ? "text-2xl" : "text-xl") %>
+
+<span class="inline-flex items-center gap-3">
+  <span class="<%= mark_classes %> brand-mark grid shrink-0 place-items-center bg-stone-950">
+    <svg class="h-2/3 w-2/3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path class="brand-bolt-main" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      <path class="brand-bolt-echo" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 14v7l-9-11h7v-7l9 11h-7z"/>
+    </svg>
+  </span>
+  <% if show_wordmark %>
+    <span class="leading-none">
+      <span class="brand-wordmark font-display block <%= wordmark_classes %> font-extrabold tracking-tight">Unizone</span>
+      <% if show_tagline %>
+        <span class="brand-tagline mt-1 block font-mono text-[0.64rem] font-bold uppercase tracking-[0.18em] opacity-65"><%= tagline %></span>
+      <% end %>
+    </span>
+  <% end %>
+</span>

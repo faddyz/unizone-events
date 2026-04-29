@@ -1,0 +1,85 @@
+<section class="wizard-step space-y-5" data-wizard-target="step">
+  <div>
+    <p class="section-eyebrow text-coral">Temel bilgiler</p>
+    <h2 class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950">Etkinliğin sahne adını netleştir.</h2>
+  </div>
+
+  <div class="grid gap-5 md:grid-cols-2">
+    <div class="md:col-span-2">
+      <%= form.label :title, "Etkinlik adı", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.text_field :title, class: "electric-field w-full px-4 py-3 text-base focus:outline-none", placeholder: "Gece yarısı çatı konseri" %>
+    </div>
+
+    <div>
+      <%= form.label :category, "Kategori", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.select :category, Event.categories.keys.map { |category| [event_category_title(category), category] }, {}, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+    </div>
+
+    <div>
+      <%= form.label :price, "Ücret", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.number_field :price, step: "0.01", min: 0, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "0" %>
+      <p class="mt-2 text-xs font-medium text-stone-500">Ücretsiz etkinlik için 0 yaz veya boş bırak.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wizard-step space-y-5" data-wizard-target="step">
+  <div>
+    <p class="section-eyebrow text-coral">Zaman ve yer</p>
+    <h2 class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950">İnsanların plan yapabileceği kadar açık yaz.</h2>
+  </div>
+
+  <div class="grid gap-5 md:grid-cols-2">
+    <div>
+      <%= form.label :date, "Tarih ve saat", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.datetime_local_field :date, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+    </div>
+
+    <div>
+      <%= form.label :location, "Konum", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.text_field :location, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Mekan, semt veya çevrim içi bağlantı" %>
+    </div>
+  </div>
+</section>
+
+<section class="wizard-step space-y-5" data-wizard-target="step">
+  <div>
+    <p class="section-eyebrow text-coral">Afiş ve hikaye</p>
+    <h2 class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950">Beklentiyi kuran kısa ama canlı bir anlatım ekle.</h2>
+  </div>
+
+  <div class="grid gap-5">
+    <div>
+      <%= form.label :description, "Açıklama", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.text_area :description, rows: 7, class: "electric-field w-full px-4 py-3 leading-7 focus:outline-none", placeholder: "Atmosferi, akışı ve katılımcıların neler bekleyebileceğini anlat." %>
+    </div>
+
+    <div>
+      <%= form.label :image, "Afiş görseli", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <div class="rounded-[1.25rem] border border-dashed border-stone-300 bg-stone-50 p-4">
+        <%= form.file_field :image, accept: "image/png,image/jpeg,image/jpg", class: "w-full text-sm font-semibold text-stone-700 file:mr-4 file:rounded-lg file:border-0 file:bg-stone-950 file:px-4 file:py-2 file:text-sm file:font-black file:text-citron" %>
+        <p class="mt-2 text-xs font-medium text-stone-500">PNG veya JPG, en fazla 5 MB.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wizard-step space-y-5" data-wizard-target="step">
+  <div>
+    <p class="section-eyebrow text-coral">Önizleme</p>
+    <h2 class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950">Son kontrolü yap, taslağı kaydet.</h2>
+    <p class="mt-2 text-sm font-medium leading-6 text-stone-600">Kaydettikten sonra etkinlik taslak olarak durur. Hazır olduğunda organizatör panelinden incelemeye gönderebilirsin.</p>
+  </div>
+
+  <div class="rounded-[1.25rem] bg-ink p-5 text-white">
+    <p class="section-eyebrow text-citron">Yayın akışı</p>
+    <div class="mt-4 grid gap-3 sm:grid-cols-3">
+      <% [["1", "Taslak"], ["2", "İnceleme"], ["3", "Yayında"]].each do |step, label| %>
+        <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4">
+          <p class="font-mono text-xs font-black text-citron"><%= step %></p>
+          <p class="mt-2 font-bold"><%= label %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

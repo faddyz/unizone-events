@@ -1,52 +1,36 @@
 <!DOCTYPE html>
-<html class="dark">
+<html lang="<%= I18n.locale %>">
   <head>
-    <title>Unizone - Etkinlik Platformu</title>
+    <title><%= content_for(:title) || "Unizone" %></title>
+    <meta name="description" content="Unizone ile şehirdeki etkinlikleri keşfet, katılmak istediğin planı seç ve kendi buluşmanı yayına hazırla.">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-
-    <% if content_for?(:page_title) %>
-      <%= yield :page_title %>
-    <% end %>
   </head>
 
-  <body class="bg-gradient-to-b from-gray-900 via-blue-950 to-black min-h-screen flex flex-col dark:text-white">
-    <%= render 'layouts/navbar' %>
-    
-    <main class="flex-grow">
+  <body class="min-h-screen text-stone-950 antialiased">
+    <%= link_to "İçeriğe geç", "#main-content", class: "sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-md focus:bg-stone-950 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white" %>
+    <%= render "layouts/navbar" %>
+
+    <main id="main-content" class="min-h-[calc(100vh-8rem)] pb-24 lg:pb-0 <%= content_for?(:transparent_nav) ? "" : "pt-24" %>">
+      <div class="page-shell">
+        <% flash.each do |key, value| %>
+          <div role="status" class="mb-6 rounded-2xl border px-4 py-3 text-sm font-bold shadow-sm <%= key.to_s == "alert" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-emerald-200 bg-emerald-50 text-emerald-800" %>">
+            <%= value %>
+          </div>
+        <% end %>
+      </div>
+
       <%= yield %>
     </main>
-    
-    <%= render 'layouts/footer' %>
 
-    <% if content_for?(:footer_scripts) %>
-      <%= yield :footer_scripts %>
-    <% end %>
+    <%= render "layouts/footer" %>
+    <%= render "layouts/bottom_nav" %>
   </body>
 </html>

@@ -1,14 +1,17 @@
-// Import and register all your controllers from @stimulus/core
-import { application } from "./application"
+import { application } from "controllers/application"
 
-// Eager load all controllers defined in the import map under controllers/**/*_controller
-import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
-eagerLoadControllersFrom("controllers", application)
+import AccountMenuController from "controllers/account_menu_controller"
+import AccordionController from "controllers/accordion_controller"
+import AttendanceController from "controllers/attendance_controller"
+import CarouselController from "controllers/carousel_controller"
+import HeroController from "controllers/hero_controller"
+import NavbarController from "controllers/navbar_controller"
+import WizardController from "controllers/wizard_controller"
 
-// Register the dropdown controller
-import DropdownController from "./dropdown_controller"
-application.register("dropdown", DropdownController)
-
-// Register the delete confirmation controller
-import DeleteConfirmationController from "./delete_confirmation_controller"
-application.register("delete-confirmation", DeleteConfirmationController)
+application.register("account-menu", AccountMenuController)
+application.register("accordion", AccordionController)
+application.register("attendance", AttendanceController)
+application.register("carousel", CarouselController)
+application.register("hero", HeroController)
+application.register("navbar", NavbarController)
+application.register("wizard", WizardController)

@@ -1,0 +1,12 @@
+<% content_for :title, "Etkinliği Düzenle" %>
+
+<section class="page-shell max-w-5xl space-y-6">
+  <%= render "shared/page_header",
+        eyebrow: "Etkinliklerim",
+        title: "#{truncate(@event.title, length: 48)} etkinliğini düzenle",
+        description: @event.published? ? "Yayındaki etkinlikte yapılan değişiklikler yeniden incelemeye gider." : "Detayları güncelle ve etkinliği bir sonraki adıma taşı." %>
+
+  <div class="cinema-panel rounded-[1.35rem] p-5 sm:p-6">
+    <%= render "events/form", model: @event, url: organizer_event_path(@event), submit_label: "Değişiklikleri kaydet", cancel_path: organizer_event_path(@event) %>
+  </div>
+</section>

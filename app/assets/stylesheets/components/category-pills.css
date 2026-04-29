@@ -1,0 +1,30 @@
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.25rem;
+  border-radius: var(--radius-pill);
+  padding: 0.45rem 0.9rem;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    filter 150ms ease;
+}
+
+.category-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(15, 15, 18, 0.13);
+  filter: saturate(1.08);
+}
+
+.category-pill-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  opacity: 0.72;
+}

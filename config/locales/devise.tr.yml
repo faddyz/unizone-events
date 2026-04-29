@@ -1,0 +1,48 @@
+tr:
+  devise:
+    failure:
+      already_authenticated: "Zaten giriş yaptınız."
+      inactive: "Hesabınız henüz aktif değil."
+      invalid: "E-posta veya şifre hatalı."
+      locked: "Hesabınız kilitlendi."
+      last_attempt: "Hesabınız kilitlenmeden önce son denemeniz."
+      not_found_in_database: "E-posta veya şifre hatalı."
+      timeout: "Oturum süreniz doldu. Devam etmek için tekrar giriş yapın."
+      unauthenticated: "Devam etmek için giriş yapmanız gerekiyor."
+      unconfirmed: "Devam etmeden önce e-posta adresinizi doğrulamalısınız."
+    passwords:
+      no_token: "Bu sayfaya yalnızca şifre sıfırlama e-postasındaki bağlantıyla erişebilirsiniz."
+      send_instructions: "Şifre sıfırlama talimatları birkaç dakika içinde e-posta adresinize gönderilecek."
+      send_paranoid_instructions: "E-posta adresiniz kayıtlıysa şifre sıfırlama bağlantısı birkaç dakika içinde gönderilecek."
+      updated: "Şifreniz başarıyla değiştirildi. Giriş yaptınız."
+      updated_not_active: "Şifreniz başarıyla değiştirildi."
+    registrations:
+      destroyed: "Hesabınız kapatıldı. Tekrar görüşmek üzere."
+      signed_up: "Hoş geldiniz! Hesabınız oluşturuldu."
+      updated: "Hesabınız güncellendi."
+      updated_but_not_signed_in: "Hesabınız güncellendi. Şifreniz değiştiği için tekrar giriş yapmanız gerekiyor."
+    sessions:
+      signed_in: "Başarıyla giriş yaptınız."
+      signed_out: "Başarıyla çıkış yaptınız."
+      already_signed_out: "Zaten çıkış yaptınız."
+    mailer:
+      reset_password_instructions:
+        subject: "Şifre sıfırlama talimatları"
+      confirmation_instructions:
+        subject: "E-posta doğrulama talimatları"
+      unlock_instructions:
+        subject: "Hesap kilidi açma talimatları"
+      email_changed:
+        subject: "E-posta değiştirildi"
+      password_change:
+        subject: "Şifre değiştirildi"
+  errors:
+    messages:
+      not_saved:
+        one: "1 hata nedeniyle kaydedilemedi:"
+        other: "%{count} hata nedeniyle kaydedilemedi:"
+      already_confirmed: "zaten doğrulanmış"
+      confirmation_period_expired: "süresi dolmuş"
+      expired: "süresi dolmuş"
+      not_found: "bulunamadı"
+      not_locked: "kilitli değil"

@@ -1,0 +1,56 @@
+.brand-mark {
+  position: relative;
+  border-radius: 0.9rem;
+  box-shadow: 8px 8px 0 var(--citron);
+  animation: brandReveal 780ms var(--ease-out-expressive) 140ms both;
+  transition:
+    box-shadow var(--transition-medium),
+    transform var(--transition-medium),
+    color var(--transition-medium),
+    background-color var(--transition-medium);
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: -0.45rem;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(215, 255, 57, 0.28), transparent 65%);
+  opacity: 0;
+  transition: opacity var(--transition-medium);
+}
+
+.group:hover .brand-mark,
+.brand-mark:hover {
+  box-shadow: 10px 10px 0 var(--citron);
+  transform: translate(-1px, -1px);
+}
+
+.group:hover .brand-mark::after,
+.brand-mark:hover::after {
+  opacity: 1;
+}
+
+.brand-mark svg {
+  filter:
+    drop-shadow(0 0 13px rgba(215, 255, 57, 0.24))
+    drop-shadow(0 0 12px rgba(47, 107, 255, 0.28));
+}
+
+.brand-bolt-main {
+  color: var(--citron);
+}
+
+.brand-bolt-echo {
+  color: var(--blueglow);
+  opacity: 0.92;
+}
+
+.brand-wordmark {
+  text-shadow: 0 0 22px rgba(255, 255, 255, 0.08);
+}
+
+.brand-tagline {
+  max-width: 12rem;
+}

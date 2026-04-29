@@ -1,0 +1,12 @@
+<% content_for :title, "Etkinlik Oluştur" %>
+
+<section class="page-shell max-w-5xl space-y-6">
+  <%= render "shared/page_header",
+        eyebrow: "Etkinlik Oluştur",
+        title: "Kıvılcımı yak, detayları birlikte netleştir.",
+        description: "Önce taslak olarak kaydet. Hazır olduğunda incelemeye gönder; takvimin temiz ve güvenilir kalmasına yardımcı olalım." %>
+
+  <div class="cinema-panel rounded-[1.35rem] p-5 sm:p-6">
+    <%= render "events/form", model: @event, url: organizer_events_path, submit_label: "Taslak oluştur", cancel_path: organizer_events_path %>
+  </div>
+</section>

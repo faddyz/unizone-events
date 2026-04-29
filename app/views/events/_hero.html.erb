@@ -1,0 +1,56 @@
+<section class="electric-hero relative -mt-0 overflow-hidden bg-void text-white" data-controller="hero">
+  <div class="hero-atmosphere absolute inset-0"></div>
+  <div class="hero-stage-wash absolute inset-0"></div>
+  <div class="hero-orb hero-orb-citron"></div>
+  <div class="hero-orb hero-orb-blue"></div>
+  <div class="hero-orb hero-orb-violet"></div>
+  <div class="hero-beam hero-beam-left"></div>
+  <div class="hero-beam hero-beam-right"></div>
+  <div class="hero-ribbon hero-ribbon-citron"></div>
+  <div class="hero-ribbon hero-ribbon-blue"></div>
+  <div class="hero-ribbon hero-ribbon-blue-secondary"></div>
+  <div class="hero-glow-field absolute inset-0"></div>
+  <div class="soft-grid absolute inset-0 opacity-55"></div>
+  <div class="hero-energy absolute inset-0"></div>
+  <div class="hero-noise absolute inset-0"></div>
+  <div class="hero-scanlines absolute inset-0"></div>
+  <div class="absolute inset-x-0 top-24 h-px bg-gradient-to-r from-transparent via-white/14 to-transparent"></div>
+
+  <div class="page-shell hero-layout relative z-10 flex min-h-[45rem] items-center pb-36 pt-32 lg:min-h-[52rem] lg:pb-44 lg:pt-36">
+    <div class="hero-copy max-w-5xl">
+      <div class="mb-7 w-fit" data-hero-target="logo">
+        <%= render "shared/brand_mark", size: "hero", show_wordmark: false %>
+      </div>
+
+      <h1 class="font-display text-5xl font-extrabold leading-[0.9] tracking-tight sm:text-7xl lg:text-[88px]">
+       <span class="block" data-hero-target="line">Bu gece</span>
+        <span class="block text-citron" data-hero-target="line">nerede</span>
+         <span class="block" data-hero-target="line">olacağını keşfet.</span>
+          
+       </h1>
+
+
+      <p class="mt-5 max-w-3xl text-base leading-7 text-white/70 sm:text-xl sm:leading-8" data-hero-target="subtitle">
+        Şehrindeki etkinlikleri tek yerde 
+        <span class="font-medium text-white">bul.</span>
+        Sana uyanı seç, planını yap ve 
+        <span class="text-citron font-medium">katıl.</span>
+      </p>
+
+      <%= form_with url: explore_events_path, method: :get, class: "hero-search mt-8 max-w-4xl rounded-[1.15rem] border border-white/12 bg-white/[0.08] p-3 text-white shadow-2xl backdrop-blur-xl", data: { hero_target: "form" } do %>
+        <%= label_tag :query, "Etkinlik ara", class: "sr-only" %>
+        <%= text_field_tag :query, params[:query], class: "hero-search__query electric-field electric-field-dark h-12 min-w-0 px-4 text-sm focus:outline-none", placeholder: "Bu gece ne var? Yaz, bulalım." %>
+
+        <%= label_tag :category, "Kategori", class: "sr-only" %>
+        <%= select_tag :category,
+              options_for_select([["Tüm kategoriler", ""]] + @categories, params[:category]),
+              class: "hero-search__category electric-field electric-field-dark h-12 px-4 text-sm focus:outline-none" %>
+
+        <%= submit_tag "Keşfet", class: "hero-search__submit btn-electric h-12 cursor-pointer border-0 px-5 text-sm focus-ring" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="hero-fade absolute inset-x-0 bottom-0 pointer-events-none"></div>
+</section>
+

@@ -1,0 +1,12 @@
+<div class="cinema-panel rounded-[1.35rem] border border-dashed border-stone-300 p-8 text-center">
+  <div class="mx-auto mb-5 flex justify-center" aria-hidden="true">
+    <%= render "shared/brand_mark", size: "sm", show_wordmark: false %>
+  </div>
+  <h2 class="font-display text-2xl font-extrabold tracking-tight text-stone-950"><%= title %></h2>
+  <% if local_assigns[:description].present? %>
+    <p class="mx-auto mt-2 max-w-lg text-sm font-medium leading-6 text-stone-600"><%= description %></p>
+  <% end %>
+  <% if local_assigns[:action].present? %>
+    <div class="mt-5"><%= action %></div>
+  <% end %>
+</div>

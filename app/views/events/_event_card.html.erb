@@ -1,0 +1,93 @@
+<% featured = local_assigns.fetch(:featured, false) %>
+<% compact = local_assigns.fetch(:compact, false) %>
+<% index = local_assigns.fetch(:index, 0).to_i %>
+<% going_count = event.attendees_count %>
+<% attendee_preview = event.going_users.limit(3).to_a %>
+
+<article class="group lift-card event-card <%= featured ? "event-card-featured" : "event-card-standard" %> <%= compact ? "event-card-compact" : "" %> flex h-full flex-col overflow-hidden rounded-[1.2rem] border border-stone-950/10 bg-white opacity-0 shadow-sm"
+         style="animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) <%= index * 80 %>ms both">
+  <%= link_to event_path(event), class: "block focus-ring" do %>
+    <div class="event-poster relative aspect-video overflow-hidden <%= event_poster_background_classes(event) %>">
+      <div class="poster-art absolute inset-0 <%= event.image.attached? ? "opacity-35" : "opacity-100" %>"></div>
+
+      <% if event.image.attached? %>
+        <%= image_tag event.image, alt: "", loading: "lazy", aria: { hidden: true }, class: "event-poster-image event-poster-image-bg absolute inset-0 h-full w-full" %>
+        <%= image_tag event.image, alt: event.title, loading: "lazy", class: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full transition duration-500 group-hover:scale-[1.025]" %>
+        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/88 via-stone-950/20 to-stone-950/8"></div>
+      <% else %>
+        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/16 to-white/10"></div>
+      <% end %>
+
+      <div class="poster-noise absolute inset-0"></div>
+      <div class="poster-chrome absolute inset-0"></div>
+      <div class="poster-spotlight absolute inset-0"></div>
+
+      <div class="event-date-ticket absolute left-3 top-3 rounded-lg bg-white px-3 py-2 text-center shadow-lg">
+        <p class="font-mono text-[0.63rem] font-black uppercase tracking-[0.12em] text-stone-500"><%= event.date.strftime("%b") %></p>
+        <p class="font-mono text-2xl font-black leading-none text-stone-950"><%= event.date.strftime("%-d") %></p>
+      </div>
+
+      <div class="absolute right-3 top-3">
+        <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
+      </div>
+
+      <% if featured %>
+        <div class="absolute inset-x-4 bottom-4">
+          <p class="event-poster-title max-w-[18rem] text-pretty font-body text-xl font-bold leading-tight text-white drop-shadow sm:text-2xl">
+            <%= event.title %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="event-card-body flex flex-1 flex-col p-4">
+    <div class="flex-1">
+      <p class="event-card-time"><%= event.date.strftime("%d %b, %H:%M") %></p>
+      <% unless featured %>
+        <h3 class="event-card-heading">
+          <%= link_to event.title, event_path(event), class: "transition group-hover:text-coral focus-ring" %>
+        </h3>
+      <% end %>
+      <% unless compact %>
+        <p class="event-card-description"><%= event.description %></p>
+      <% end %>
+    </div>
+
+    <div class="event-card-meta mt-5 space-y-3 border-t border-stone-950/10 pt-4">
+      <div class="flex items-center justify-between gap-3 text-sm">
+        <span class="event-card-location">
+          <%= render "icons/location", class: "size-4 shrink-0 text-stone-400" %>
+          <span class="truncate"><%= truncate(event.location, length: 34) %></span>
+        </span>
+        <span class="event-card-price <%= event_price_badge_classes(event) %>"><%= event_price_text(event) %></span>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <div class="event-attendance min-w-0">
+          <% if attendee_preview.any? %>
+            <div class="event-avatar-stack" aria-hidden="true">
+              <% attendee_preview.each_with_index do |user, avatar_index| %>
+                <% avatar_name = user.name.presence || user.email %>
+                <span class="event-avatar" style="--avatar-hue: <%= (avatar_name.to_s.sum + avatar_index * 37) % 360 %>">
+                  <%= avatar_name.to_s.first.upcase %>
+                </span>
+              <% end %>
+            </div>
+          <% else %>
+            <span class="event-attendance-dot"></span>
+          <% end %>
+          <span class="event-attendance-copy truncate">
+            <% if going_count.positive? %>
+              <strong><%= going_count %></strong> kişi katılıyor
+            <% else %>
+              İlk sen katıl
+            <% end %>
+          </span>
+        </div>
+        <%= link_to event_path(event), class: "event-card-action focus-ring", aria: { label: "#{event.title} detayları" } do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,76 @@
+<% content_for :title, "Etkinliklerim" %>
+
+<section class="page-shell space-y-8">
+  <% actions = capture do %>
+    <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+  <% end %>
+  <%= render "shared/page_header",
+        eyebrow: "Etkinliklerim",
+        title: "Planlarını taslaktan yayına taşı.",
+        description: "Fikirlerini düzenle, inceleme durumunu takip et ve yayındayken RSVP hareketini gör.",
+        actions: actions %>
+
+  <div class="grid gap-4 md:grid-cols-4">
+    <% @stats.each do |key, value| %>
+      <%= render "shared/stat_card", label: event_status_label(Event.new(status: key.to_s)), value: value %>
+    <% end %>
+  </div>
+
+  <% if @events.any? %>
+    <div class="grid gap-4 lg:grid-cols-2">
+      <% @events.each do |event| %>
+        <article class="cinema-panel rounded-[1.25rem] p-4">
+          <div class="grid gap-4 sm:grid-cols-[9rem_1fr]">
+            <div class="relative aspect-video overflow-hidden rounded-xl <%= event_poster_background_classes(event) %> sm:aspect-square">
+              <% if event.image.attached? %>
+                <%= image_tag event.image, alt: event.title, loading: "lazy", class: "h-full w-full object-cover" %>
+                <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 to-transparent"></div>
+              <% else %>
+                <div class="poster-noise absolute inset-0"></div>
+              <% end %>
+              <div class="absolute left-2 top-2 rounded-md bg-white px-2 py-1 text-center">
+                <p class="font-mono text-[0.58rem] font-black uppercase text-stone-500"><%= event.date.strftime("%b") %></p>
+                <p class="font-mono text-lg font-black leading-none text-stone-950"><%= event.date.strftime("%-d") %></p>
+              </div>
+            </div>
+
+            <div class="flex min-w-0 flex-col">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
+                <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
+              </div>
+              <h2 class="font-body mt-3 text-xl font-bold leading-snug text-stone-950"><%= link_to event.title, organizer_event_path(event), class: "hover:text-coral focus-ring" %></h2>
+              <p class="mt-2 line-clamp-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(event) %></p>
+
+              <div class="mt-4 grid gap-2 border-t border-stone-950/10 pt-4 text-sm sm:grid-cols-3">
+                <div>
+                  <p class="section-eyebrow text-stone-400">Tarih</p>
+                  <p class="mt-1 font-bold text-stone-800"><%= l(event.date, format: :short) %></p>
+                </div>
+                <div>
+                  <p class="section-eyebrow text-stone-400">RSVP</p>
+                  <p class="mt-1 font-bold text-stone-800"><%= event.total_responses_count %></p>
+                </div>
+                <div class="flex items-end gap-2 sm:justify-end">
+                  <%= link_to "Aç", organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                  <%= link_to "Düzenle", edit_organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                </div>
+              </div>
+
+              <% unless event.submitted? || event.cancelled? %>
+                <div class="mt-3">
+                  <%= button_to "İncelemeye gönder", submit_organizer_event_path(event), method: :patch, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <% action = capture do %>
+      <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+    <% end %>
+    <%= render "shared/empty_state", title: "Henüz etkinlik oluşturmadın", description: "Bir taslakla başla ve fikrini kendi hızında şekillendir.", action: action %>
+  <% end %>
+</section>

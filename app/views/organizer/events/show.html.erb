@@ -1,0 +1,81 @@
+<% content_for :title, @event.title %>
+
+<section class="page-shell space-y-6">
+  <header class="relative overflow-hidden rounded-[1.5rem] bg-ink p-6 text-white lg:grid lg:grid-cols-[1fr_auto] lg:items-end lg:gap-6">
+    <div class="soft-grid absolute inset-0 opacity-35"></div>
+    <div class="hero-energy absolute inset-0 opacity-70"></div>
+    <div class="relative space-y-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="<%= event_status_badge_classes(@event) %>"><%= event_status_label(@event) %></span>
+        <span class="<%= event_category_badge_classes(@event) %>"><%= event_category_title(@event) %></span>
+      </div>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight"><%= @event.title %></h1>
+      <p class="max-w-3xl text-sm font-medium leading-6 text-white/70"><%= event_lifecycle_hint(@event) %></p>
+    </div>
+    <div class="relative mt-5 flex flex-wrap gap-2 lg:mt-0">
+      <%= link_to "Düzenle", edit_organizer_event_path(@event), class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>
+      <% unless @event.submitted? || @event.cancelled? %>
+        <%= button_to "İncelemeye gönder", submit_organizer_event_path(@event), method: :patch, class: "btn-electric focus-ring" %>
+      <% end %>
+      <% if @event.published? %>
+        <%= link_to "Yayındaki sayfa", event_path(@event), class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <article class="space-y-6">
+      <% if @event.rejected? && @event.review_note.present? %>
+        <div class="rounded-[1.25rem] border border-rose-200 bg-rose-50 p-5 text-rose-900">
+          <p class="section-eyebrow">İnceleme notu</p>
+          <p class="mt-2 text-sm font-semibold leading-6"><%= @event.review_note %></p>
+        </div>
+      <% end %>
+
+      <div class="cinema-panel rounded-[1.25rem] p-5">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-stone-950">Etkinlik detayları</h2>
+        <p class="mt-3 leading-7 text-stone-700"><%= @event.description %></p>
+        <dl class="mt-5 grid gap-4 border-t border-stone-100 pt-5 sm:grid-cols-2">
+          <div>
+            <dt class="section-eyebrow text-stone-400">Tarih</dt>
+            <dd class="mt-1 font-bold"><%= l(@event.date, format: :long) %></dd>
+          </div>
+          <div>
+            <dt class="section-eyebrow text-stone-400">Konum</dt>
+            <dd class="mt-1 font-bold"><%= @event.location %></dd>
+          </div>
+          <div>
+            <dt class="section-eyebrow text-stone-400">Ücret</dt>
+            <dd class="mt-1 font-bold"><%= event_price_text(@event) %></dd>
+          </div>
+          <div>
+            <dt class="section-eyebrow text-stone-400">Yayın tarihi</dt>
+            <dd class="mt-1 font-bold"><%= @event.published_at ? l(@event.published_at, format: :short) : t("ui.not_yet") %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <%= render "events/event", event: @event %>
+    </article>
+
+    <aside class="space-y-4">
+      <section class="cinema-panel rounded-[1.25rem] p-5">
+        <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Akış</h2>
+        <ol class="mt-4 space-y-3 text-sm">
+          <% Event.statuses.keys.each_with_index do |status, index| %>
+            <li class="flex items-center gap-3">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-black <%= index + 1 <= event_lifecycle_step(@event) ? "bg-stone-950 text-citron" : "bg-stone-100 text-stone-500" %>"><%= index + 1 %></span>
+              <span class="<%= status == @event.status ? "font-black text-stone-950" : "font-semibold text-stone-600" %>"><%= event_status_label(Event.new(status: status)) %></span>
+            </li>
+          <% end %>
+        </ol>
+      </section>
+
+      <section class="rounded-[1.25rem] bg-citron p-5 text-stone-950">
+        <p class="section-eyebrow opacity-70">Canlı nabız</p>
+        <h2 class="font-display mt-2 text-xl font-extrabold tracking-tight">RSVP hareketi</h2>
+        <p class="mt-2 text-sm font-semibold leading-6">Etkinlik yayına çıktığında ilgi ve katılım hareketini buradan takip edebilirsin.</p>
+      </section>
+    </aside>
+  </div>
+</section>

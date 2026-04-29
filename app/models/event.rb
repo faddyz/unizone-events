@@ -1,206 +1,185 @@
 class Event < ApplicationRecord
-  require 'friendly_id'
   extend FriendlyId
+
   friendly_id :title, use: :slugged
-  
+
   belongs_to :user
-  
-  # Active Storage ilişkisi
+
   has_one_attached :image
-  
-  # Attendance ilişkisi
+
+  before_save :sync_status_metadata
+
   has_many :attendances, dependent: :destroy
-  has_many :attendees, -> { where(attendances: { status: 'attending' }) },
+  has_many :attendees, -> { where(attendances: { status: "going" }) },
            through: :attendances,
            source: :user
-  
-  # Validasyonlar
-  validates :title, presence: true
-  validates :description, presence: true
-  validates :date, presence: true
-  validates :location, presence: true
-  validates :category, presence: true
-  validates :price, numericality: { 
-    greater_than_or_equal_to: 0, 
-    allow_nil: true 
-  }
-  # Resim boyut sınırlaması
+
+  enum :status, {
+    draft: "draft",
+    submitted: "submitted",
+    published: "published",
+    rejected: "rejected",
+    cancelled: "cancelled"
+  }, default: :draft, validate: true
+
+  enum :category, {
+    general: "general",
+    technology: "technology",
+    music: "music",
+    art: "art",
+    sports: "sports",
+    education: "education",
+    concert: "concert",
+    festival: "festival",
+    workshop: "workshop",
+    party: "party",
+    theater: "theater",
+    exhibition: "exhibition",
+    conference: "conference",
+    networking: "networking"
+  }, default: :general
+
+  CATEGORY_TITLES = {
+    general: "Community",
+    technology: "Tech",
+    music: "Music",
+    art: "Art & Design",
+    sports: "Sports",
+    education: "Learning",
+    concert: "Live Music",
+    festival: "Festival",
+    workshop: "Workshop",
+    party: "Nightlife",
+    theater: "Stage",
+    exhibition: "Exhibition",
+    conference: "Conference",
+    networking: "Meetups"
+  }.freeze
+
+  validates :title, :description, :date, :location, :category, presence: true
+  validates :price, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
   validate :acceptable_image
 
-  # Katılımcı sayıları
+  scope :by_query, ->(query) do
+    query = query.to_s.downcase.strip
+    where(
+      "LOWER(title) LIKE :query OR LOWER(description) LIKE :query OR LOWER(location) LIKE :query",
+      query: "%#{query}%"
+    )
+  end
+
+  scope :by_date, ->(date) { where("date >= ?", date) if date.present? }
+  scope :by_category, ->(categories) { where(category: categories) if categories.present? }
+  scope :upcoming, -> { where("date >= ?", Time.current).order(date: :asc) }
+  scope :published_visible, -> { published.where("date >= ?", 1.day.ago) }
+
   def attendees_count
-    attendances.where(status: 'attending').count
+    attendances.where(status: "going").count
   end
-  
-  def maybe_attendees_count
-    attendances.where(status: 'maybe').count
+
+  def interested_attendees_count
+    attendances.where(status: "interested").count
   end
-  
-  def declined_attendees_count
-    attendances.where(status: 'declined').count
+
+  def not_going_attendees_count
+    attendances.where(status: "not_going").count
   end
-  
+
   def total_responses_count
     attendances.count
   end
-  
-  def attending_users
-    User.joins(:attendances).where(attendances: { event_id: id, status: 'attending' })
-  end
-  
-  def maybe_users
-    User.joins(:attendances).where(attendances: { event_id: id, status: 'maybe' })
-  end
-  
-  def declined_users
-    User.joins(:attendances).where(attendances: { event_id: id, status: 'declined' })
+
+  def going_users
+    User.joins(:attendances).where(attendances: { event_id: id, status: "going" })
   end
 
-  scope :by_query, ->(query) {
-    query = query.to_s.downcase.strip
-    where(
-      "LOWER(title) LIKE :query OR LOWER(description) LIKE :query OR LOWER(location) LIKE :query", 
-      query: "%#{query}%"
-    )
-  }
-
-  scope :by_topic, ->(topic) {
-    topic = topic.to_s.downcase.strip
-    where("LOWER(title) LIKE ?", "%#{topic}%") if topic.present?
-  }
-
-  scope :by_date, ->(date) { 
-    where("date >= ?", date) if date.present? 
-  }
-
-  scope :by_category, ->(categories) { 
-    return if categories.blank?
-    
-    if categories.is_a?(Array)
-      where(category: categories)
-    else
-      where(category: categories) 
-    end
-  }
-
-  scope :upcoming, -> { 
-    where("date >= ?", Time.current).order(date: :asc) 
-  }
-
-  scope :approved, -> { where(approved: true) }
-  scope :pending, -> { where(approved: false) }
-
-  # Benzer etkinlikleri getir (aynı kategoride, farklı ID'ye sahip, onaylanmış)
   def similar_events(limit = 6)
-    Event.approved
-        .where(category: self.category)
-        .where.not(id: self.id)
-        .where("date >= ?", Time.current)
-        .order(date: :asc)
-        .limit(limit)
+    Event.published
+         .with_attached_image
+         .includes(:user)
+         .where(category: category)
+         .where.not(id: id)
+         .where("date >= ?", Time.current)
+         .order(date: :asc)
+         .limit(limit)
   end
-  
-  # Aynı organizatörün diğer etkinliklerini getir
+
   def organizer_other_events(limit = 4)
     user.events
-        .approved
-        .where.not(id: self.id)
+        .published
+        .with_attached_image
+        .includes(:user)
+        .where.not(id: id)
         .order(date: :asc)
         .limit(limit)
   end
 
-  enum :category, {
-    general: 'general',          # Genel
-    technology: 'technology',    # Teknoloji
-    music: 'music',              # Müzik
-    art: 'art',                  # Sanat
-    sports: 'sports',            # Spor
-    education: 'education',      # Eğitim
-    concert: 'concert',          # Konser
-    festival: 'festival',        # Festival
-    workshop: 'workshop',        # Workshop
-    party: 'party',              # Parti
-    theater: 'theater',          # Tiyatro
-    exhibition: 'exhibition',    # Sergi
-    conference: 'conference',    # Konferans
-    networking: 'networking'     # Networking
-  }, default: 'general'
-
   def category_title
-    {
-      general: 'Genel',
-      technology: 'Teknoloji',
-      music: 'Müzik',
-      art: 'Sanat',
-      sports: 'Spor',
-      education: 'Eğitim',
-      concert: 'Konser',
-      festival: 'Festival',
-      workshop: 'Workshop',
-      party: 'Parti',
-      theater: 'Tiyatro',
-      exhibition: 'Sergi', 
-      conference: 'Konferans',
-      networking: 'Networking'
-    }.fetch(category.to_sym, category.humanize)
-  rescue
-    'Belirsiz'
-  end
-
-  def category_color
-    {
-      general: 'slate',
-      technology: 'sky',
-      music: 'violet',
-      art: 'fuchsia',
-      sports: 'green',
-      education: 'indigo',
-      concert: 'purple',
-      festival: 'pink',
-      workshop: 'blue',
-      party: 'orange',
-      theater: 'cyan',
-      exhibition: 'amber',
-      conference: 'rose',
-      networking: 'emerald'
-    }.fetch(category.to_sym, 'gray')
+    I18n.t("categories.#{category}", default: CATEGORY_TITLES.fetch(category.to_sym, category.to_s.humanize))
+  rescue StandardError
+    "Bilinmeyen"
   end
 
   def free?
-    price.nil? || price.to_f.zero? 
+    price.nil? || price.to_f.zero?
   end
 
-  def approved?
-    approved
+  def visible_to_public?
+    published?
   end
 
-  def acceptable_image
-    return unless image.attached?
-    
-    unless image.blob.byte_size <= 5.megabytes
-      errors.add(:image, 'boyutu çok büyük (maksimum 5MB)')
-    end
-
-    acceptable_types = ['image/jpeg', 'image/jpg', 'image/png']
-    unless acceptable_types.include?(image.blob.content_type)
-      errors.add(:image, 'formatı geçersiz. JPEG, JPG veya PNG olmalı')
-    end
+  def reviewable?
+    submitted?
   end
-  
+
+  def submit_for_review!
+    update!(status: "submitted", approved: false, review_note: nil)
+  end
+
+  def publish!
+    update!(status: "published", approved: true, published_at: published_at || Time.current, review_note: nil)
+  end
+
+  def reject!(note: nil)
+    update!(status: "rejected", approved: false, review_note: note)
+  end
+
+  def cancel!
+    update!(status: "cancelled", approved: false, review_note: nil)
+  end
+
   def display_image
-    if image.attached?
-      image
-    else
-      # Placeholder image URL
-      "https://placehold.co/600x350/0f172a/67e8f9?text=#{title.truncate(20)}"
-    end
+    image.attached? ? image : "https://placehold.co/600x350/e2e8f0/0f172a?text=#{title.truncate(20)}"
   end
 
   def normalize_friendly_id(string)
-    string.to_s.parameterize(preserve_case: false, separator: '-')
+    string.to_s.parameterize(preserve_case: false, separator: "-")
   end
-  
+
   def should_generate_new_friendly_id?
-    title_changed? || super
+    will_save_change_to_title? || super
+  end
+
+  private
+
+  def acceptable_image
+    return unless image.attached?
+
+    errors.add(:image, I18n.t("errors.messages.image_too_large")) if image.blob.byte_size > 5.megabytes
+
+    acceptable_types = ["image/jpeg", "image/jpg", "image/png"]
+    return if acceptable_types.include?(image.blob.content_type)
+
+    errors.add(:image, I18n.t("errors.messages.image_invalid_type"))
+  end
+
+  def sync_status_metadata
+    if published?
+      self.approved = true
+      self.published_at ||= Time.current
+      self.review_note = nil
+    else
+      self.approved = false
+    end
   end
 end

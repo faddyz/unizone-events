@@ -1,0 +1,31 @@
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.table-shell {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(15, 15, 18, 0.08);
+  background: white;
+  box-shadow: 0 12px 35px rgba(15, 15, 18, 0.06);
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.wizard-step[hidden] {
+  display: none;
+}
+
+.wizard-progress-line {
+  background: linear-gradient(90deg, var(--citron), var(--coral), var(--grape));
+}

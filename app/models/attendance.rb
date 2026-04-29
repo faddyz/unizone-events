@@ -1,37 +1,19 @@
 class Attendance < ApplicationRecord
   belongs_to :user
   belongs_to :event
-  
-  # Katılım durumları
-  STATUSES = {
-    attending: 'attending',
-    maybe: 'maybe',
-    declined: 'declined'
-  }.freeze
-  
-  
-  def attending?
-    status == 'attending'
-  end
-  
-  def maybe?
-    status == 'maybe'
-  end
-  
-  def declined?
-    status == 'declined'
-  end
-  
-  
+
+  enum :status, {
+    going: "going",
+    interested: "interested",
+    not_going: "not_going"
+  }, default: :going, validate: true
+
   validates :user_id, presence: true
   validates :event_id, presence: true
-  validates :status, presence: true, inclusion: { in: STATUSES.values }
-  
-  
-  validates :user_id, uniqueness: { scope: :event_id, message: "Bu etkinlik için zaten bir katılım durumu belirttiniz." }
-  
-  
-  scope :attending_event, ->(event_id) { where(event_id: event_id, status: 'attending') }
-  scope :maybe_event, ->(event_id) { where(event_id: event_id, status: 'maybe') }
-  scope :declined_event, ->(event_id) { where(event_id: event_id, status: 'declined') }
-end 
+  validates :user_id, uniqueness: { scope: :event_id, message: "has already RSVP'd to this event" }
+
+  scope :for_event, ->(event_id) { where(event_id: event_id) }
+  scope :going_for_event, ->(event_id) { for_event(event_id).where(status: "going") }
+  scope :interested_for_event, ->(event_id) { for_event(event_id).where(status: "interested") }
+  scope :not_going_for_event, ->(event_id) { for_event(event_id).where(status: "not_going") }
+end

@@ -1,0 +1,29 @@
+<% profile_path = user_signed_in? ? account_profile_path : new_user_session_path %>
+<% items = [
+  { label: "Ana Sayfa", path: root_path, icon: "home", active: current_page?(root_path) },
+  { label: "Keşfet", path: explore_events_path, icon: "compass", active: current_page?(explore_events_path) },
+  { label: "Oluştur", path: new_organizer_event_path, icon: "plus", active: current_page?(new_organizer_event_path), accent: true },
+  { label: "Hesap", path: profile_path, icon: "user", active: current_page?(profile_path) }
+] %>
+
+<nav class="mobile-bottom-nav fixed inset-x-0 bottom-0 z-50 border-t border-stone-950/10 bg-page/95 backdrop-blur-xl lg:hidden" aria-label="Mobil gezinme">
+  <div class="grid grid-cols-4">
+    <% items.each do |item| %>
+      <%= link_to item[:path], class: "mobile-nav-item #{item[:active] ? "is-active" : ""} #{item[:accent] ? "is-accent" : ""} flex flex-col items-center gap-1 px-2 py-2 text-[0.68rem] font-black focus-ring" do %>
+        <span class="mobile-nav-icon grid size-8 place-items-center rounded-full">
+          <% case item[:icon] %>
+          <% when "home" %>
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.8 12 3l9 7.8"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+          <% when "compass" %>
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.1 5-5 2.1 2.1-5 5-2.1Z"/></svg>
+          <% when "plus" %>
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          <% else %>
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
+          <% end %>
+        </span>
+        <span class="truncate"><%= item[:label] %></span>
+      <% end %>
+    <% end %>
+  </div>
+</nav>

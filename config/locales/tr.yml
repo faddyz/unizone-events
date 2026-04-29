@@ -1,0 +1,106 @@
+tr:
+  hello: "Merhaba"
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+    day_names: [Pazar, Pazartesi, Salı, Çarşamba, Perşembe, Cuma, Cumartesi]
+    abbr_day_names: [Paz, Pzt, Sal, Çar, Per, Cum, Cmt]
+    month_names: [~, Ocak, Şubat, Mart, Nisan, Mayıs, Haziran, Temmuz, Ağustos, Eylül, Ekim, Kasım, Aralık]
+    abbr_month_names: [~, Oca, Şub, Mar, Nis, May, Haz, Tem, Ağu, Eyl, Eki, Kas, Ara]
+  time:
+    formats:
+      default: "%d.%m.%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d %B %Y, %H:%M"
+  number:
+    currency:
+      format:
+        unit: "₺"
+        format: "%n %u"
+        separator: ","
+        delimiter: "."
+        precision: 0
+  activerecord:
+    attributes:
+      event:
+        title: "Etkinlik adı"
+        category: "Kategori"
+        date: "Tarih ve saat"
+        location: "Konum"
+        price: "Ücret"
+        description: "Açıklama"
+        image: "Afiş görseli"
+        status: "Durum"
+        review_note: "İnceleme notu"
+      user:
+        name: "Ad"
+        email: "E-posta"
+        password: "Şifre"
+        password_confirmation: "Şifre tekrarı"
+        current_password: "Mevcut şifre"
+    errors:
+      messages:
+        blank: "boş bırakılamaz"
+        taken: "zaten kullanılıyor"
+        too_short: "çok kısa"
+        confirmation: "eşleşmiyor"
+  errors:
+    messages:
+      image_too_large: "çok büyük (en fazla 5 MB)"
+      image_invalid_type: "JPEG, JPG veya PNG olmalı"
+  categories:
+    general: "Topluluk"
+    technology: "Teknoloji"
+    music: "Müzik"
+    art: "Sanat & Tasarım"
+    sports: "Spor"
+    education: "Öğrenme"
+    concert: "Canlı Müzik"
+    festival: "Festival"
+    workshop: "Atölye"
+    party: "Gece Hayatı"
+    theater: "Sahne"
+    exhibition: "Sergi"
+    conference: "Konferans"
+    networking: "Buluşma"
+  statuses:
+    draft: "Taslak"
+    submitted: "İncelemede"
+    published: "Yayında"
+    rejected: "Düzenleme gerekli"
+    cancelled: "İptal edildi"
+  rsvps:
+    going: "Gidiyorum"
+    interested: "İlgileniyorum"
+    not_going: "Gitmiyorum"
+  lifecycle:
+    draft: "Temel bilgileri tamamla, sonra incelemeye gönder."
+    submitted: "İncelemede. Değerlendirme tamamlandığında burada göreceksin."
+    published: "Unizone’da yayında ve RSVP almaya açık."
+    rejected: "Detayları güncelle ve tekrar incelemeye gönder."
+    cancelled: "Bu etkinlik artık aktif değil."
+    unknown: "Etkinlik durumunu kontrol et."
+  ui:
+    brand_tagline: "Şehrin bir sonraki planı"
+    free: "Ücretsiz"
+    people_going: "%{count} kişi gidiyor"
+    not_yet: "Henüz değil"
+    saved: "Kaydedildi"
+    choose: "Seç"
+    unauthorized: "Bu işlemi gerçekleştirmeye yetkiniz yok."
+  flash:
+    event_details_updated: "Etkinlik detayları güncellendi."
+    event_live: "Etkinlik yayına alındı."
+    event_sent_back: "Etkinlik geri bildirimle düzenlemeye gönderildi."
+    event_cancelled: "Etkinlik iptal edildi."
+    event_deleted: "Etkinlik silindi."
+    draft_saved: "Taslak kaydedildi. Hazır olduğunda incelemeye gönderebilirsin."
+    event_saved: "Etkinlik kaydedildi."
+    event_submitted: "Etkinlik incelemeye gönderildi."
+    profile_updated: "Profil güncellendi."
+    password_updated: "Şifre güncellendi."
+    rsvp_updated: "RSVP güncellendi."
+    rsvp_removed: "RSVP kaldırıldı."
+    rsvp_error: "RSVP güncellenemedi."

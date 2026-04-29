@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_08_152930) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_26_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -45,11 +45,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_152930) do
   create_table "attendances", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "event_id", null: false
-    t.string "status", default: "attending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "going", null: false
     t.index ["event_id"], name: "index_attendances_on_event_id"
-    t.index ["status"], name: "index_attendances_on_status"
     t.index ["user_id", "event_id"], name: "index_attendances_on_user_id_and_event_id", unique: true
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
@@ -61,12 +60,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_152930) do
     t.string "location"
     t.decimal "price"
     t.text "description"
-    t.boolean "approved"
+    t.boolean "approved", default: false, null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "slug"
+    t.string "status", default: "draft", null: false
+    t.datetime "published_at"
+    t.text "review_note"
+    t.index ["approved"], name: "index_events_on_approved"
     t.index ["slug"], name: "index_events_on_slug", unique: true
+    t.index ["status"], name: "index_events_on_status"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
