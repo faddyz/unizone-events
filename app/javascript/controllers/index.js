@@ -6,6 +6,7 @@ import AttendanceController from "controllers/attendance_controller"
 import CarouselController from "controllers/carousel_controller"
 import HeroController from "controllers/hero_controller"
 import NavbarController from "controllers/navbar_controller"
+import ShareController from "controllers/share_controller"
 import WizardController from "controllers/wizard_controller"
 
 application.register("account-menu", AccountMenuController)
@@ -14,4 +15,5 @@ application.register("attendance", AttendanceController)
 application.register("carousel", CarouselController)
 application.register("hero", HeroController)
 application.register("navbar", NavbarController)
+application.register("share", ShareController)
 application.register("wizard", WizardController)
