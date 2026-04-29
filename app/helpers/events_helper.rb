@@ -64,6 +64,23 @@ module EventsHelper
     "networking" => "users"
   }.freeze
 
+  CATEGORY_SIGNAL_COPY = {
+    "general" => "Rahat bir buluşma alanı; yeni insanlarla tanışmak ve şehrin gündemine karışmak için uygun.",
+    "technology" => "Ürün, yazılım ve girişim ekosistemine yakınsan gündem yakalamak için güçlü bir durak.",
+    "music" => "Canlı atmosfer, sahne enerjisi ve birlikte dinleme hissi arayanlar için öne çıkıyor.",
+    "art" => "Görsel kültür, üretim ve ilham odağı yüksek; keşfetmek için sakin ama güçlü bir seçenek.",
+    "sports" => "Hareket, rekabet ve ekip enerjisi arayanlar için temposu yüksek bir plan.",
+    "education" => "Yeni bir konuya odaklanmak, pratik bilgi almak ve çevreni genişletmek için iyi bir fırsat.",
+    "concert" => "Sahne deneyimi merkezde; performansı yerinde yaşamak isteyenler için doğrudan bir seçim.",
+    "festival" => "Birden fazla deneyimi aynı güne sığdıran, keşif alanı geniş bir etkinlik.",
+    "workshop" => "Dinlemekten fazlasını isteyenler için uygulama, üretim ve katılım alanı sunuyor.",
+    "party" => "Sosyalleşmek, müzikle açılmak ve geceyi hareketlendirmek isteyenlere yakın duruyor.",
+    "theater" => "Sahne, hikaye ve performans odağıyla daha dikkatli izleme isteyen bir deneyim.",
+    "exhibition" => "Gezerek, durup bakarak ve sohbet ederek keşfedilecek kültür odaklı bir rota.",
+    "conference" => "Program, konuşmacı ve bağlantı değeriyle ajandana net bir profesyonel kazanım ekler.",
+    "networking" => "Yeni bağlantılar kurmak ve aynı ilgi alanındaki insanlarla tanışmak için tasarlanmış."
+  }.freeze
+
   def event_category_badge_classes(event_or_category, *_args, **_kwargs)
     key = event_category_key(event_or_category)
     "inline-flex items-center rounded-full px-3 py-1 font-body text-[0.65rem] font-black uppercase tracking-[0.08em] #{CATEGORY_BADGE_COLORS.fetch(key, CATEGORY_BADGE_COLORS["general"])}"
@@ -82,6 +99,11 @@ module EventsHelper
   def event_category_icon(event_or_category)
     key = event_category_key(event_or_category)
     CATEGORY_ICONS.fetch(key, CATEGORY_ICONS["general"])
+  end
+
+  def event_category_signal_copy(event_or_category)
+    key = event_category_key(event_or_category)
+    CATEGORY_SIGNAL_COPY.fetch(key, "Etkinliğin konusu, zamanı ve katılım bilgileri karar vermek için yeterince net görünüyor.")
   end
 
   def event_category_tone_class(event_or_category)

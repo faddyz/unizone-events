@@ -5,7 +5,12 @@ export default class extends Controller {
   static values = {
     url: String,
     signedIn: Boolean,
-    capacity: Number
+    capacity: Number,
+    currentStatus: String
+  }
+
+  connect() {
+    this.syncState()
   }
 
   async update(event) {
@@ -17,37 +22,46 @@ export default class extends Controller {
     }
 
     const status = button.dataset.attendanceStatus
+    const removing = this.currentStatusValue === status
 
-    this.setActiveState(status)
+    this.setLoading(true)
 
     try {
       const response = await fetch(this.urlValue, {
-        method: "POST",
+        method: removing ? "DELETE" : "POST",
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
         },
-        body: JSON.stringify({ status })
+        body: removing ? undefined : JSON.stringify({ status })
       })
 
       const data = await response.json()
 
       if (!response.ok || data.status !== "success") {
-        this.showToast(data.message || "RSVP güncellenemedi.", true)
+        this.showToast(data.message || "Katılım seçimin güncellenemedi.", true)
         return
       }
 
+      this.currentStatusValue = data.current_status || ""
+      this.syncState()
       this.updateMetrics(data)
-
-      this.showToast(this.messageFor(status))
+      this.showToast(removing ? "Katılım seçimin kaldırıldı." : this.messageFor(status))
     } catch (_error) {
-      this.showToast("RSVP güncellenemedi.", true)
+      this.showToast("Katılım seçimin güncellenemedi.", true)
+    } finally {
+      this.setLoading(false)
     }
   }
 
   disconnect() {
     clearTimeout(this.timeout)
     clearTimeout(this.hideTimeout)
+  }
+
+  syncState() {
+    this.setActiveState(this.currentStatusValue || "")
+    this.updateConditionalVisibility(this.currentStatusValue || "")
   }
 
   setActiveState(activeStatus) {
@@ -68,6 +82,24 @@ export default class extends Controller {
           ? button.dataset.attendanceSelectedLabel || button.dataset.attendanceDefaultLabel || state.textContent
           : button.dataset.attendanceDefaultLabel || state.textContent
       }
+    })
+  }
+
+  updateConditionalVisibility(activeStatus) {
+    this.buttonTargets.forEach((button) => {
+      const visibleWhen = button.dataset.attendanceVisibleWhen
+      if (!visibleWhen) return
+
+      const allowedStatuses = visibleWhen.split(" ").map((status) => status.trim())
+      const normalizedStatus = activeStatus || "none"
+      button.hidden = !allowedStatuses.includes(normalizedStatus)
+    })
+  }
+
+  setLoading(loading) {
+    this.buttonTargets.forEach((button) => {
+      button.disabled = loading
+      button.setAttribute("aria-busy", loading ? "true" : "false")
     })
   }
 
@@ -101,11 +133,11 @@ export default class extends Controller {
   messageFor(status) {
     switch (status) {
       case "going":
-        return "Gidiyorum olarak kaydedildi."
+        return "Katılımın kaydedildi."
       case "interested":
-        return "İlgileniyorum olarak kaydedildi."
+        return "İlgin kaydedildi."
       default:
-        return "Gitmiyorum olarak kaydedildi."
+        return "Pas geçildi."
     }
   }
 

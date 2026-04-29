@@ -15,9 +15,9 @@
   selected_status = @attendance&.status
   share_text = "#{@event.title} - #{l(@event.date, format: :short)}"
   rsvp_options = [
-    { status: "going", label: "Katılıyorum!", active_label: "Yerini aldın!", note: "Bu etkinlikte yerini al." },
-    { status: "interested", label: "İlgileniyorum!", active_label: "Kaydedildi.", note: "İlgilendiğini göster, kaydet, daha sonra incele." },
-    { status: "not_going", label: "Pas geç.", active_label: "Pas geçild.i", note: "Sana göre değilse akıştan çıkar." }
+    { status: "going", label: "Katıl!", active_label: "Yerini aldın!", note: "Katılımını netleştir ve etkinlikteki yerini ayır." },
+    { status: "interested", label: "İlgilendiğini göster!", active_label: "İlgileniyorsun!", note: "Henüz kesin değilse etkinliği radarında tut." },
+    { status: "not_going", label: "Pas geç.", active_label: "Pas geçildi.", note: "Sana uygun değilse seçimini temiz tut." }
   ]
 %>
 
@@ -26,6 +26,7 @@
      data-attendance-url-value="<%= event_attendance_path(@event) %>"
      data-attendance-signed-in-value="<%= current_user.present? %>"
      data-attendance-capacity-value="<%= capacity || 0 %>"
+     data-attendance-current-status-value="<%= selected_status %>"
      data-share-title-value="<%= @event.title %>"
      data-share-text-value="<%= share_text %>"
      data-share-url-value="<%= request.original_url %>">
@@ -72,6 +73,11 @@
               <span>Kayıt / bilet al</span>
               <%= render "icons/ticket", class: "size-5" %>
             <% end %>
+          <% elsif current_user.blank? %>
+            <%= link_to new_user_session_path, class: "event-cta-primary focus-ring" do %>
+              <span>Giriş yap</span>
+              <%= render "icons/check_circle", class: "size-5" %>
+            <% end %>
           <% else %>
             <% selected = selected_status == "going" %>
             <button type="button"
@@ -80,11 +86,11 @@
                     data-attendance-target="button"
                     data-attendance-active-class="is-active"
                     data-attendance-inactive-class=""
-                    data-attendance-default-label="Katılacağım"
-                    data-attendance-selected-label="Yerini aldın"
+                    data-attendance-default-label="Katıl!"
+                    data-attendance-selected-label="Yerini aldın!"
                     data-action="click->attendance#update"
                     aria-pressed="<%= selected %>">
-              <span data-attendance-state><%= selected ? "Yerini aldın" : "Katılacağım" %></span>
+              <span data-attendance-state><%= selected ? "Yerini aldın!" : "Katıl!" %></span>
               <%= render "icons/check_circle", class: "size-5" %>
             </button>
           <% end %>
@@ -163,7 +169,7 @@
   </section>
 
   <section class="page-shell mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
-    <article class="space-y-8">
+    <article class="event-main-content space-y-8">
       <section class="event-section-head">
         <p class="section-eyebrow text-coral">Neden bu plan?</p>
         <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950 lg:text-5xl">Karar vermen için kısa sinyaller.</h2>
@@ -173,7 +179,7 @@
         <div class="event-signal-card is-citron">
           <p class="section-eyebrow">Mod</p>
           <h3><%= event_category_title(@event) %></h3>
-          <p>Bu etkinlik <%= event_category_title(@event).downcase %> enerjisine yakın: hızlı anlaşılır, net bir plan.</p>
+          <p><%= event_category_signal_copy(@event) %></p>
         </div>
         <div class="event-signal-card is-blue">
           <p class="section-eyebrow">Kalabalık</p>
@@ -192,13 +198,15 @@
             <div class="event-capacity-track mt-4">
               <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
             </div>
-            <p class="mt-3"><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı; kararını erteleme.</p>
+            <p class="mt-3"><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı; kontenjan dolmadan kararını netleştir.</p>
           <% else %>
-            <p><%= ticket_url ? "Organizatörün belirlediği platforma ulaşarak kaydolabilir, bilet alabilirsin." : "Tek tıkla yerini ayır ve plana dahil ol." %></p>
+            <p><%= ticket_url ? "Kayıt dış platformda tamamlanıyor; bağlantı seni doğrudan bilet akışına götürür." : "Katılımını buradan bildirebilir, fikrin değişirse seçimini dilediğin an güncelleyebilirsin." %></p>
           <% end %>
         </div>
       </div>
+    </article>
 
+    <article class="event-detail-content space-y-8">
       <section class="event-story-card">
         <div class="event-story-orb"></div>
         <p class="section-eyebrow text-coral">Hikaye</p>
@@ -285,11 +293,22 @@
       <% end %>
     </article>
 
-    <aside class="space-y-4 lg:sticky lg:top-28">
+    <aside class="event-rsvp-aside space-y-4 lg:sticky lg:top-28">
       <section class="event-action-card">
         <p class="section-eyebrow text-coral">Aksiyon</p>
-        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Yerini almak ister misin?</h2>
-        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">İnsanlara katıldığını göster, incelemek için kaydet ya da pas geç ve akışından çıkart.</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Bu etkinlikte var mısın?</h2>
+        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500"><%= current_user.present? ? "Katılacağını netleştir, ilgini göster ya da sana uygun değilse pas geç." : "Katılımını bildirmek ve etkinliği hesabında takip etmek için giriş yap." %></p>
+
+        <% unless current_user.present? %>
+          <div class="event-rsvp-auth-card">
+            <strong>Katılmak için giriş yap</strong>
+            <p>Giriş yaptıktan sonra katılım durumunu seçebilir ve daha sonra dilediğin an değiştirebilirsin.</p>
+            <div>
+              <%= link_to "Giriş yap", new_user_session_path, class: "event-rsvp-auth-primary focus-ring" %>
+              <%= link_to "Hesap oluştur", new_user_registration_path, class: "event-rsvp-auth-secondary focus-ring" %>
+            </div>
+          </div>
+        <% end %>
 
         <% if ticket_url %>
           <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "event-side-ticket focus-ring" do %>
@@ -298,27 +317,29 @@
           <% end %>
         <% end %>
 
-        <div class="mt-5 grid gap-2">
-          <% rsvp_options.each do |option| %>
-            <% selected = selected_status == option[:status] %>
-            <button type="button"
-                    class="event-rsvp-choice <%= selected ? "is-active" : "" %> focus-ring"
-                    data-attendance-status="<%= option[:status] %>"
-                    data-attendance-target="button"
-                    data-attendance-active-class="is-active"
-                    data-attendance-inactive-class=""
-                    data-attendance-default-label="<%= option[:label] %>"
-                    data-attendance-selected-label="<%= option[:active_label] %>"
-                    data-action="click->attendance#update"
-                    aria-pressed="<%= selected %>">
-              <span>
-                <strong data-attendance-state><%= selected ? option[:active_label] : option[:label] %></strong>
-                <small><%= option[:note] %></small>
-              </span>
-              <span class="event-rsvp-choice-dot"></span>
-            </button>
-          <% end %>
-        </div>
+        <% if current_user.present? %>
+          <div class="mt-5 grid gap-2">
+            <% rsvp_options.each do |option| %>
+              <% selected = selected_status == option[:status] %>
+              <button type="button"
+                      class="event-rsvp-choice <%= selected ? "is-active" : "" %> focus-ring"
+                      data-attendance-status="<%= option[:status] %>"
+                      data-attendance-target="button"
+                      data-attendance-active-class="is-active"
+                      data-attendance-inactive-class=""
+                      data-attendance-default-label="<%= option[:label] %>"
+                      data-attendance-selected-label="<%= option[:active_label] %>"
+                      data-action="click->attendance#update"
+                      aria-pressed="<%= selected %>">
+                <span>
+                  <strong data-attendance-state><%= selected ? option[:active_label] : option[:label] %></strong>
+                  <small><%= option[:note] %></small>
+                </span>
+                <span class="event-rsvp-choice-dot"></span>
+              </button>
+            <% end %>
+          </div>
+        <% end %>
 
         <div class="mt-5 grid grid-cols-3 gap-2 text-center">
           <div class="event-rsvp-stat">
@@ -375,36 +396,61 @@
   <div class="event-mobile-actions lg:hidden">
     <% if ticket_url %>
       <%= link_to "Kayıt / bilet", ticket_url, target: "_blank", rel: "noopener", class: "event-mobile-primary focus-ring" %>
-    <% else %>
-      <% selected = selected_status == "going" %>
+      <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+        <%= render "icons/link", class: "size-5" %>
+      </button>
+    <% elsif current_user.present? %>
+      <% going_selected = selected_status == "going" %>
+      <% interested_selected = selected_status == "interested" %>
+      <% not_going_selected = selected_status == "not_going" %>
       <button type="button"
-              class="event-mobile-primary <%= selected ? "is-active" : "" %> focus-ring"
+              class="event-mobile-primary <%= going_selected ? "is-active" : "" %> focus-ring"
               data-attendance-status="going"
               data-attendance-target="button"
               data-attendance-active-class="is-active"
               data-attendance-inactive-class=""
-              data-attendance-default-label="Katılacağım"
-              data-attendance-selected-label="Yerini aldın"
+              data-attendance-default-label="Katıl!"
+              data-attendance-selected-label="Yerini aldın!"
               data-action="click->attendance#update"
-              aria-pressed="<%= selected %>">
-        <span data-attendance-state><%= selected ? "Yerini aldın" : "Katılacağım" %></span>
+              aria-pressed="<%= going_selected %>">
+        <span data-attendance-state><%= going_selected ? "Yerini aldın!" : "Katıl!" %></span>
+      </button>
+      <button type="button"
+              class="event-mobile-secondary <%= interested_selected ? "is-active" : "" %> focus-ring"
+              data-attendance-status="interested"
+              data-attendance-target="button"
+              data-attendance-active-class="is-active"
+              data-attendance-inactive-class=""
+              data-attendance-default-label="İlgilen!"
+              data-attendance-selected-label="İlgileniyorsun!"
+              data-attendance-visible-when="none interested"
+              data-action="click->attendance#update"
+              aria-pressed="<%= interested_selected %>"
+              <%= "hidden" if going_selected || not_going_selected %>>
+        <span data-attendance-state><%= interested_selected ? "İlgileniyorsun!" : "İlgilen!" %></span>
+      </button>
+      <button type="button"
+              class="event-mobile-secondary <%= not_going_selected ? "is-active" : "" %> focus-ring"
+              data-attendance-status="not_going"
+              data-attendance-target="button"
+              data-attendance-active-class="is-active"
+              data-attendance-inactive-class=""
+              data-attendance-default-label="Pas geç."
+              data-attendance-selected-label="Pas geçildi."
+              data-attendance-visible-when="not_going"
+              data-action="click->attendance#update"
+              aria-pressed="<%= not_going_selected %>"
+              <%= "hidden" unless not_going_selected %>>
+        <span data-attendance-state><%= not_going_selected ? "Pas geçildi." : "Pas geç." %></span>
+      </button>
+      <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+        <%= render "icons/link", class: "size-5" %>
+      </button>
+    <% else %>
+      <%= link_to "Giriş yap", new_user_session_path, class: "event-mobile-primary focus-ring" %>
+      <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+        <%= render "icons/link", class: "size-5" %>
       </button>
     <% end %>
-    <% selected = selected_status == "interested" %>
-    <button type="button"
-            class="event-mobile-secondary <%= selected ? "is-active" : "" %> focus-ring"
-            data-attendance-status="interested"
-            data-attendance-target="button"
-            data-attendance-active-class="is-active"
-            data-attendance-inactive-class=""
-            data-attendance-default-label="Kaydet"
-            data-attendance-selected-label="Kaydedildi"
-            data-action="click->attendance#update"
-            aria-pressed="<%= selected %>">
-      <span data-attendance-state><%= selected ? "Kaydedildi" : "Kaydet" %></span>
-    </button>
-    <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
-      <%= render "icons/link", class: "size-5" %>
-    </button>
   </div>
 </div>

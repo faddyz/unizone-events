@@ -15,7 +15,21 @@ class AttendancesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "going", @user.attendances.find_by(event: @published_event)&.status
     response_payload = JSON.parse(response.body)
+    assert_equal "going", response_payload["current_status"]
     assert_equal 1, response_payload["attendees_count"]
+    assert_equal 0, response_payload["interested_attendees_count"]
+  end
+
+  test "signed in user can remove RSVP from published event" do
+    sign_in @user
+    @user.attendances.create!(event: @published_event, status: "interested")
+
+    delete event_attendance_path(@published_event), as: :json
+
+    assert_response :success
+    assert_nil @user.attendances.find_by(event: @published_event)
+    response_payload = JSON.parse(response.body)
+    assert_nil response_payload["current_status"]
     assert_equal 0, response_payload["interested_attendees_count"]
   end
 

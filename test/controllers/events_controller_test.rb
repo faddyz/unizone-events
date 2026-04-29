@@ -171,6 +171,29 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Kontenjan"
   end
 
+  test "event show invites guests to sign in before choosing attendance" do
+    internal_event = Event.create!(
+      user: @member,
+      title: "Internal Attendance Night",
+      description: "A public event that uses the built-in attendance flow.",
+      category: "technology",
+      date: 1.week.from_now,
+      city: "İstanbul",
+      location: "Studio",
+      price: 0,
+      status: "published"
+    )
+
+    get event_path(internal_event)
+
+    assert_response :success
+    assert_includes response.body, "Katılmak için giriş yap"
+    assert_includes response.body, "Hesap oluştur"
+    assert_includes response.body, "Ürün, yazılım ve girişim ekosistemine"
+    refute_includes response.body, "İlgilendiğini göster!"
+    refute_includes response.body, "Pas geç."
+  end
+
   test "guest cannot view non public event" do
     get event_path(@owner_draft_event)
 

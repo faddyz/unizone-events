@@ -1,9 +1,13 @@
 html {
   scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--page-bg);
 }
 
 body {
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
   background:
@@ -35,6 +39,7 @@ body {
 
 .page-shell {
   width: min(100% - 2rem, 80rem);
+  max-width: 100%;
   margin-inline: auto;
 }
 

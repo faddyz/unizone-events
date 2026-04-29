@@ -9,7 +9,7 @@ class AttendancesController < ApplicationController
     attendance.status = attendance_params[:status]
 
     if attendance.save
-      render_success
+      render_success(attendance.status)
     else
       render_failure(attendance)
     end
@@ -17,7 +17,7 @@ class AttendancesController < ApplicationController
 
   def update
     if @attendance.update(attendance_params)
-      render_success
+      render_success(@attendance.status)
     else
       render_failure(@attendance)
     end
@@ -28,6 +28,7 @@ class AttendancesController < ApplicationController
       render json: {
         status: "success",
         message: I18n.t("flash.rsvp_removed"),
+        current_status: nil,
         **attendance_counts
       }
     else
@@ -58,10 +59,11 @@ class AttendancesController < ApplicationController
     params.permit(:status)
   end
 
-  def render_success
+  def render_success(current_status)
     render json: {
       status: "success",
       message: I18n.t("flash.rsvp_updated"),
+      current_status: current_status,
       **attendance_counts
     }
   end
