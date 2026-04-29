@@ -26,8 +26,7 @@ module Etkinlik
     config.autoload_paths << Rails.root.join("app/queries")
     config.eager_load_paths << Rails.root.join("app/queries")
     config.active_job.queue_adapter = :inline
-    config.i18n.available_locales = [:tr, :en]
+    config.i18n.available_locales = [ :tr, :en ]
     config.i18n.default_locale = :tr
-
   end
 end

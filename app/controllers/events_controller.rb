@@ -9,12 +9,12 @@ class EventsController < ApplicationController
                        .group("events.id")
                        .order(Arel.sql("going_score DESC"), date: :asc)
                        .limit(6)
-    @categories = Event.categories.keys.map { |category| [Event.new(category: category).category_title, category] }
+    @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
   end
 
   def explore
     @events = EventSearch.new(scope: published_scope, params: search_params).results.page(params[:page]).per(12)
-    @categories = Event.categories.keys.map { |category| [Event.new(category: category).category_title, category] }
+    @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
   end
 
   def show

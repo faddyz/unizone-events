@@ -2,7 +2,7 @@ class AttendancesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_event
   before_action :authorize_attendance!
-  before_action :set_attendance, only: [:update, :destroy]
+  before_action :set_attendance, only: [ :update, :destroy ]
 
   def create
     attendance = current_user.attendances.find_or_initialize_by(event: @event)

@@ -1,6 +1,6 @@
 class Admin::EventsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :reject, :cancel]
+  before_action :set_event, only: [ :show, :edit, :update, :destroy, :publish, :reject, :cancel ]
   before_action :authorize_index!
 
   def index

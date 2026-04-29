@@ -9,4 +9,4 @@ namespace :friendly_id do
     end
     puts "Done!"
   end
-end 
+end

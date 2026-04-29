@@ -229,7 +229,7 @@ def demo_event(users_by_email, attrs)
   event
 end
 
-users_by_email = USERS.to_h { |attrs| [attrs[:email], demo_user(**attrs)] }
+users_by_email = USERS.to_h { |attrs| [ attrs[:email], demo_user(**attrs) ] }
 events = EVENTS.map { |attrs| demo_event(users_by_email, attrs) }
 active_users = users_by_email.values.reject(&:admin?)
 rsvp_statuses = %w[going interested going going interested not_going]

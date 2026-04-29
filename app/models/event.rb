@@ -176,7 +176,7 @@ class Event < ApplicationRecord
 
     errors.add(:image, I18n.t("errors.messages.image_too_large")) if image.blob.byte_size > 5.megabytes
 
-    acceptable_types = ["image/jpeg", "image/jpg", "image/png"]
+    acceptable_types = [ "image/jpeg", "image/jpg", "image/png" ]
     return if acceptable_types.include?(image.blob.content_type)
 
     errors.add(:image, I18n.t("errors.messages.image_invalid_type"))
