@@ -47,10 +47,19 @@
     </div>
 
     <div class="event-form-field">
-      <%= form.label :location, "Konum", class: "event-form-label" %>
+      <%= form.label :city, "Şehir", class: "event-form-label" %>
+      <%= form.select :city,
+            Event::CITY_OPTIONS,
+            {},
+            class: "event-form-control",
+            data: { event_preview_target: "city", wizard_required: "true" } %>
+    </div>
+
+    <div class="event-form-field">
+      <%= form.label :location, "Mekan", class: "event-form-label" %>
       <%= form.text_field :location,
             class: "event-form-control",
-            placeholder: "Mekan, semt veya çevrim içi bağlantı",
+            placeholder: "Salon, kampüs, semt veya çevrim içi bağlantı",
             data: { event_preview_target: "location", wizard_required: "true" } %>
     </div>
 
@@ -67,7 +76,7 @@
 
     <div class="event-form-note is-blue">
       <%= render "icons/location", class: "size-5" %>
-      <p>Konum alanı mekan adı, kampüs, semt veya online buluşma linki olabilir.</p>
+      <p>Şehri ayrı seç; mekan alanına salon, kampüs, semt veya online buluşma bağlantısını yaz.</p>
     </div>
   </div>
 </section>

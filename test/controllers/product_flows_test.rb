@@ -45,6 +45,7 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
           description: "A focused meetup for builders shipping polished community projects.",
           category: "technology",
           date: 3.weeks.from_now,
+          city: "İstanbul",
           location: "Demo Studio",
           price: 0
         }
@@ -65,6 +66,7 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
         description: @published_event.description,
         category: @published_event.category,
         date: @published_event.date,
+        city: @published_event.city,
         location: @published_event.location,
         price: @published_event.price
       }

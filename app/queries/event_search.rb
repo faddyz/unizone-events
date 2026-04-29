@@ -11,6 +11,7 @@ class EventSearch
   def results
     relation = scope
     relation = filter_by_query(relation)
+    relation = filter_by_city(relation)
     relation = filter_by_category(relation)
     relation = filter_by_exact_date(relation)
     relation = filter_by_date_filter(relation)
@@ -35,6 +36,13 @@ class EventSearch
     return relation if categories.blank?
 
     relation.by_category(categories)
+  end
+
+  def filter_by_city(relation)
+    city = params[:city].to_s
+    return relation unless Event::CITY_OPTIONS.include?(city)
+
+    relation.by_city(city)
   end
 
   def filter_by_exact_date(relation)

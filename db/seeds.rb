@@ -217,6 +217,7 @@ def demo_event(users_by_email, attrs)
   event.update!(
     description: attrs.fetch(:description),
     location: attrs.fetch(:location),
+    city: attrs.fetch(:city, "İstanbul"),
     date: attrs.fetch(:date),
     category: attrs.fetch(:category),
     price: attrs.fetch(:price),

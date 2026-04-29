@@ -2,6 +2,7 @@ published_event:
   title: Published Event
   category: technology
   date: <%= 2.weeks.from_now %>
+  city: İstanbul
   location: Main Hall
   price: 9.99
   ticket_url: https://example.com/tickets/published-event
@@ -16,6 +17,7 @@ submitted_event:
   title: Submitted Event
   category: music
   date: <%= 3.weeks.from_now %>
+  city: Ankara
   location: Side Hall
   price: 9.99
   description: Submitted event description
@@ -27,6 +29,7 @@ owner_draft_event:
   title: Owner Draft Event
   category: art
   date: <%= 4.weeks.from_now %>
+  city: İzmir
   location: Workshop Room
   price: 0
   description: Draft event description

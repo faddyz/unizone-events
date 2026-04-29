@@ -106,6 +106,10 @@ module EventsHelper
     number_to_currency(event.price, unit: "₺", precision: precision)
   end
 
+  def event_place_text(event)
+    [event.location.presence, event.city.presence].compact.join(", ")
+  end
+
   def attendance_status_badge_classes(status)
     "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold #{RSVP_BADGE_COLORS.fetch(status.to_s, RSVP_BADGE_COLORS["going"])}"
   end
@@ -138,6 +142,7 @@ module EventsHelper
   def explore_filter_params_with(overrides = {})
     next_params = request.query_parameters.slice(
       "query",
+      "city",
       "category",
       "date_filter",
       "start_date",
