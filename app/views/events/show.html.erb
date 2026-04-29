@@ -15,9 +15,9 @@
   selected_status = @attendance&.status
   share_text = "#{@event.title} - #{l(@event.date, format: :short)}"
   rsvp_options = [
-    { status: "going", label: "Katılıyorum", active_label: "Yerini aldın", note: "Planın netleşsin." },
-    { status: "interested", label: "Kaydet", active_label: "Kaydedildi", note: "Sonra karar ver." },
-    { status: "not_going", label: "Pas geç", active_label: "Pas geçildi", note: "Akışını temiz tut." }
+    { status: "going", label: "Katılıyorum!", active_label: "Yerini aldın!", note: "Bu etkinlikte yerini al." },
+    { status: "interested", label: "İlgileniyorum!", active_label: "Kaydedildi.", note: "İlgilendiğini göster, kaydet, daha sonra incele." },
+    { status: "not_going", label: "Pas geç.", active_label: "Pas geçild.i", note: "Sana göre değilse akıştan çıkar." }
   ]
 %>
 
@@ -108,12 +108,12 @@
           </div>
           <p>
             <strong class="text-white" data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
-            kişi gidiyor
+            kişi katılıyor!
             <% if capacity %>
               <span class="text-white/38">/</span>
               <span data-attendance-target="spots"><%= spots_left %></span> yer kaldı
             <% elsif total_responses.positive? %>
-              <span class="text-white/38">/</span> <%= total_responses %> yanıt
+              <span class="text-white/38">/</span> <%= total_responses %> toplam geri bildirim.
             <% end %>
           </p>
         </div>
@@ -136,7 +136,7 @@
           <div class="poster-chrome absolute inset-0"></div>
           <div class="poster-spotlight absolute inset-0"></div>
         </div>
-        <p class="mt-4 font-mono text-xs font-black uppercase tracking-[0.14em] text-white/45">Unizone seçkisi</p>
+        
       </aside>
     </div>
   </section>
@@ -156,7 +156,7 @@
         <dd><%= event_price_text(@event) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 220ms">
-        <dt><%= capacity ? "Kontenjan" : "Ev sahibi" %></dt>
+        <dt><%= capacity ? "Kontenjan" : "Ev sahibi / Organizatör" %></dt>
         <dd><%= capacity ? "#{going_count}/#{capacity} dolu" : organizer_name %></dd>
       </div>
     </dl>
@@ -177,24 +177,24 @@
         </div>
         <div class="event-signal-card is-blue">
           <p class="section-eyebrow">Kalabalık</p>
-          <h3><span data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></span> kişi gidiyor</h3>
-          <p><%= going_count.positive? ? "İnsanlar şimdiden plana dahil." : "İlk katılanlardan biri olup akışı başlat." %></p>
+          <h3><span data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></span> kişi katılıyor!</h3>
+          <p><%= going_count.positive? ? "Bu etkinlik şimdiden ilgi görmeye başladı." : "İlk katılanlardan biri olup akışı başlat." %></p>
         </div>
         <div class="event-signal-card is-coral">
-          <p class="section-eyebrow">Eşik</p>
+          <p class="section-eyebrow">Ücret</p>
           <h3><%= event_price_text(@event) %></h3>
-          <p><%= @event.free? ? "Bariyer yok; karar vermesi kolay." : "Ücret net, sürprizsiz ve önden görünüyor." %></p>
+          <p><%= @event.free? ? "Bariyer yok; karar vermesi kolay." : "Katılım ücreti net olarak belirtilmiş." %></p>
         </div>
         <div class="event-signal-card is-mint">
           <p class="section-eyebrow"><%= capacity ? "Doluluk" : "Kayıt" %></p>
-          <h3><%= capacity ? "%#{capacity_percent}" : (ticket_url ? "Dış kayıt" : "Unizone RSVP") %></h3>
+          <h3><%= capacity ? "%#{capacity_percent}" : (ticket_url ? "Biletli Etkinlik" : "Katılımını belirt!") %></h3>
           <% if capacity %>
             <div class="event-capacity-track mt-4">
               <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
             </div>
             <p class="mt-3"><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı; kararını erteleme.</p>
           <% else %>
-            <p><%= ticket_url ? "Bilet veya kayıt akışı organizatör bağlantısında tamamlanır." : "Tek tıkla planını işaretleyebilirsin." %></p>
+            <p><%= ticket_url ? "Organizatörün belirlediği platforma ulaşarak kaydolabilir, bilet alabilirsin." : "Tek tıkla yerini ayır ve plana dahil ol." %></p>
           <% end %>
         </div>
       </div>
@@ -234,7 +234,7 @@
             <dd><%= event_price_text(@event) %></dd>
           </div>
           <div>
-            <dt><%= render "icons/users", class: "size-4" %> Ev sahibi</dt>
+            <dt><%= render "icons/users", class: "size-4" %> Ev sahibi / Organizatör</dt>
             <dd><%= organizer_name %></dd>
           </div>
         </dl>
@@ -273,8 +273,8 @@
       <% if @organizer_other_events.any? %>
         <section class="event-compact-section space-y-4">
           <div>
-            <p class="section-eyebrow text-emerald-700">Ev sahibinden</p>
-            <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Aynı ekibin diğer planları</h2>
+            <p class="section-eyebrow text-emerald-700">Organizatörden</p>
+            <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Aynı ekibin diğer etkinlikleri</h2>
           </div>
           <div class="event-compact-grid">
             <% @organizer_other_events.each_with_index do |event, index| %>
@@ -288,12 +288,12 @@
     <aside class="space-y-4 lg:sticky lg:top-28">
       <section class="event-action-card">
         <p class="section-eyebrow text-coral">Aksiyon</p>
-        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Yerini seç.</h2>
-        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">Katıl, kaydet ya da pas geç. Plan akışın temiz kalsın.</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Yerini almak ister misin?</h2>
+        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">İnsanlara katıldığını göster, incelemek için kaydet ya da pas geç ve akışından çıkart.</p>
 
         <% if ticket_url %>
           <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "event-side-ticket focus-ring" do %>
-            <span>Kayıt / bilet al</span>
+            <span>Kayıt / Bilet Al</span>
             <%= render "icons/ticket", class: "size-5" %>
           <% end %>
         <% end %>
@@ -323,15 +323,15 @@
         <div class="mt-5 grid grid-cols-3 gap-2 text-center">
           <div class="event-rsvp-stat">
             <strong data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
-            <span>Gidiyor</span>
+            <span>Katılıyor</span>
           </div>
           <div class="event-rsvp-stat">
             <strong data-attendance-target="count" data-attendance-count-key="interested_attendees_count"><%= interested_count %></strong>
-            <span>Kayıtlı</span>
+            <span>İlgileniyor</span>
           </div>
           <div class="event-rsvp-stat">
             <strong data-attendance-target="count" data-attendance-count-key="not_going_attendees_count"><%= not_going_count %></strong>
-            <span>Pas</span>
+            <span>Pas Geçti</span>
           </div>
         </div>
 
