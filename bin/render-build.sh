@@ -4,6 +4,7 @@ set -o errexit
 set -x
 
 bundle install
+npm ci --include=dev --no-audit --no-fund
 
 mkdir -p app/assets/builds
 
