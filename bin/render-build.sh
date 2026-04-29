@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
-# Exit on error
 set -o errexit
+set -x
 
 bundle install
-bin/rails assets:precompile
-bin/rails assets:clean
-bin/rails db:migrate
+
+mkdir -p app/assets/builds
+
+RAILS_ENV=production bundle exec rails tailwindcss:build --trace
+RAILS_ENV=production bundle exec rails assets:precompile --trace
+
+bundle exec rails db:migrate
+bundle exec rails db:seed
+bundle exec rails assets:clean
