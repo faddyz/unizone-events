@@ -1,71 +1,229 @@
 <% content_for :title, "Hesap" %>
 
-<section class="page-shell space-y-8">
-  <%= render "shared/page_header",
-        eyebrow: "Hesap",
-        title: "Profil ve güvenlik",
-        description: "Unizone hesabını güncel tut; e-posta ve şifre değişikliklerini güvenle yönet." %>
+<%
+  account_name = @user.name.presence || "Unizone üyesi"
+  account_initial = (account_name.presence || @user.email).first.upcase
+  profile_form_failed = request.path == account_profile_path && @user.errors.any?
+  password_form_failed = request.path == account_password_path && @user.errors.any?
+  owned_events_count = @user.events.count
+  rsvp_count = @user.attendances.count
+%>
 
-  <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-    <aside class="cinema-panel is-dark rounded-[1.35rem] p-6">
-      <div class="grid size-20 place-items-center rounded-full bg-citron font-display text-3xl font-extrabold text-stone-950 shadow-[8px_8px_0_rgba(255,255,255,0.14)]">
-        <%= (@user.name.presence || @user.email).first.upcase %>
+<section class="account-settings-page">
+  <div class="account-settings-shell page-shell">
+    <header class="account-settings-header">
+      <div>
+        <p class="section-eyebrow text-coral">Hesap ayarları</p>
+        <h1>Profil ve güvenlik</h1>
+        <p>Hesabının görünen bilgilerini ve giriş güvenliğini sade, kontrollü bir alanda yönet.</p>
       </div>
-      <p class="section-eyebrow mt-8 text-citron">Profil</p>
-      <h2 class="font-display mt-2 text-4xl font-extrabold tracking-tight"><%= @user.name.presence || "Unizone üyesi" %></h2>
-      <p class="mt-3 text-sm font-medium leading-6 text-white/65"><%= @user.email %></p>
-      <div class="mt-6 grid grid-cols-2 gap-3">
-        <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4">
-          <p class="font-display text-3xl font-extrabold"><%= @user.events.count %></p>
-          <p class="section-eyebrow mt-1 text-white/45">Etkinlik</p>
-        </div>
-        <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4">
-          <p class="font-display text-3xl font-extrabold"><%= @user.attendances.count %></p>
-          <p class="section-eyebrow mt-1 text-white/45">RSVP</p>
-        </div>
+      <div class="account-status-pill" aria-label="Hesap durumu">
+        <span></span>
+        <strong>Oturum açık</strong>
       </div>
-    </aside>
+    </header>
 
-    <div class="grid gap-6">
-      <section class="cinema-panel rounded-[1.35rem] p-6">
-        <h2 class="font-display text-2xl font-extrabold tracking-tight text-stone-950">Profil bilgileri</h2>
+    <div class="account-settings-layout">
+      <aside class="account-summary-panel" aria-label="Hesap özeti">
+        <div class="account-summary-head">
+          <div class="account-avatar"><%= account_initial %></div>
+          <div>
+            <p class="section-eyebrow text-citron">Üye profili</p>
+            <h2><%= account_name %></h2>
+            <p><%= @user.email %></p>
+          </div>
+        </div>
 
-        <%= form_with model: @user, url: account_profile_path, method: :patch, class: "mt-5 space-y-4" do |form| %>
+        <dl class="account-summary-stats">
           <div>
-            <%= form.label :name, "Ad", class: "mb-2 block section-eyebrow text-stone-500" %>
-            <%= form.text_field :name, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            <dt>Etkinlik</dt>
+            <dd><%= owned_events_count %></dd>
           </div>
           <div>
-            <%= form.label :email, "E-posta", class: "mb-2 block section-eyebrow text-stone-500" %>
-            <%= form.email_field :email, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            <dt>RSVP</dt>
+            <dd><%= rsvp_count %></dd>
           </div>
-          <div>
-            <%= form.label :current_password, "E-posta değişikliği için mevcut şifre", class: "mb-2 block section-eyebrow text-stone-500" %>
-            <%= form.password_field :current_password, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-          </div>
-          <%= form.submit "Profili kaydet", class: "btn-void cursor-pointer border-0 focus-ring" %>
-        <% end %>
-      </section>
+        </dl>
 
-      <section class="cinema-panel rounded-[1.35rem] p-6">
-        <h2 class="font-display text-2xl font-extrabold tracking-tight text-stone-950">Şifre</h2>
+        <nav class="account-settings-nav" aria-label="Ayar bölümleri">
+          <a href="#profile-settings" class="focus-ring">
+            <%= render "icons/users", class: "size-4" %>
+            <span>Profil bilgileri</span>
+          </a>
+          <a href="#security-settings" class="focus-ring">
+            <%= render "icons/check_circle", class: "size-4" %>
+            <span>Güvenlik</span>
+          </a>
+        </nav>
 
-        <%= form_with model: @user, url: account_password_path, method: :patch, class: "mt-5 space-y-4" do |form| %>
+        <div class="account-trust-list">
           <div>
-            <%= form.label :current_password, "Mevcut şifre", class: "mb-2 block section-eyebrow text-stone-500" %>
-            <%= form.password_field :current_password, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            <span class="account-trust-dot"></span>
+            <p>E-posta kayıtlı</p>
           </div>
           <div>
-            <%= form.label :password, "Yeni şifre", class: "mb-2 block section-eyebrow text-stone-500" %>
-            <%= form.password_field :password, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            <span class="account-trust-dot is-citron"></span>
+            <p>Şifre ile korunuyor</p>
           </div>
           <div>
-            <%= form.label :password_confirmation, "Yeni şifre tekrarı", class: "mb-2 block section-eyebrow text-stone-500" %>
-            <%= form.password_field :password_confirmation, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            <span class="account-trust-dot is-blue"></span>
+            <p>Son güncelleme <%= l(@user.updated_at.to_date, format: :long) %></p>
           </div>
-          <%= form.submit "Şifreyi güncelle", class: "btn-electric cursor-pointer border-0 focus-ring" %>
-        <% end %>
-      </section>
+        </div>
+      </aside>
+
+      <main class="account-settings-main">
+        <section id="profile-settings" class="account-settings-card" aria-labelledby="profile-settings-title">
+          <div class="account-card-head">
+            <div>
+              <p class="section-eyebrow text-coral">Profil</p>
+              <h2 id="profile-settings-title">Görünen bilgilerin</h2>
+              <p>Adın ve e-postan Unizone içindeki hesap deneyiminde kullanılır.</p>
+            </div>
+          </div>
+
+          <%= form_with model: @user, url: account_profile_path, method: :patch, class: "account-form" do |form| %>
+            <% if profile_form_failed %>
+              <div class="account-form-alert" role="alert">
+                <strong>Profil bilgilerini kontrol et.</strong>
+                <ul>
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="account-form-grid">
+              <div class="account-field">
+                <%= form.label :name, "Ad", class: "account-label" %>
+                <%= form.text_field :name,
+                      autocomplete: "name",
+                      class: "account-input #{profile_form_failed && @user.errors[:name].any? ? "is-invalid" : ""}",
+                      aria: { describedby: profile_form_failed && @user.errors[:name].any? ? "profile-name-error" : "profile-name-hint" } %>
+                <% if profile_form_failed && @user.errors[:name].any? %>
+                  <p id="profile-name-error" class="account-field-error"><%= @user.errors.full_messages_for(:name).to_sentence %></p>
+                <% else %>
+                  <p id="profile-name-hint" class="account-field-hint">Boş bırakırsan hesap e-postan gösterilir.</p>
+                <% end %>
+              </div>
+
+              <div class="account-field">
+                <%= form.label :email, "E-posta", class: "account-label" %>
+                <%= form.email_field :email,
+                      autocomplete: "email",
+                      required: true,
+                      class: "account-input #{profile_form_failed && @user.errors[:email].any? ? "is-invalid" : ""}",
+                      aria: { describedby: profile_form_failed && @user.errors[:email].any? ? "profile-email-error" : "profile-email-hint" } %>
+                <% if profile_form_failed && @user.errors[:email].any? %>
+                  <p id="profile-email-error" class="account-field-error"><%= @user.errors.full_messages_for(:email).to_sentence %></p>
+                <% else %>
+                  <p id="profile-email-hint" class="account-field-hint">E-posta değiştirirken mevcut şifren gerekir.</p>
+                <% end %>
+              </div>
+
+              <div class="account-field account-field-wide">
+                <%= form.label :current_password, "Mevcut şifre", for: "profile_current_password", class: "account-label" %>
+                <%= form.password_field :current_password,
+                      id: "profile_current_password",
+                      autocomplete: "current-password",
+                      class: "account-input #{profile_form_failed && @user.errors[:current_password].any? ? "is-invalid" : ""}",
+                      aria: { describedby: profile_form_failed && @user.errors[:current_password].any? ? "profile-current-password-error" : "profile-current-password-hint" } %>
+                <% if profile_form_failed && @user.errors[:current_password].any? %>
+                  <p id="profile-current-password-error" class="account-field-error"><%= @user.errors.full_messages_for(:current_password).to_sentence %></p>
+                <% else %>
+                  <p id="profile-current-password-hint" class="account-field-hint">Yalnızca e-posta adresini değiştirirken doldur.</p>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="account-form-actions">
+              <p>Profil değişiklikleri kaydedildiğinde aynı oturumla devam edersin.</p>
+              <%= form.submit "Profili kaydet", class: "btn-void cursor-pointer border-0 focus-ring" %>
+            </div>
+          <% end %>
+        </section>
+
+        <section id="security-settings" class="account-settings-card" aria-labelledby="security-settings-title">
+          <div class="account-card-head">
+            <div>
+              <p class="section-eyebrow text-coral">Güvenlik</p>
+              <h2 id="security-settings-title">Şifreyi güncelle</h2>
+              <p>Şifre değişikliği ayrı tutulur; profil bilgilerini düzenlerken yanlışlıkla etkilenmez.</p>
+            </div>
+          </div>
+
+          <%= form_with model: @user, url: account_password_path, method: :patch, class: "account-form" do |form| %>
+            <% if password_form_failed %>
+              <div class="account-form-alert" role="alert">
+                <strong>Şifre bilgilerini kontrol et.</strong>
+                <ul>
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="account-security-note">
+              <%= render "icons/info", class: "size-4" %>
+              <p>Yeni şifreni kaydetmek için mevcut şifreni doğrulaman gerekir.</p>
+            </div>
+
+            <div class="account-form-grid">
+              <div class="account-field">
+                <%= form.label :current_password, "Mevcut şifre", for: "security_current_password", class: "account-label" %>
+                <%= form.password_field :current_password,
+                      id: "security_current_password",
+                      autocomplete: "current-password",
+                      required: true,
+                      class: "account-input #{password_form_failed && @user.errors[:current_password].any? ? "is-invalid" : ""}",
+                      aria: { describedby: password_form_failed && @user.errors[:current_password].any? ? "security-current-password-error" : "security-current-password-hint" } %>
+                <% if password_form_failed && @user.errors[:current_password].any? %>
+                  <p id="security-current-password-error" class="account-field-error"><%= @user.errors.full_messages_for(:current_password).to_sentence %></p>
+                <% else %>
+                  <p id="security-current-password-hint" class="account-field-hint">Hesabın sana ait olduğunu doğrular.</p>
+                <% end %>
+              </div>
+
+              <div class="account-field">
+                <%= form.label :password, "Yeni şifre", for: "security_password", class: "account-label" %>
+                <%= form.password_field :password,
+                      id: "security_password",
+                      autocomplete: "new-password",
+                      required: true,
+                      class: "account-input #{password_form_failed && @user.errors[:password].any? ? "is-invalid" : ""}",
+                      aria: { describedby: password_form_failed && @user.errors[:password].any? ? "security-password-error" : "security-password-hint" } %>
+                <% if password_form_failed && @user.errors[:password].any? %>
+                  <p id="security-password-error" class="account-field-error"><%= @user.errors.full_messages_for(:password).to_sentence %></p>
+                <% else %>
+                  <p id="security-password-hint" class="account-field-hint">En az 6 karakter kullan.</p>
+                <% end %>
+              </div>
+
+              <div class="account-field account-field-wide">
+                <%= form.label :password_confirmation, "Yeni şifre tekrarı", for: "security_password_confirmation", class: "account-label" %>
+                <%= form.password_field :password_confirmation,
+                      id: "security_password_confirmation",
+                      autocomplete: "new-password",
+                      required: true,
+                      class: "account-input #{password_form_failed && @user.errors[:password_confirmation].any? ? "is-invalid" : ""}",
+                      aria: { describedby: password_form_failed && @user.errors[:password_confirmation].any? ? "security-password-confirmation-error" : "security-password-confirmation-hint" } %>
+                <% if password_form_failed && @user.errors[:password_confirmation].any? %>
+                  <p id="security-password-confirmation-error" class="account-field-error"><%= @user.errors.full_messages_for(:password_confirmation).to_sentence %></p>
+                <% else %>
+                  <p id="security-password-confirmation-hint" class="account-field-hint">Yazım hatalarını yakalamak için tekrar gir.</p>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="account-form-actions">
+              <p>Şifre güncellendiğinde oturumun korunur ve devam edersin.</p>
+              <%= form.submit "Şifreyi güncelle", class: "btn-electric cursor-pointer border-0 focus-ring" %>
+            </div>
+          <% end %>
+        </section>
+      </main>
     </div>
   </div>
 </section>
