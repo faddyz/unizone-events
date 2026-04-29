@@ -1,5 +1,8 @@
 <%
-  cards = local_assigns.fetch(:cards)
+  fallback_cards = local_assigns.fetch(:cards)
+  featured_events = local_assigns.fetch(:events) { auth_featured_events(limit: 3) }.to_a
+  lead_event = featured_events.first
+  supporting_events = featured_events.drop(1)
 %>
 
 <aside class="auth-showcase" aria-label="<%= local_assigns.fetch(:aria_label) %>">
@@ -11,17 +14,50 @@
 
   <div class="auth-featured-block">
     <p class="auth-featured-label"><%= local_assigns.fetch(:featured_label) %></p>
-    <div class="auth-featured-list">
-      <% cards.each do |card| %>
-        <div class="auth-feature-card <%= card.fetch(:tone) %>">
-          <span class="auth-feature-dot" aria-hidden="true"></span>
-          <span class="auth-feature-copy">
-            <strong><%= card.fetch(:title) %></strong>
-            <small><%= card.fetch(:meta) %></small>
-          </span>
-          <span class="auth-feature-pill"><%= card.fetch(:label) %></span>
+
+    <% if lead_event %>
+      <%= link_to event_path(lead_event), class: "auth-feature-hero focus-ring" do %>
+        <span class="auth-feature-hero-art <%= event_poster_background_classes(lead_event) %>">
+          <% if lead_event.image.attached? %>
+            <%= image_tag lead_event.image, alt: "", loading: "lazy", aria: { hidden: true } %>
+          <% else %>
+            <span><%= lead_event.title.first.upcase %></span>
+          <% end %>
+        </span>
+        <span class="auth-feature-hero-copy">
+          <span class="auth-feature-kicker"><%= event_category_title(lead_event) %></span>
+          <strong><%= lead_event.title %></strong>
+          <small><%= l(lead_event.date, format: :short) %> · <%= lead_event.attendees_count %> kişi gidiyor</small>
+        </span>
+      <% end %>
+
+      <% if supporting_events.any? %>
+        <div class="auth-featured-list">
+          <% supporting_events.each do |event| %>
+            <%= link_to event_path(event), class: "auth-feature-card focus-ring" do %>
+              <span class="auth-feature-dot" aria-hidden="true"></span>
+              <span class="auth-feature-copy">
+                <strong><%= event.title %></strong>
+                <small><%= event_category_title(event) %> · <%= event.attendees_count %> kişi</small>
+              </span>
+              <span class="auth-feature-pill"><%= l(event.date, format: :short) %></span>
+            <% end %>
+          <% end %>
         </div>
       <% end %>
-    </div>
+    <% else %>
+      <div class="auth-featured-list">
+        <% fallback_cards.each do |card| %>
+          <div class="auth-feature-card <%= card.fetch(:tone) %>">
+            <span class="auth-feature-dot" aria-hidden="true"></span>
+            <span class="auth-feature-copy">
+              <strong><%= card.fetch(:title) %></strong>
+              <small><%= card.fetch(:meta) %></small>
+            </span>
+            <span class="auth-feature-pill"><%= card.fetch(:label) %></span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </aside>
