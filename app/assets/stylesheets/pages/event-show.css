@@ -381,6 +381,119 @@
   line-height: 1.35;
 }
 
+.event-discovery-divider {
+  display: grid;
+  grid-template-columns: minmax(2rem, 1fr) auto minmax(2rem, 1fr);
+  align-items: center;
+  gap: 1rem;
+  margin: 1.65rem 0 1.05rem;
+  opacity: 1;
+}
+
+.event-discovery-divider span {
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(90deg, transparent, rgba(15, 15, 18, 0.28), rgba(255, 77, 61, 0.38), transparent),
+    linear-gradient(90deg, transparent, rgba(215, 255, 57, 0.42), transparent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.event-discovery-divider i {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: var(--radius-pill);
+  background: var(--citron);
+  box-shadow:
+    0 0 20px rgba(215, 255, 57, 0.82),
+    0 0 0 6px rgba(215, 255, 57, 0.18),
+    0 0 0 1px rgba(15, 15, 18, 0.1);
+}
+
+.event-compact-section {
+  margin-top: 1.35rem;
+}
+
+.event-compact-section + .event-compact-section {
+  margin-top: 1.25rem;
+}
+
+.event-compact-section h2 {
+  font-size: clamp(1.6rem, 3vw, 2.15rem);
+  line-height: 0.95;
+}
+
+.event-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 15.5rem));
+  align-items: start;
+  gap: 0.9rem;
+}
+
+.event-compact-grid .event-card {
+  max-width: 15.5rem;
+  border-radius: 0.95rem;
+  box-shadow: 0 8px 22px rgba(15, 15, 18, 0.07);
+}
+
+.event-compact-grid .event-poster {
+  aspect-ratio: 1.75 / 1;
+}
+
+.event-compact-grid .event-card-body {
+  min-height: 6.5rem;
+  padding: 0.78rem;
+}
+
+.event-compact-grid .event-card-time {
+  font-size: 0.58rem;
+}
+
+.event-compact-grid .event-card-heading {
+  margin-top: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.12;
+}
+
+.event-compact-grid .event-card-meta {
+  margin-top: 0.7rem;
+  padding-top: 0.65rem;
+}
+
+.event-compact-grid .event-card-location,
+.event-compact-grid .event-card-price {
+  font-size: 0.76rem;
+}
+
+.event-compact-grid .event-attendance {
+  min-height: 1.55rem;
+  padding-right: 0.5rem;
+  font-size: 0.72rem;
+}
+
+.event-compact-grid .event-avatar {
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 0.54rem;
+}
+
+.event-compact-grid .event-card-action {
+  width: 1.7rem;
+  height: 1.7rem;
+  transform: none;
+  opacity: 1;
+}
+
+@media (max-width: 639px) {
+  .event-compact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .event-compact-grid .event-card {
+    max-width: none;
+  }
+}
+
 .event-action-card {
   box-shadow:
     0 1px 2px rgba(15, 15, 18, 0.05),
