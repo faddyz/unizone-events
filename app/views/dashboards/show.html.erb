@@ -1,82 +1,172 @@
 <% content_for :title, "Planlarım" %>
 
-<section class="page-shell space-y-8">
-  <% actions = capture do %>
-    <div class="flex flex-wrap gap-2">
-      <%= link_to "Keşfet", explore_events_path, class: "btn-outline focus-ring" %>
-      <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
-    </div>
-  <% end %>
-  <%= render "shared/page_header",
-        eyebrow: "Planlarım",
-        title: "Hoş geldin, #{current_user.name.presence || current_user.email}",
-        description: "Kaydettiğin etkinlikler, yaklaşan planların ve başlattığın fikirler burada.",
-        actions: actions %>
+<% user_label = current_user.name.presence || current_user.email %>
+<% next_event = @next_plan&.event %>
 
-  <div class="grid gap-4 md:grid-cols-4">
-    <% [["Yaklaşan", @upcoming_rsvps.count], ["Etkinliğim", @owned_events.count], ["İncelemede", @review_events.count], ["Yayında", @live_events_count]].each do |label, value| %>
-      <%= render "shared/stat_card", label: label, value: value %>
+<section class="member-workbench dashboard-page page-shell">
+  <header class="workbench-hero dashboard-hero">
+    <div class="soft-grid absolute inset-0 opacity-35"></div>
+    <div class="workbench-hero-copy">
+      <p class="section-eyebrow text-citron">Planlarım</p>
+      <h1>Hoş geldin, <span><%= user_label %></span></h1>
+      <p>Yaklaşan planlarını, RSVP geçmişini ve organizatör tarafındaki etkinliklerini tek ekranda takip et.</p>
+
+      <div class="workbench-hero-actions">
+        <%= link_to explore_events_path, class: "workbench-primary-action focus-ring" do %>
+          <%= render "icons/calendar", class: "size-4" %>
+          <span>Etkinlik bul</span>
+        <% end %>
+        <%= link_to new_organizer_event_path, class: "workbench-secondary-action focus-ring" do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          <span>Etkinlik oluştur</span>
+        <% end %>
+      </div>
+    </div>
+
+    <aside class="dashboard-next">
+      <p class="section-eyebrow text-white/42">Sıradaki plan</p>
+      <% if next_event.present? %>
+        <div class="dashboard-next-date">
+          <span><%= next_event.date.strftime("%b") %></span>
+          <strong><%= next_event.date.strftime("%-d") %></strong>
+        </div>
+        <h2><%= link_to next_event.title, event_path(next_event), class: "focus-ring" %></h2>
+        <p><%= l(next_event.date, format: :long) %> · <%= event_place_text(next_event) %></p>
+        <span class="<%= attendance_status_badge_classes(@next_plan.status) %>"><%= attendance_status_label(@next_plan.status) %></span>
+      <% else %>
+        <div class="dashboard-next-empty">
+          <span class="dashboard-empty-dot"></span>
+          <h2>Takvim hazır.</h2>
+          <p>İlk planını eklemek için keşfet sayfasından ilgini çeken bir etkinliği seç.</p>
+          <%= link_to "Keşfe git", explore_events_path, class: "btn-electric focus-ring" %>
+        </div>
+      <% end %>
+    </aside>
+  </header>
+
+  <div class="workbench-signal-grid">
+    <% [
+      [ "Yaklaşan", @upcoming_rsvps.count, "Takvimindeki aktif RSVP" ],
+      [ "Toplam RSVP", @rsvps.count, "İşaretlediğin etkinlikler" ],
+      [ "Etkinliğim", @owned_events.count, "Başlattığın fikirler" ],
+      [ "Yayında", @live_events_count, "Herkese açık etkinlikler" ]
+    ].each_with_index do |(label, value, hint), index| %>
+      <article class="workbench-signal-card is-tone-<%= index + 1 %>">
+        <span class="workbench-signal-dot"></span>
+        <p><%= label %></p>
+        <strong><%= value %></strong>
+        <small><%= hint %></small>
+      </article>
     <% end %>
   </div>
 
-  <div class="grid gap-6 lg:grid-cols-2">
-    <section class="space-y-4">
-      <div class="flex items-center justify-between">
+  <div class="dashboard-grid">
+    <section class="workbench-panel dashboard-timeline-panel">
+      <div class="workbench-section-head">
         <div>
           <p class="section-eyebrow text-coral">Takvim</p>
-          <h2 class="font-display mt-1 text-2xl font-extrabold tracking-tight text-stone-950">Yaklaşan planların</h2>
+          <h2>Yaklaşan planların</h2>
         </div>
-        <%= link_to "Etkinlik bul", explore_events_path, class: "font-bold text-stone-700 hover:text-coral focus-ring" %>
+        <%= link_to "Etkinlik bul", explore_events_path, class: "workbench-link focus-ring" %>
       </div>
 
       <% if @upcoming_rsvps.any? %>
-        <div class="space-y-3">
+        <div class="dashboard-timeline">
           <% @upcoming_rsvps.each do |attendance| %>
-            <article class="cinema-panel rounded-[1.25rem] p-4">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <h3 class="font-body text-lg font-bold text-stone-950"><%= link_to attendance.event.title, event_path(attendance.event), class: "hover:text-coral focus-ring" %></h3>
-                  <p class="mt-1 text-sm font-medium text-stone-600"><%= l(attendance.event.date, format: :long) %> · <%= event_place_text(attendance.event) %></p>
+            <% event = attendance.event %>
+            <article class="dashboard-timeline-item">
+              <time datetime="<%= event.date.iso8601 %>">
+                <span><%= event.date.strftime("%b") %></span>
+                <strong><%= event.date.strftime("%-d") %></strong>
+              </time>
+              <div>
+                <div class="dashboard-item-kicker">
+                  <span><%= event.date.strftime("%H:%M") %></span>
+                  <span class="<%= attendance_status_badge_classes(attendance.status) %>"><%= attendance_status_label(attendance.status) %></span>
                 </div>
-                <span class="<%= attendance_status_badge_classes(attendance.status) %>"><%= attendance_status_label(attendance.status) %></span>
+                <h3><%= link_to event.title, event_path(event), class: "focus-ring" %></h3>
+                <p><%= event_place_text(event) %></p>
               </div>
             </article>
           <% end %>
         </div>
       <% else %>
-        <%= render "shared/empty_state", title: "Henüz planın yok", description: "Bir etkinlik keşfet ve RSVP vererek takvimine ekle." %>
+        <div class="workbench-empty-state">
+          <span class="dashboard-empty-dot"></span>
+          <h3>Henüz planın yok</h3>
+          <p>Bir etkinlik keşfet ve RSVP vererek takvimine ekle.</p>
+          <%= link_to "Etkinlik keşfet", explore_events_path, class: "btn-void focus-ring" %>
+        </div>
       <% end %>
     </section>
 
-    <section class="space-y-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="section-eyebrow text-coral">Organizatör</p>
-          <h2 class="font-display mt-1 text-2xl font-extrabold tracking-tight text-stone-950">Başlattığın etkinlikler</h2>
+    <aside class="dashboard-side-stack">
+      <section class="workbench-panel">
+        <div class="workbench-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Organizatör</p>
+            <h2>Etkinlik özeti</h2>
+          </div>
+          <%= link_to "Tümünü aç", organizer_events_path, class: "workbench-link focus-ring" %>
         </div>
-        <%= link_to "Etkinliklerim", organizer_events_path, class: "font-bold text-stone-700 hover:text-coral focus-ring" %>
-      </div>
 
-      <% if @owned_events.any? %>
-        <div class="space-y-3">
-          <% @owned_events.limit(5).each do |event| %>
-            <article class="cinema-panel rounded-[1.25rem] p-4">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <h3 class="font-body text-lg font-bold text-stone-950"><%= link_to event.title, organizer_event_path(event), class: "hover:text-coral focus-ring" %></h3>
-                  <p class="mt-1 text-sm font-medium text-stone-600"><%= event_lifecycle_hint(event) %></p>
+        <% if @owned_events.any? %>
+          <div class="dashboard-mini-list">
+            <% @owned_events.limit(4).each do |event| %>
+              <article class="dashboard-mini-event">
+                <div class="dashboard-mini-poster <%= event_poster_background_classes(event) %>">
+                  <% if event.image.attached? %>
+                    <%= image_tag event.image, alt: "", loading: "lazy", aria: { hidden: true } %>
+                  <% else %>
+                    <div class="poster-noise absolute inset-0"></div>
+                  <% end %>
                 </div>
-                <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
-              </div>
-            </article>
-          <% end %>
-        </div>
-      <% else %>
-        <% action = capture do %>
-          <%= link_to "İlk etkinliğini oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+                <div>
+                  <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
+                  <h3><%= link_to event.title, organizer_event_path(event), class: "focus-ring" %></h3>
+                  <p><%= event_lifecycle_hint(event) %></p>
+                </div>
+              </article>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="workbench-empty-state is-compact">
+            <h3>Henüz etkinlik oluşturmadın</h3>
+            <p>Taslakla başla, hazır olduğunda incelemeye gönder.</p>
+            <%= link_to "İlk etkinliğini oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+          </div>
         <% end %>
-        <%= render "shared/empty_state", title: "Henüz etkinlik oluşturmadın", description: "Taslakla başla, hazır olduğunda incelemeye gönder.", action: action %>
-      <% end %>
-    </section>
+      </section>
+
+      <section class="workbench-panel">
+        <div class="workbench-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Hareket</p>
+            <h2>Son RSVP’ler</h2>
+          </div>
+        </div>
+
+        <% if @recent_rsvps.any? %>
+          <div class="dashboard-activity-list">
+            <% @recent_rsvps.each do |attendance| %>
+              <article>
+                <span class="dashboard-activity-dot"></span>
+                <div>
+                  <h3><%= link_to attendance.event.title, event_path(attendance.event), class: "focus-ring" %></h3>
+                  <p><%= attendance_status_label(attendance.status) %> · <%= l(attendance.updated_at, format: :short) %></p>
+                </div>
+              </article>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="workbench-empty-state is-compact">
+            <h3>Henüz hareket yok</h3>
+            <p>RSVP verdiğinde güncel durumların burada görünür.</p>
+          </div>
+        <% end %>
+      </section>
+    </aside>
   </div>
 </section>
