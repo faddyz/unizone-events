@@ -199,6 +199,21 @@
     box-shadow var(--transition-medium);
 }
 
+.is-at-start .carousel-side-button.is-left,
+.is-at-end .carousel-side-button.is-right,
+:not(.is-scrollable) > .carousel-stage .carousel-side-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.is-at-start .carousel-side-button.is-left {
+  transform: translate(-0.35rem, -50%) scale(0.96);
+}
+
+.is-at-end .carousel-side-button.is-right {
+  transform: translate(0.35rem, -50%) scale(0.96);
+}
+
 .carousel-side-button.is-left {
   left: -1.625rem;
 }

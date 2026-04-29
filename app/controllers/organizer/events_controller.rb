@@ -22,11 +22,11 @@ class Organizer::EventsController < ApplicationController
   end
 
   def create
-    @event = current_user.events.build(event_params.merge(status: "draft"))
+    @event = current_user.events.build(event_params.merge(status: "submitted"))
     authorize @event
 
     if @event.save
-      redirect_to organizer_event_path(@event), notice: t("flash.draft_saved")
+      redirect_to organizer_event_path(@event), notice: t("flash.event_submitted")
     else
       render :new, status: :unprocessable_entity
     end

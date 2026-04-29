@@ -35,7 +35,7 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "İlgileniyorum"
   end
 
-  test "organizer can create a draft and submit it for review" do
+  test "organizer can create an event directly for review" do
     sign_in @member
 
     assert_difference -> { @member.events.count }, 1 do
@@ -53,11 +53,6 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
 
     event = @member.events.order(:created_at).last
     assert_redirected_to organizer_event_path(event)
-    assert_equal "draft", event.status
-
-    patch submit_organizer_event_path(event)
-
-    assert_redirected_to organizer_event_path(event.reload)
     assert_equal "submitted", event.status
   end
 

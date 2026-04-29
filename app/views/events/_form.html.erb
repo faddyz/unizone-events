@@ -1,31 +1,153 @@
-<%= form_with model: model, url: url, class: "space-y-6", data: { controller: "wizard" } do |form| %>
+<%
+  mode = local_assigns.fetch(:mode, :new).to_sym
+  form_title = local_assigns.fetch(:form_title, mode == :edit ? "Etkinliği düzenle" : "Etkinlik stüdyosu")
+  form_description = local_assigns.fetch(:form_description, "Detayları adım adım netleştir.")
+  steps = [
+    { label: "Temel", title: "Sahne adı ve kategori", summary: "İnsanların akışta ilk göreceği sinyali netleştir.", icon: "edit" },
+    { label: "Zaman/Yer", title: "Plan yapılabilir detaylar", summary: "Tarih, saat, konum ve kontenjan bilgisini temiz gir.", icon: "calendar" },
+    { label: "Hikaye", title: "Katılma sebebi", summary: "Etkinliğin atmosferini ve kayıt akışını görünür yap.", icon: "ticket" },
+    { label: "Afiş", title: "Son kontrol", summary: "Görseli ekle, yayına giden akışı kontrol et ve kaydet.", icon: "check_circle" }
+  ]
+  preview_date = model.date.present? ? l(model.date, format: :long) : "Tarih seçilmedi"
+  preview_month = model.date.present? ? model.date.strftime("%b") : "Ay"
+  preview_day = model.date.present? ? model.date.strftime("%-d") : "--"
+  preview_price = event_price_text(model)
+  preview_capacity = model.capacity.present? ? "#{model.capacity} kişi" : "Kontenjan açık"
+  preview_ticket = model.ticket_url.present? ? "Dış kayıt hazır" : "Unizone RSVP"
+  preview_description = model.description.presence || "Etkinliğin atmosferi, akışı ve katılımcıların ne bekleyebileceği burada canlanacak."
+%>
+
+<%= form_with model: model,
+      url: url,
+      class: "event-form-studio",
+      data: {
+        controller: "wizard event-preview",
+        action: "input->event-preview#refresh change->event-preview#refresh input->wizard#refresh change->wizard#refresh"
+      } do |form| %>
   <% if model.errors.any? %>
-    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">
-      <%= model.errors.full_messages.to_sentence %>
+    <div class="event-form-error" role="alert">
+      <strong>Bir iki alan daha ilgi istiyor.</strong>
+      <span><%= model.errors.full_messages.to_sentence %></span>
     </div>
   <% end %>
 
-  <div class="space-y-3">
-    <div class="h-1.5 overflow-hidden rounded-full bg-stone-100">
-      <div class="wizard-progress-line h-full rounded-full transition-all duration-300" data-wizard-target="progress"></div>
-    </div>
-    <div class="grid gap-2 text-xs font-black uppercase tracking-[0.12em] sm:grid-cols-4">
-      <% ["Bilgiler", "Zaman/Yer", "Görsel", "Önizleme"].each_with_index do |label, index| %>
-        <button type="button" class="rounded-full bg-white px-3 py-2 text-stone-600 transition focus-ring" data-wizard-target="tab" data-wizard-index="<%= index %>" data-action="wizard#go">
-          <%= label %>
-        </button>
-      <% end %>
-    </div>
-  </div>
+  <div class="event-form-layout">
+    <nav class="event-form-step-rail" aria-label="Etkinlik oluşturma adımları">
+      <div class="event-form-rail-head">
+        <p class="section-eyebrow text-coral"><%= mode == :edit ? "Düzenleme" : "Yeni etkinlik" %></p>
+        <h2><%= form_title %></h2>
+        <p><%= form_description %></p>
+      </div>
 
-  <%= render "events/form_fields", form: form, model: model %>
+      <div class="event-form-steps">
+        <% steps.each_with_index do |step, index| %>
+          <button type="button"
+                  class="event-form-step-tab focus-ring"
+                  data-wizard-target="tab"
+                  data-wizard-index="<%= index %>"
+                  data-wizard-title="<%= step[:title] %>"
+                  data-wizard-summary="<%= step[:summary] %>"
+                  data-action="wizard#go keydown->wizard#keydown">
+            <span class="event-form-step-tab-index"><%= (index + 1).to_s.rjust(2, "0") %></span>
+            <span class="event-form-step-tab-copy">
+              <span><%= step[:label] %></span>
+              <small><%= step[:summary] %></small>
+            </span>
+            <span class="event-form-step-tab-check">
+              <%= render "icons/#{step[:icon]}", class: "size-4" %>
+            </span>
+          </button>
+        <% end %>
+      </div>
+    </nav>
 
-  <div class="flex flex-wrap items-center gap-3 border-t border-stone-100 pt-6">
-    <button type="button" class="btn-outline focus-ring" data-wizard-target="previous" data-action="wizard#previous">Geri</button>
-    <button type="button" class="btn-void focus-ring" data-wizard-target="next" data-action="wizard#next">Devam</button>
-    <%= form.submit submit_label, class: "btn-electric cursor-pointer border-0 focus-ring", data: { wizard_target: "submit" } %>
-    <% if local_assigns[:cancel_path] %>
-      <%= link_to "Vazgeç", cancel_path, class: "btn-outline focus-ring" %>
-    <% end %>
+    <section class="event-form-workspace">
+      <header class="event-form-workspace-head">
+        <div>
+          <p class="section-eyebrow text-coral">Adım <span data-wizard-target="current">1</span>/<span data-wizard-target="total"><%= steps.length %></span></p>
+          <h2 data-wizard-target="stepTitle"><%= steps.first[:title] %></h2>
+          <p data-wizard-target="stepSummary"><%= steps.first[:summary] %></p>
+        </div>
+        <div class="event-form-progress" aria-hidden="true">
+          <span data-wizard-target="progress"></span>
+        </div>
+      </header>
+
+      <%= render "events/form_fields", form: form, model: model %>
+
+      <footer class="event-form-actions">
+        <button type="button" class="btn-outline focus-ring" data-wizard-target="previous" data-action="wizard#previous">Geri</button>
+        <button type="button" class="btn-void focus-ring" data-wizard-target="next" data-action="wizard#next">Devam</button>
+        <%= form.submit submit_label, class: "btn-electric cursor-pointer border-0 focus-ring", data: { wizard_target: "submit" } %>
+        <% if local_assigns[:cancel_path] %>
+          <%= link_to "Vazgeç", cancel_path, class: "btn-outline focus-ring" %>
+        <% end %>
+      </footer>
+    </section>
+
+    <aside class="event-form-preview-shell" aria-label="Etkinlik önizlemesi">
+      <div class="event-form-preview-card">
+        <div class="event-form-preview-poster <%= event_poster_background_classes(model) %>" data-event-preview-target="poster">
+          <div class="poster-noise absolute inset-0"></div>
+          <div class="event-form-preview-date">
+            <span data-event-preview-target="previewMonth"><%= preview_month %></span>
+            <strong data-event-preview-target="previewDay"><%= preview_day %></strong>
+          </div>
+          <% if model.image.attached? %>
+            <%= image_tag model.image, alt: "", class: "event-form-preview-image", data: { event_preview_target: "previewImage" } %>
+          <% else %>
+            <img alt="" class="event-form-preview-image hidden" data-event-preview-target="previewImage">
+          <% end %>
+          <div class="event-form-preview-fallback <%= model.image.attached? ? "hidden" : "" %>" data-event-preview-target="previewFallback">
+            <span class="section-eyebrow">Afiş önizlemesi</span>
+            <strong data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı" %></strong>
+          </div>
+        </div>
+
+        <div class="event-form-preview-body">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="event-form-preview-category" data-event-preview-target="previewCategory"><%= event_category_title(model) %></span>
+            <span class="event-form-preview-status"><%= model.persisted? ? event_status_label(model) : "İncelemeye gidecek" %></span>
+          </div>
+
+          <h3 data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı burada parlayacak" %></h3>
+          <p data-event-preview-target="previewDescription"><%= truncate(preview_description, length: 130) %></p>
+
+          <dl class="event-form-preview-facts">
+            <div>
+              <dt>Ne zaman</dt>
+              <dd data-event-preview-target="previewDate"><%= preview_date %></dd>
+            </div>
+            <div>
+              <dt>Nerede</dt>
+              <dd data-event-preview-target="previewLocation"><%= model.location.presence || "Konum seçilmedi" %></dd>
+            </div>
+            <div>
+              <dt>Ücret</dt>
+              <dd data-event-preview-target="previewPrice"><%= preview_price %></dd>
+            </div>
+            <div>
+              <dt>Kontenjan</dt>
+              <dd data-event-preview-target="previewCapacity"><%= preview_capacity %></dd>
+            </div>
+          </dl>
+
+          <div class="event-form-preview-ticket">
+            <span data-event-preview-target="previewTicket"><%= preview_ticket %></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-form-checklist">
+        <p class="section-eyebrow text-coral">Yayın kontrolü</p>
+        <ul>
+          <li data-event-preview-target="checkItem" data-check="title">Başlık ve kategori hazır</li>
+          <li data-event-preview-target="checkItem" data-check="date">Tarih ve saat net</li>
+          <li data-event-preview-target="checkItem" data-check="location">Konum anlaşılır</li>
+          <li data-event-preview-target="checkItem" data-check="story">Hikaye karar verdiriyor</li>
+          <li data-event-preview-target="checkItem" data-check="image">Afiş görseli eklendi</li>
+        </ul>
+      </div>
+    </aside>
   </div>
 <% end %>
