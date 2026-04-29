@@ -1,45 +1,75 @@
 <% content_for :title, "Giriş Yap" %>
 
-<section class="page-shell grid min-h-[72vh] items-center gap-8 lg:grid-cols-[1fr_440px]">
-  <div class="relative hidden overflow-hidden rounded-[1.5rem] bg-ink p-8 text-white lg:block">
-    <div class="soft-grid absolute inset-0 opacity-35"></div>
-    <div class="hero-energy absolute inset-0 opacity-70"></div>
-    <div class="relative">
-      <%= render "shared/brand_mark", size: "xl", tagline: "Planına geri dön" %>
-      <h1 class="font-display mt-10 max-w-2xl text-6xl font-extrabold leading-[0.92] tracking-tight">Şehrin ritmi hesabında bekliyor.</h1>
-      <p class="mt-5 max-w-md text-sm font-medium leading-6 text-white/68">RSVP verdiğin etkinlikleri takip et, yeni planlar keşfet ve kendi etkinliğini başlat.</p>
-    </div>
-  </div>
+<section class="auth-page">
+  <div class="auth-shell page-shell">
+    <div class="auth-workspace">
+      <%= render "devise/shared/auth_showcase",
+            aria_label: "Unizone keşif özeti",
+            eyebrow: "Şehrin etkinlik ajansı",
+            title: "Planını<br><span>şimdi</span><br>yap.",
+            summary: "Konserlere, atölyelere, sergilere ve gece planlarına tek yerden dön.",
+            featured_label: "Bu hafta öne çıkanlar",
+            cards: [
+              { title: "Kadıköy çatı konseri", meta: "7 Tem", label: "Müzik", tone: "is-citron" },
+              { title: "Ürün buluşması", meta: "Yarın", label: "Teknoloji", tone: "is-blue" },
+              { title: "Poster walk", meta: "3 May", label: "Sanat", tone: "is-coral" }
+            ] %>
 
-  <div class="cinema-panel rounded-[1.35rem] p-6">
-    <p class="section-eyebrow text-coral">Tekrar hoş geldin</p>
-    <h1 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Giriş yap</h1>
-    <p class="mt-2 text-sm font-medium text-stone-600">Unizone hesabına devam et.</p>
+      <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-card-head">
+          <p class="section-eyebrow text-coral">Hesap</p>
+          <h1 id="auth-title">Tekrar hoş geldin</h1>
+          <p>E-postan ve şifrenle devam et.</p>
+        </div>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-6 space-y-4" }) do |f| %>
-      <div>
-        <%= f.label :email, "E-posta", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
+        <nav class="auth-switcher" aria-label="Hesap işlemleri">
+          <span class="auth-switcher-item is-active" aria-current="page">Giriş</span>
+          <%= link_to "Kayıt", new_user_registration_path, class: "auth-switcher-item focus-ring" %>
+        </nav>
 
-      <div>
-        <%= f.label :password, "Şifre", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.password_field :password, autocomplete: "current-password", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "auth-form" }) do |f| %>
+          <div class="auth-field">
+            <%= f.label :email, "E-posta", class: "auth-label" %>
+            <%= f.email_field :email,
+                  autofocus: true,
+                  autocomplete: "email",
+                  required: true,
+                  class: "auth-input",
+                  placeholder: "ornek@unizone.com" %>
+          </div>
 
-      <% if devise_mapping.rememberable? %>
-        <label class="flex items-center gap-2 text-sm font-semibold text-stone-700">
-          <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-stone-300 text-stone-950 focus:ring-citron" %>
-          Beni hatırla
-        </label>
-      <% end %>
+          <div class="auth-field">
+            <div class="auth-label-row">
+              <%= f.label :password, "Şifre", class: "auth-label" %>
+              <%= link_to "Şifremi unuttum", new_password_path(resource_name), class: "auth-inline-link focus-ring" %>
+            </div>
+            <%= f.password_field :password,
+                  autocomplete: "current-password",
+                  required: true,
+                  class: "auth-input",
+                  placeholder: "Şifren" %>
+          </div>
 
-      <%= f.submit "Giriş yap", class: "btn-void w-full cursor-pointer border-0 focus-ring" %>
-    <% end %>
+          <% if devise_mapping.rememberable? %>
+            <label class="auth-check-row">
+              <%= f.check_box :remember_me, class: "auth-checkbox" %>
+              <span>Beni hatırla</span>
+            </label>
+          <% end %>
 
-    <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-stone-100 pt-5 text-sm">
-      <%= link_to "Şifremi unuttum", new_password_path(resource_name), class: "font-black text-stone-700 hover:text-coral focus-ring" %>
-      <%= link_to "Hesap oluştur", new_user_registration_path, class: "font-black text-stone-700 hover:text-coral focus-ring" %>
+          <button type="submit" class="auth-submit btn-void focus-ring">
+            <span>Giriş yap</span>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        <% end %>
+
+        <div class="auth-card-footer">
+          <span>Yeni misin?</span>
+          <%= link_to "Hesap oluştur", new_user_registration_path, class: "focus-ring" %>
+        </div>
+      </section>
     </div>
   </div>
 </section>

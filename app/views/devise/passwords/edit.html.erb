@@ -1,30 +1,80 @@
 <% content_for :title, "Yeni Şifre" %>
 
-<section class="page-shell mx-auto max-w-md space-y-6">
-  <div class="text-center">
-    <div class="mb-5 inline-flex text-stone-950">
-      <%= render "shared/brand_mark", size: "xl", show_wordmark: false %>
+<%
+  password_error = resource.errors[:password].any?
+  confirmation_error = resource.errors[:password_confirmation].any?
+  password_describedby = [("user_password_hint" if @minimum_password_length), ("user_password_error" if password_error)].compact.join(" ").presence
+%>
+
+<section class="auth-page">
+  <div class="auth-shell page-shell">
+    <div class="auth-workspace auth-workspace-recovery">
+      <%= render "devise/shared/auth_showcase",
+            aria_label: "Yeni şifre özeti",
+            eyebrow: "Yeni şifre",
+            title: "Erişimini<br><span>yenile</span><br>ve dön.",
+            summary: "Yeni şifreni belirle; planların ve etkinliklerin hesabında kalır.",
+            featured_label: "Kontrol listesi",
+            cards: [
+              { title: "Yeni şifre", meta: "Zorunlu", label: "Alan", tone: "is-citron" },
+              { title: "Tekrar eşleşir", meta: "Kontrol", label: "Doğrula", tone: "is-blue" },
+              { title: "Girişe devam", meta: "Hazır", label: "Hesap", tone: "is-coral" }
+            ] %>
+
+      <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-card-head">
+          <p class="section-eyebrow text-coral">Hesap erişimi</p>
+          <h1 id="auth-title">Yeni şifre belirle</h1>
+          <p>Yeni şifreni iki kez yaz.</p>
+        </div>
+
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "auth-form" }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+          <%= f.hidden_field :reset_password_token %>
+
+          <div class="auth-field">
+            <%= f.label :password, "Yeni şifre", class: "auth-label" %>
+            <%= f.password_field :password,
+                  autofocus: true,
+                  autocomplete: "new-password",
+                  required: true,
+                  class: "auth-input #{password_error ? "is-invalid" : ""}",
+                  placeholder: "En az #{@minimum_password_length || 6} karakter",
+                  aria: { invalid: password_error ? "true" : "false", describedby: password_describedby } %>
+            <% if @minimum_password_length %>
+              <p id="user_password_hint" class="auth-field-hint">En az <%= @minimum_password_length %> karakter.</p>
+            <% end %>
+            <% if password_error %>
+              <p id="user_password_error" class="auth-field-error"><%= resource.errors.full_messages_for(:password).first %></p>
+            <% end %>
+          </div>
+
+          <div class="auth-field">
+            <%= f.label :password_confirmation, "Yeni şifre tekrarı", class: "auth-label" %>
+            <%= f.password_field :password_confirmation,
+                  autocomplete: "new-password",
+                  required: true,
+                  class: "auth-input #{confirmation_error ? "is-invalid" : ""}",
+                  placeholder: "Tekrar yaz",
+                  aria: { invalid: confirmation_error ? "true" : "false", describedby: confirmation_error ? "user_password_confirmation_error" : nil } %>
+            <% if confirmation_error %>
+              <p id="user_password_confirmation_error" class="auth-field-error"><%= resource.errors.full_messages_for(:password_confirmation).first %></p>
+            <% end %>
+          </div>
+
+          <button type="submit" class="auth-submit btn-void focus-ring">
+            <span>Şifreyi değiştir</span>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        <% end %>
+
+        <div class="auth-card-footer">
+          <span>Oturum açmaya hazır mısın?</span>
+          <%= link_to "Giriş yap", new_user_session_path, class: "focus-ring" %>
+        </div>
+      </section>
     </div>
-    <p class="section-eyebrow text-coral">Hesap erişimi</p>
-    <h1 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Yeni şifre belirle</h1>
   </div>
-
-  <%= render "shared/panel" do %>
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "space-y-4" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-      <%= f.hidden_field :reset_password_token %>
-
-      <div>
-        <%= f.label :password, "Yeni şifre", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
-
-      <div>
-        <%= f.label :password_confirmation, "Yeni şifre tekrarı", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
-
-      <%= f.submit "Şifreyi değiştir", class: "btn-void w-full cursor-pointer border-0 focus-ring" %>
-    <% end %>
-  <% end %>
 </section>

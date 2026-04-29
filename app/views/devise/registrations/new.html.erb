@@ -1,51 +1,112 @@
 <% content_for :title, "Hesap Oluştur" %>
 
-<section class="page-shell grid min-h-[72vh] items-center gap-8 lg:grid-cols-[1fr_460px]">
-  <div class="relative hidden overflow-hidden rounded-[1.5rem] bg-citron p-8 text-stone-950 lg:block">
-    <div class="absolute inset-y-0 right-0 w-1/3 bg-white/30 blur-3xl"></div>
-    <div class="relative">
-      <%= render "shared/brand_mark", size: "xl", tagline: "Yeni planlar burada başlar" %>
-      <h1 class="font-display mt-10 max-w-2xl text-6xl font-extrabold leading-[0.92] tracking-tight">Etkinlikleri keşfet, yerini ayır, kendi sahneni kur.</h1>
-      <p class="mt-5 max-w-md text-sm font-semibold leading-6 text-stone-700">Hesap oluşturduğunda RSVP verebilir ve istediğin anda etkinlik taslağı başlatabilirsin.</p>
-    </div>
-  </div>
+<%
+  name_error = resource.errors[:name].any?
+  email_error = resource.errors[:email].any?
+  password_error = resource.errors[:password].any?
+  confirmation_error = resource.errors[:password_confirmation].any?
+  password_describedby = [("user_password_hint" if @minimum_password_length), ("user_password_error" if password_error)].compact.join(" ").presence
+%>
 
-  <div class="cinema-panel rounded-[1.35rem] p-6">
-    <p class="section-eyebrow text-coral">Aramıza katıl</p>
-    <h1 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Hesap oluştur</h1>
-    <p class="mt-2 text-sm font-medium text-stone-600">Unizone’da plan yapmaya başla.</p>
+<section class="auth-page">
+  <div class="auth-shell page-shell">
+    <div class="auth-workspace">
+      <%= render "devise/shared/auth_showcase",
+            aria_label: "Unizone başlangıç özeti",
+            eyebrow: "Yeni plan alanı",
+            title: "Şehre<br><span>yakın</span><br>kal.",
+            summary: "Hesabınla etkinlikleri kaydet, katılımını seç ve kendi planını hazırlamaya başla.",
+            featured_label: "Başlamak için",
+            cards: [
+              { title: "Planları kaydet", meta: "Tek dokunuş", label: "Keşif", tone: "is-citron" },
+              { title: "Katılımını seç", meta: "Gidiyorum / kayıtlı", label: "RSVP", tone: "is-blue" },
+              { title: "Etkinlik stüdyosu", meta: "Taslak oluştur", label: "Stüdyo", tone: "is-coral" }
+            ] %>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "mt-6 space-y-4" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
+      <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-card-head">
+          <p class="section-eyebrow text-coral">Yeni hesap</p>
+          <h1 id="auth-title">Unizone’a katıl</h1>
+          <p>Adını, e-postanı ve şifreni belirle.</p>
+        </div>
 
-      <div>
-        <%= f.label :name, "Ad", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
+        <nav class="auth-switcher" aria-label="Hesap işlemleri">
+          <%= link_to "Giriş", new_user_session_path, class: "auth-switcher-item focus-ring" %>
+          <span class="auth-switcher-item is-active" aria-current="page">Kayıt</span>
+        </nav>
 
-      <div>
-        <%= f.label :email, "E-posta", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.email_field :email, autocomplete: "email", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "auth-form" }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
 
-      <div>
-        <%= f.label :password, "Şifre", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.password_field :password, autocomplete: "new-password", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-        <% if @minimum_password_length %>
-          <p class="mt-2 text-xs font-medium text-stone-500">En az <%= @minimum_password_length %> karakter.</p>
+          <div class="auth-field">
+            <%= f.label :name, "Ad", class: "auth-label" %>
+            <%= f.text_field :name,
+                  autofocus: true,
+                  autocomplete: "name",
+                  required: true,
+                  class: "auth-input #{name_error ? "is-invalid" : ""}",
+                  placeholder: "Adın",
+                  aria: { invalid: name_error ? "true" : "false", describedby: name_error ? "user_name_error" : nil } %>
+            <% if name_error %>
+              <p id="user_name_error" class="auth-field-error"><%= resource.errors.full_messages_for(:name).first %></p>
+            <% end %>
+          </div>
+
+          <div class="auth-field">
+            <%= f.label :email, "E-posta", class: "auth-label" %>
+            <%= f.email_field :email,
+                  autocomplete: "email",
+                  required: true,
+                  class: "auth-input #{email_error ? "is-invalid" : ""}",
+                  placeholder: "ornek@unizone.com",
+                  aria: { invalid: email_error ? "true" : "false", describedby: email_error ? "user_email_error" : nil } %>
+            <% if email_error %>
+              <p id="user_email_error" class="auth-field-error"><%= resource.errors.full_messages_for(:email).first %></p>
+            <% end %>
+          </div>
+
+          <div class="auth-field">
+            <%= f.label :password, "Şifre", class: "auth-label" %>
+            <%= f.password_field :password,
+                  autocomplete: "new-password",
+                  required: true,
+                  class: "auth-input #{password_error ? "is-invalid" : ""}",
+                  placeholder: "En az #{@minimum_password_length || 6} karakter",
+                  aria: { invalid: password_error ? "true" : "false", describedby: password_describedby } %>
+            <% if @minimum_password_length %>
+              <p id="user_password_hint" class="auth-field-hint">En az <%= @minimum_password_length %> karakter.</p>
+            <% end %>
+            <% if password_error %>
+              <p id="user_password_error" class="auth-field-error"><%= resource.errors.full_messages_for(:password).first %></p>
+            <% end %>
+          </div>
+
+          <div class="auth-field">
+            <%= f.label :password_confirmation, "Şifre tekrarı", class: "auth-label" %>
+            <%= f.password_field :password_confirmation,
+                  autocomplete: "new-password",
+                  required: true,
+                  class: "auth-input #{confirmation_error ? "is-invalid" : ""}",
+                  placeholder: "Tekrar yaz",
+                  aria: { invalid: confirmation_error ? "true" : "false", describedby: confirmation_error ? "user_password_confirmation_error" : nil } %>
+            <% if confirmation_error %>
+              <p id="user_password_confirmation_error" class="auth-field-error"><%= resource.errors.full_messages_for(:password_confirmation).first %></p>
+            <% end %>
+          </div>
+
+          <button type="submit" class="auth-submit btn-electric focus-ring">
+            <span>Hesap oluştur</span>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
         <% end %>
-      </div>
 
-      <div>
-        <%= f.label :password_confirmation, "Şifre tekrarı", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
-
-      <%= f.submit "Hesap oluştur", class: "btn-electric w-full cursor-pointer border-0 focus-ring" %>
-    <% end %>
-
-    <div class="mt-5 border-t border-stone-100 pt-5 text-sm">
-      <%= link_to "Zaten hesabın var mı? Giriş yap", new_user_session_path, class: "font-black text-stone-700 hover:text-coral focus-ring" %>
+        <div class="auth-card-footer">
+          <span>Zaten hesabın var mı?</span>
+          <%= link_to "Giriş yap", new_user_session_path, class: "focus-ring" %>
+        </div>
+      </section>
     </div>
   </div>
 </section>
