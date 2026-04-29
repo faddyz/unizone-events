@@ -1,76 +1,186 @@
 <% content_for :title, "Etkinliklerim" %>
 
-<section class="page-shell space-y-8">
-  <% actions = capture do %>
-    <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
-  <% end %>
-  <%= render "shared/page_header",
-        eyebrow: "Etkinliklerim",
-        title: "Planlarını taslaktan yayına taşı.",
-        description: "Fikirlerini düzenle, inceleme durumunu takip et ve yayındayken RSVP hareketini gör.",
-        actions: actions %>
+<% active_filters = @query.present? || @selected_status != "all" %>
+<% status_counts = @stats.transform_keys(&:to_s) %>
 
-  <div class="grid gap-4 md:grid-cols-4">
-    <% @stats.each do |key, value| %>
-      <%= render "shared/stat_card", label: event_status_label(Event.new(status: key.to_s)), value: value %>
+<section class="member-workbench organizer-workbench page-shell">
+  <header class="workbench-hero organizer-hero">
+    <div class="soft-grid absolute inset-0 opacity-35"></div>
+    <div class="workbench-hero-copy">
+      <p class="section-eyebrow text-citron">Etkinliklerim</p>
+      <h1>Planlarını taslaktan yayına taşı.</h1>
+      <p>Fikirlerini düzenle, inceleme durumunu takip et ve yayındayken RSVP hareketini net bir iş masasında gör.</p>
+
+      <div class="workbench-hero-actions">
+        <%= link_to new_organizer_event_path, class: "workbench-primary-action focus-ring" do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          <span>Etkinlik oluştur</span>
+        <% end %>
+        <%= link_to dashboard_path, class: "workbench-secondary-action focus-ring" do %>
+          <%= render "icons/calendar", class: "size-4" %>
+          <span>Planlarıma dön</span>
+        <% end %>
+      </div>
+    </div>
+
+    <aside class="organizer-hero-status">
+      <p class="section-eyebrow text-white/42">Durum nabzı</p>
+      <div class="organizer-hero-status-grid">
+        <div>
+          <strong><%= @stats[:draft] %></strong>
+          <span>Taslak</span>
+        </div>
+        <div>
+          <strong><%= @stats[:submitted] %></strong>
+          <span>İncelemede</span>
+        </div>
+        <div>
+          <strong><%= @stats[:published] %></strong>
+          <span>Yayında</span>
+        </div>
+      </div>
+      <p class="organizer-hero-note">Hazır olmayan fikirleri taslakta tut, hazır olanları tek hamlede incelemeye gönder.</p>
+    </aside>
+  </header>
+
+  <div class="workbench-signal-grid">
+    <% [
+      [ "Toplam", @stats[:total], "Tüm etkinliklerin" ],
+      [ "Taslak", @stats[:draft], "Düzenleme bekleyenler" ],
+      [ "İncelemede", @stats[:submitted], "Onay kuyruğunda" ],
+      [ "Yayında", @stats[:published], "Keşifte görünenler" ]
+    ].each_with_index do |(label, value, hint), index| %>
+      <article class="workbench-signal-card is-tone-<%= index + 1 %>">
+        <span class="workbench-signal-dot"></span>
+        <p><%= label %></p>
+        <strong><%= value %></strong>
+        <small><%= hint %></small>
+      </article>
     <% end %>
   </div>
 
-  <% if @events.any? %>
-    <div class="grid gap-4 lg:grid-cols-2">
-      <% @events.each do |event| %>
-        <article class="cinema-panel rounded-[1.25rem] p-4">
-          <div class="grid gap-4 sm:grid-cols-[9rem_1fr]">
-            <div class="relative aspect-video overflow-hidden rounded-xl <%= event_poster_background_classes(event) %> sm:aspect-square">
+  <section class="organizer-controls">
+    <div class="organizer-status-tabs" aria-label="Etkinlik durumu">
+      <% @status_tabs.each do |key, label| %>
+        <%= link_to organizer_events_path(status: (key == "all" ? nil : key), query: @query.presence),
+              class: "organizer-status-tab #{key == @selected_status ? "is-active" : ""} focus-ring",
+              aria: (key == @selected_status ? { current: "page" } : {}) do %>
+          <span><%= label %></span>
+          <strong><%= key == "all" ? @stats[:total] : status_counts.fetch(key, 0) %></strong>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= form_with url: organizer_events_path, method: :get, class: "organizer-search-form", local: true do %>
+      <% unless @selected_status == "all" %>
+        <%= hidden_field_tag :status, @selected_status %>
+      <% end %>
+      <label class="sr-only" for="organizer-event-query">Etkinlik ara</label>
+      <div class="organizer-search-field">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="m20 20-3.5-3.5"/>
+        </svg>
+        <%= text_field_tag :query, @query, id: "organizer-event-query", placeholder: "Başlık, şehir veya mekan ara", class: "focus-ring" %>
+      </div>
+      <%= submit_tag "Ara", class: "organizer-search-submit focus-ring" %>
+      <% if active_filters %>
+        <%= link_to "Temizle", organizer_events_path, class: "organizer-clear-link focus-ring" %>
+      <% end %>
+    <% end %>
+  </section>
+
+  <section class="organizer-results">
+    <div class="workbench-section-head">
+      <div>
+        <p class="section-eyebrow text-coral">Workbench</p>
+        <h2><%= @events.size %> etkinlik gösteriliyor</h2>
+      </div>
+      <span class="organizer-results-meta">
+        <%= @selected_status == "all" ? "Tüm durumlar" : @status_tabs.to_h.fetch(@selected_status) %>
+      </span>
+    </div>
+
+    <% if @events.any? %>
+      <div class="organizer-event-grid">
+        <% @events.each do |event| %>
+          <article class="organizer-event-card">
+            <div class="organizer-event-poster <%= event_poster_background_classes(event) %>">
               <% if event.image.attached? %>
-                <%= image_tag event.image, alt: event.title, loading: "lazy", class: "h-full w-full object-cover" %>
-                <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 to-transparent"></div>
+                <%= image_tag event.image, alt: event.title, loading: "lazy" %>
+                <div class="organizer-event-poster-shade"></div>
               <% else %>
                 <div class="poster-noise absolute inset-0"></div>
               <% end %>
-              <div class="absolute left-2 top-2 rounded-md bg-white px-2 py-1 text-center">
-                <p class="font-mono text-[0.58rem] font-black uppercase text-stone-500"><%= event.date.strftime("%b") %></p>
-                <p class="font-mono text-lg font-black leading-none text-stone-950"><%= event.date.strftime("%-d") %></p>
+              <div class="organizer-date-ticket">
+                <span><%= event.date.strftime("%b") %></span>
+                <strong><%= event.date.strftime("%-d") %></strong>
               </div>
             </div>
 
-            <div class="flex min-w-0 flex-col">
-              <div class="flex flex-wrap items-center gap-2">
+            <div class="organizer-event-body">
+              <div class="organizer-event-tags">
                 <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
                 <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
               </div>
-              <h2 class="font-body mt-3 text-xl font-bold leading-snug text-stone-950"><%= link_to event.title, organizer_event_path(event), class: "hover:text-coral focus-ring" %></h2>
-              <p class="mt-2 line-clamp-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(event) %></p>
 
-              <div class="mt-4 grid gap-2 border-t border-stone-950/10 pt-4 text-sm sm:grid-cols-3">
-                <div>
-                  <p class="section-eyebrow text-stone-400">Tarih</p>
-                  <p class="mt-1 font-bold text-stone-800"><%= l(event.date, format: :short) %></p>
-                </div>
-                <div>
-                  <p class="section-eyebrow text-stone-400">RSVP</p>
-                  <p class="mt-1 font-bold text-stone-800"><%= event.total_responses_count %></p>
-                </div>
-                <div class="flex items-end gap-2 sm:justify-end">
-                  <%= link_to "Aç", organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
-                  <%= link_to "Düzenle", edit_organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
-                </div>
-              </div>
+              <h3><%= link_to event.title, organizer_event_path(event), class: "focus-ring" %></h3>
+              <p><%= event_lifecycle_hint(event) %></p>
 
-              <% unless event.submitted? || event.cancelled? %>
-                <div class="mt-3">
-                  <%= button_to "İncelemeye gönder", submit_organizer_event_path(event), method: :patch, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+              <% if event.rejected? && event.review_note.present? %>
+                <div class="organizer-review-note">
+                  <span>İnceleme notu</span>
+                  <p><%= event.review_note %></p>
                 </div>
               <% end %>
+
+              <dl class="organizer-event-facts">
+                <div>
+                  <dt>Tarih</dt>
+                  <dd><%= l(event.date, format: :short) %></dd>
+                </div>
+                <div>
+                  <dt>Şehir</dt>
+                  <dd><%= event.city %></dd>
+                </div>
+                <div>
+                  <dt>RSVP</dt>
+                  <dd><%= event.total_responses_count %></dd>
+                </div>
+                <div>
+                  <dt>Kontenjan</dt>
+                  <dd><%= event.capacity.presence || "Açık" %></dd>
+                </div>
+              </dl>
+
+              <div class="organizer-event-actions">
+                <%= link_to "Aç", organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <%= link_to "Düzenle", edit_organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <% if event.published? %>
+                  <%= link_to "Yayındaki sayfa", event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <% end %>
+                <% unless event.submitted? || event.cancelled? %>
+                  <%= button_to "İncelemeye gönder", submit_organizer_event_path(event), method: :patch, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <% end %>
+              </div>
             </div>
-          </div>
-        </article>
-      <% end %>
-    </div>
-  <% else %>
-    <% action = capture do %>
-      <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="workbench-empty-state organizer-empty">
+        <span class="dashboard-empty-dot"></span>
+        <h3><%= active_filters ? "Bu filtrelerle etkinlik yok" : "Henüz etkinlik oluşturmadın" %></h3>
+        <p><%= active_filters ? "Aramayı temizleyerek tüm etkinliklerine dönebilir veya yeni bir fikir başlatabilirsin." : "Bir taslakla başla ve fikrini kendi hızında şekillendir." %></p>
+        <div class="workbench-empty-actions">
+          <% if active_filters %>
+            <%= link_to "Filtreleri temizle", organizer_events_path, class: "btn-outline focus-ring" %>
+          <% end %>
+          <%= link_to "Etkinlik oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+        </div>
+      </div>
     <% end %>
-    <%= render "shared/empty_state", title: "Henüz etkinlik oluşturmadın", description: "Bir taslakla başla ve fikrini kendi hızında şekillendir.", action: action %>
-  <% end %>
+  </section>
 </section>

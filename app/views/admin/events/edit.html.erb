@@ -1,12 +1,18 @@
 <% content_for :title, "İnceleme Düzenle" %>
 
-<section class="page-shell max-w-5xl space-y-6">
-  <%= render "shared/page_header",
-        eyebrow: "İnceleme",
-        title: "Etkinlik detaylarını düzenle",
-        description: "Yayına almadan önce gerekli küçük operasyonel düzeltmeleri burada yap." %>
+<section class="admin-review-page admin-edit-page page-shell">
+  <header class="admin-review-hero admin-edit-hero admin-compact-hero">
+    <div class="admin-review-hero-copy">
+      <p class="section-eyebrow">Admin düzenleme</p>
+      <h1>Yayına almadan önce ilanı netleştir.</h1>
+      <p>Operasyonel düzeltmeleri burada yap; kapsamlı içerik değişikliklerinde etkinlik sahibine review notu bırak.</p>
+      <div class="admin-review-hero-actions">
+        <%= link_to "İncelemeye dön", admin_event_path(@event), class: "admin-secondary-action focus-ring" %>
+      </div>
+    </div>
+  </header>
 
-  <div class="cinema-panel rounded-[1.35rem] p-6">
+  <div class="admin-panel admin-edit-panel">
     <%= render "form", event: @event %>
   </div>
 </section>

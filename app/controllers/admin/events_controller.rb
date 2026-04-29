@@ -1,12 +1,28 @@
 class Admin::EventsController < ApplicationController
+  ADMIN_FILTERS = [
+    [ "submitted", "İnceleme" ],
+    [ "published", "Yayında" ],
+    [ "rejected", "Düzenleme gerekli" ],
+    [ "cancelled", "İptal" ],
+    [ "draft", "Taslak" ],
+    [ "all", "Tümü" ]
+  ].freeze
+
   before_action :authenticate_user!
   before_action :set_event, only: [ :show, :edit, :update, :destroy, :publish, :reject, :cancel ]
   before_action :authorize_index!
 
   def index
-    @filter = params[:filter].presence || "submitted"
+    @filter_tabs = ADMIN_FILTERS
+    @filter = ADMIN_FILTERS.map(&:first).include?(params[:filter].to_s) ? params[:filter].to_s : "submitted"
+    @query = params[:query].to_s.strip
+    @category = Event.categories.key?(params[:category].to_s) ? params[:category].to_s : nil
+    @city = Event::CITY_OPTIONS.include?(params[:city].to_s) ? params[:city].to_s : nil
     @events = filtered_events.page(params[:page]).per(12)
+    @next_review = policy_scope(Event).submitted.includes(:user).order(created_at: :asc).first
+    @active_filters = @query.present? || @category.present? || @city.present? || @filter != "submitted"
     @stats = {
+      total: Event.count,
       submitted: Event.submitted.count,
       published: Event.published.count,
       rejected: Event.rejected.count,
@@ -67,10 +83,18 @@ class Admin::EventsController < ApplicationController
   end
 
   def filtered_events
-    scope = policy_scope(Event).with_attached_image.includes(:user).order(created_at: :desc)
-    return scope if @filter == "all"
+    scope = policy_scope(Event).with_attached_image.includes(:user, :attendances)
+    scope = scope.where(status: @filter) unless @filter == "all"
+    scope = scope.where(category: @category) if @category.present?
+    scope = scope.where(city: @city) if @city.present?
+    if @query.present?
+      scope = scope.joins(:user).where(
+        "LOWER(events.title) LIKE :query OR LOWER(events.description) LIKE :query OR LOWER(events.location) LIKE :query OR LOWER(events.city) LIKE :query OR LOWER(users.email) LIKE :query OR LOWER(users.name) LIKE :query",
+        query: "%#{@query.downcase}%"
+      )
+    end
 
-    Event.statuses.key?(@filter) ? scope.where(status: @filter) : scope
+    @filter == "submitted" ? scope.order(created_at: :asc) : scope.order(created_at: :desc)
   end
 
   def event_params
