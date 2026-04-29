@@ -47,6 +47,23 @@ module EventsHelper
     "not_going" => "bg-stone-100 text-stone-600 ring-1 ring-stone-200"
   }.freeze
 
+  CATEGORY_ICONS = {
+    "general" => "sparkles",
+    "technology" => "cpu",
+    "music" => "music",
+    "art" => "palette",
+    "sports" => "dumbbell",
+    "education" => "book_open",
+    "concert" => "mic",
+    "festival" => "sparkles",
+    "workshop" => "edit",
+    "party" => "ticket",
+    "theater" => "theater",
+    "exhibition" => "image",
+    "conference" => "calendar",
+    "networking" => "users"
+  }.freeze
+
   def event_category_badge_classes(event_or_category, *_args, **_kwargs)
     key = event_category_key(event_or_category)
     "inline-flex items-center rounded-full px-3 py-1 font-body text-[0.65rem] font-black uppercase tracking-[0.08em] #{CATEGORY_BADGE_COLORS.fetch(key, CATEGORY_BADGE_COLORS["general"])}"
@@ -60,6 +77,15 @@ module EventsHelper
   def event_category_title(event_or_category)
     key = event_category_key(event_or_category)
     I18n.t("categories.#{key}", default: key.to_s.humanize)
+  end
+
+  def event_category_icon(event_or_category)
+    key = event_category_key(event_or_category)
+    CATEGORY_ICONS.fetch(key, CATEGORY_ICONS["general"])
+  end
+
+  def event_category_tone_class(event_or_category)
+    "is-#{event_category_key(event_or_category).tr("_", "-")}"
   end
 
   def event_status_badge_classes(event)

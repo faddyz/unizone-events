@@ -1,188 +1,179 @@
-<%
-  view_mode = params[:view] == "list" ? "list" : "grid"
-  quick_filters = [
-    { label: "Bugün", params: { date_filter: "today" }, active: params[:date_filter] == "today" },
-    { label: "Bu hafta", params: { date_filter: "this_week" }, active: params[:date_filter] == "this_week" },
-    { label: "Hafta sonu", params: { date_filter: "weekend" }, active: params[:date_filter] == "weekend" },
-    { label: "Ücretsiz", params: { price_filter: "free" }, active: params[:price_filter] == "free" },
-    { label: "Popüler", params: { sort_by: "popular" }, active: params[:sort_by] == "popular" },
-    { label: "Son eklenenler", params: { sort_by: "newest" }, active: params[:sort_by] == "newest" }
-  ]
-%>
+<% view_mode = params[:view] == "list" ? "list" : "grid" %>
 
-<div class="explore-controls">
-  <div class="explore-controls-top">
-    <div>
-      <p class="section-eyebrow text-coral">Filtrele</p>
-      <h2>Tüm etkinlikler, senin hızında.</h2>
-    </div>
+<div class="explore-filter-stack" data-controller="explore-filters">
+  <span class="explore-sticky-sentinel" data-explore-filters-target="sentinel" aria-hidden="true"></span>
 
-    <div class="explore-results-meta" aria-live="polite">
-      <strong><%= @events.total_count %></strong>
-      <span>sonuç</span>
-    </div>
-  </div>
-
-  <div class="explore-quick-row" aria-label="Hızlı filtreler">
-    <% quick_filters.each do |filter| %>
-      <%= link_to filter[:label],
-            explore_events_path(explore_filter_params_with(filter[:params])),
-            class: "explore-quick-chip #{filter[:active] ? "is-active" : ""} focus-ring" %>
-    <% end %>
-  </div>
-
-  <%= form_with url: explore_events_path, method: :get, class: "explore-filter-form" do |form| %>
-    <%= form.hidden_field :view, value: view_mode if view_mode == "list" %>
-
-    <div class="explore-filter-main">
-      <div class="explore-search-field">
-        <%= form.label :query, "Etkinlik ara", class: "sr-only" %>
-        <%= form.text_field :query,
-              value: params[:query],
-              class: "explore-filter-input",
-              placeholder: "Etkinlik, mekan, konu veya atmosfer ara" %>
+  <div class="explore-controls" data-explore-filters-target="panel">
+    <div class="explore-controls-bar">
+      <div class="explore-controls-title">
+        <span class="explore-controls-icon"><%= render "icons/sparkles", class: "size-4" %></span>
+        <span>
+          <strong>Filtreler</strong>
+          <small>Arama, kategori ve zaman</small>
+        </span>
       </div>
 
-      <div class="explore-filter-field">
-        <%= form.label :category, "Kategori", class: "sr-only" %>
-        <%= form.select :category,
-              options_for_select([["Tüm kategoriler", ""]] + @categories, Array(params[:category]).first),
-              {},
-              class: "explore-filter-select" %>
-      </div>
-
-      <div class="explore-filter-field">
-        <%= form.label :date_filter, "Tarih", class: "sr-only" %>
-        <%= form.select :date_filter,
-              options_for_select([
-                ["Tüm tarihler", "all"],
-                ["Yaklaşan", "upcoming"],
-                ["Bugün", "today"],
-                ["Yarın", "tomorrow"],
-                ["Bu akşam", "tonight"],
-                ["Bu hafta", "this_week"],
-                ["Hafta sonu", "weekend"],
-                ["Bu ay", "this_month"]
-              ], params[:date_filter].presence || "all"),
-              {},
-              class: "explore-filter-select" %>
-      </div>
-
-      <div class="explore-filter-field">
-        <%= form.label :price_filter, "Ücret", class: "sr-only" %>
-        <%= form.select :price_filter,
-              options_for_select([
-                ["Tüm ücretler", ""],
-                ["Ücretsiz", "free"],
-                ["Ücretli", "paid"]
-              ], params[:price_filter]),
-              {},
-              class: "explore-filter-select" %>
-      </div>
-
-      <div class="explore-filter-field">
-        <%= form.label :sort_by, "Sıralama", class: "sr-only" %>
-        <%= form.select :sort_by,
-              options_for_select([
-                ["En yakın", "date_asc"],
-                ["En uzak", "date_desc"],
-                ["En yeni", "newest"],
-                ["Popüler", "popular"]
-              ], params[:sort_by].presence || "date_asc"),
-              {},
-              class: "explore-filter-select" %>
-      </div>
-
-      <%= form.submit "Uygula", class: "explore-filter-submit focus-ring" %>
-    </div>
-
-    <details class="explore-advanced">
-      <summary class="focus-ring">
-        <span>Daha fazla filtre</span>
-        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-          <path d="m6 9 6 6 6-6"/>
-        </svg>
-      </summary>
-
-      <div class="explore-advanced-grid">
-        <div class="explore-filter-field">
-          <%= form.label :time_filter, "Saat aralığı", class: "explore-filter-label" %>
-          <%= form.select :time_filter,
-                options_for_select([
-                  ["Tüm saatler", ""],
-                  ["Sabah", "morning"],
-                  ["Öğleden sonra", "afternoon"],
-                  ["Akşam", "evening"],
-                  ["Gece", "night"]
-                ], params[:time_filter]),
-                {},
-                class: "explore-filter-select" %>
+      <% if @active_filters.any? %>
+        <div class="explore-results-meta" aria-live="polite">
+          <strong><%= @events.total_count %></strong>
+          <span>sonuç bulundu</span>
         </div>
-
-        <div class="explore-filter-field">
-          <%= form.label :availability_filter, "Kontenjan", class: "explore-filter-label" %>
-          <%= form.select :availability_filter,
-                options_for_select([
-                  ["Tüm etkinlikler", ""],
-                  ["Yer var", "available"],
-                  ["Az yer kaldı", "limited"]
-                ], params[:availability_filter]),
-                {},
-                class: "explore-filter-select" %>
-        </div>
-
-        <div class="explore-filter-field">
-          <%= form.label :registration_filter, "Kayıt tipi", class: "explore-filter-label" %>
-          <%= form.select :registration_filter,
-                options_for_select([
-                  ["Tüm kayıt tipleri", ""],
-                  ["Unizone RSVP", "unizone"],
-                  ["Dış kayıt", "external"]
-                ], params[:registration_filter]),
-                {},
-                class: "explore-filter-select" %>
-        </div>
-      </div>
-    </details>
-  <% end %>
-
-  <div class="explore-filter-footer">
-    <% if @active_filters.any? %>
-      <div class="explore-active-filters" aria-label="Aktif filtreler">
-        <% @active_filters.each do |filter| %>
-          <%= link_to explore_events_path(explore_filter_remove_params(filter)),
-                class: "explore-active-filter focus-ring",
-                aria: { label: "#{filter[:label]} filtresini kaldır" } do %>
-            <span><%= filter[:label] %></span>
-            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-              <path d="M18 6 6 18M6 6l12 12"/>
-            </svg>
-          <% end %>
-        <% end %>
-        <%= link_to "Filtreleri temizle", explore_events_path(explore_filter_params_with(query: nil, category: nil, date_filter: nil, time_filter: nil, price_filter: nil, availability_filter: nil, registration_filter: nil, sort_by: nil)), class: "explore-clear-link focus-ring" %>
-      </div>
-    <% else %>
-      <p class="explore-filter-hint">Tüm yayınlanmış etkinlikler listeleniyor. Arama veya filtreyle akışı daraltabilirsin.</p>
-    <% end %>
-
-    <div class="explore-view-toggle" aria-label="Görünüm tipi">
-      <%= link_to explore_events_path(explore_filter_params_with(view: nil)),
-            class: "explore-view-button #{view_mode == "grid" ? "is-active" : ""} focus-ring",
-            aria: { current: (view_mode == "grid" ? "true" : nil) } do %>
-        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
-          <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>
-        </svg>
-        <span>Grid</span>
       <% end %>
 
-      <%= link_to explore_events_path(explore_filter_params_with(view: "list")),
-            class: "explore-view-button #{view_mode == "list" ? "is-active" : ""} focus-ring",
-            aria: { current: (view_mode == "list" ? "true" : nil) } do %>
-        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
-          <path d="M8 6h12M8 12h12M8 18h12"/>
-          <path d="M4 6h.01M4 12h.01M4 18h.01"/>
-        </svg>
-        <span>Liste</span>
+      <div class="explore-view-toggle" aria-label="Görünüm tipi">
+        <%= link_to explore_events_path(explore_filter_params_with(view: nil)),
+              class: "explore-view-button #{view_mode == "grid" ? "is-active" : ""} focus-ring",
+              aria: { current: (view_mode == "grid" ? "true" : nil) } do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
+            <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>
+          </svg>
+          <span>Grid</span>
+        <% end %>
+
+        <%= link_to explore_events_path(explore_filter_params_with(view: "list")),
+              class: "explore-view-button #{view_mode == "list" ? "is-active" : ""} focus-ring",
+              aria: { current: (view_mode == "list" ? "true" : nil) } do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
+            <path d="M8 6h12M8 12h12M8 18h12"/>
+            <path d="M4 6h.01M4 12h.01M4 18h.01"/>
+          </svg>
+          <span>Liste</span>
+        <% end %>
+      </div>
+    </div>
+
+    <%= form_with url: explore_events_path, method: :get, class: "explore-filter-form" do |form| %>
+      <%= form.hidden_field :view, value: view_mode if view_mode == "list" %>
+
+      <div class="explore-filter-main">
+        <div class="explore-search-field">
+          <%= form.label :query, "Etkinlik ara", class: "sr-only" %>
+          <%= form.text_field :query,
+                value: params[:query],
+                class: "explore-filter-input",
+                placeholder: "Etkinlik, mekan veya konu ara" %>
+        </div>
+
+        <div class="explore-filter-field">
+          <%= form.label :category, "Kategori", class: "sr-only" %>
+          <%= form.select :category,
+                options_for_select([["Tüm kategoriler", ""]] + @categories, Array(params[:category]).first),
+                {},
+                class: "explore-filter-select" %>
+        </div>
+
+        <div class="explore-filter-field">
+          <%= form.label :date_filter, "Tarih", class: "sr-only" %>
+          <%= form.select :date_filter,
+                options_for_select([
+                  ["Tüm tarihler", "all"],
+                  ["Yaklaşan", "upcoming"],
+                  ["Bugün", "today"],
+                  ["Yarın", "tomorrow"],
+                  ["Bu akşam", "tonight"],
+                  ["Bu hafta", "this_week"],
+                  ["Hafta sonu", "weekend"],
+                  ["Bu ay", "this_month"]
+                ], params[:date_filter].presence || "all"),
+                {},
+                class: "explore-filter-select" %>
+        </div>
+
+        <div class="explore-filter-field">
+          <%= form.label :price_filter, "Ücret", class: "sr-only" %>
+          <%= form.select :price_filter,
+                options_for_select([
+                  ["Tüm ücretler", ""],
+                  ["Ücretsiz", "free"],
+                  ["Ücretli", "paid"]
+                ], params[:price_filter]),
+                {},
+                class: "explore-filter-select" %>
+        </div>
+
+        <div class="explore-filter-field">
+          <%= form.label :sort_by, "Sıralama", class: "sr-only" %>
+          <%= form.select :sort_by,
+                options_for_select([
+                  ["En yakın", "date_asc"],
+                  ["En uzak", "date_desc"],
+                  ["En yeni", "newest"],
+                  ["Popüler", "popular"]
+                ], params[:sort_by].presence || "date_asc"),
+                {},
+                class: "explore-filter-select" %>
+        </div>
+
+        <%= form.submit "Uygula", class: "explore-filter-submit focus-ring" %>
+      </div>
+
+      <details class="explore-advanced">
+        <summary class="focus-ring">
+          <span>Daha fazla filtre</span>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </summary>
+
+        <div class="explore-advanced-grid">
+          <div class="explore-filter-field">
+            <%= form.label :time_filter, "Saat aralığı", class: "explore-filter-label" %>
+            <%= form.select :time_filter,
+                  options_for_select([
+                    ["Tüm saatler", ""],
+                    ["Sabah", "morning"],
+                    ["Öğleden sonra", "afternoon"],
+                    ["Akşam", "evening"],
+                    ["Gece", "night"]
+                  ], params[:time_filter]),
+                  {},
+                  class: "explore-filter-select" %>
+          </div>
+
+          <div class="explore-filter-field">
+            <%= form.label :availability_filter, "Kontenjan", class: "explore-filter-label" %>
+            <%= form.select :availability_filter,
+                  options_for_select([
+                    ["Tüm etkinlikler", ""],
+                    ["Yer var", "available"],
+                    ["Az yer kaldı", "limited"]
+                  ], params[:availability_filter]),
+                  {},
+                  class: "explore-filter-select" %>
+          </div>
+
+          <div class="explore-filter-field">
+            <%= form.label :registration_filter, "Kayıt tipi", class: "explore-filter-label" %>
+            <%= form.select :registration_filter,
+                  options_for_select([
+                    ["Tüm kayıt tipleri", ""],
+                    ["Unizone RSVP", "unizone"],
+                    ["Dış kayıt", "external"]
+                  ], params[:registration_filter]),
+                  {},
+                  class: "explore-filter-select" %>
+          </div>
+        </div>
+      </details>
+    <% end %>
+
+    <div class="explore-filter-footer">
+      <% if @active_filters.any? %>
+        <div class="explore-active-filters" aria-label="Aktif filtreler">
+          <% @active_filters.each do |filter| %>
+            <%= link_to explore_events_path(explore_filter_remove_params(filter)),
+                  class: "explore-active-filter focus-ring",
+                  aria: { label: "#{filter[:label]} filtresini kaldır" } do %>
+              <span><%= filter[:label] %></span>
+              <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            <% end %>
+          <% end %>
+          <%= link_to "Temizle", explore_events_path(explore_filter_params_with(query: nil, category: nil, date_filter: nil, time_filter: nil, price_filter: nil, availability_filter: nil, registration_filter: nil, sort_by: nil)), class: "explore-clear-link focus-ring" %>
+        </div>
+      <% else %>
+        <p class="explore-filter-hint">Filtre seçince sonuç sayısı ve aktif seçimler burada görünür.</p>
       <% end %>
     </div>
   </div>

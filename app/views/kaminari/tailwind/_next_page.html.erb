@@ -1,3 +1,6 @@
 <li>
-  <%= link_to "Sonraki", url, class: "inline-flex h-9 items-center rounded-full border border-stone-200 bg-white px-3 text-sm font-black text-stone-700 hover:bg-stone-50 focus-ring", remote: remote %>
+  <%= link_to url, class: "inline-flex h-9 items-center gap-1 rounded-full bg-stone-950 px-3 text-sm font-black text-citron transition hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(15,15,18,0.18)] focus-ring", remote: remote do %>
+    <span>Sonraki</span>
+    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  <% end %>
 </li>

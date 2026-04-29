@@ -1,7 +1,7 @@
 <li>
   <% if page.current? %>
-    <span class="inline-flex h-9 min-w-9 items-center justify-center rounded-full bg-stone-950 px-3 text-sm font-black text-white"><%= page %></span>
+    <span class="inline-flex h-9 min-w-9 items-center justify-center rounded-full bg-stone-950 px-3 text-sm font-black text-citron shadow-[0_0_0_3px_rgba(215,255,57,0.18)]"><%= page %></span>
   <% else %>
-    <%= link_to page, url, class: "inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-stone-200 bg-white px-3 text-sm font-black text-stone-700 hover:bg-stone-50 focus-ring", remote: remote %>
+    <%= link_to page, url, class: "inline-flex h-9 min-w-9 items-center justify-center rounded-full px-3 text-sm font-black text-stone-600 transition hover:bg-stone-950 hover:text-white focus-ring", remote: remote %>
   <% end %>
 </li>

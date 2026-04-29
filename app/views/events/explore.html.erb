@@ -9,27 +9,22 @@
   <header class="page-shell explore-header">
     <div class="explore-header-copy">
       <p class="section-eyebrow text-coral">Keşfet</p>
-      <h1>Etkinlikleri tara, filtrele, karar ver.</h1>
-      <p>Homepage’de öne çıkanları gördün; burada tüm yayınlanmış etkinlikleri hızlıca inceleyip sana uyan planı bulabilirsin.</p>
-    </div>
-
-    <div class="explore-header-signal">
-      <strong><%= @events.total_count %></strong>
-      <span>sonuç</span>
+      <h1>Tüm etkinlikleri keşfet.</h1>
+      <p>Homepage’de öne çıkanlardan sonra tüm akışı burada tara; kategori, zaman ve kayıt tipine göre hızlıca daralt.</p>
     </div>
   </header>
 
   <section class="page-shell explore-category-strip" aria-label="Kategoriler">
     <%= link_to explore_events_path(explore_filter_params_with(category: nil)),
           class: "explore-category-pill #{selected_categories.blank? ? "is-active" : ""} focus-ring" do %>
-      <span class="explore-category-dot"></span>
+      <span class="explore-category-icon"><%= render "icons/sparkles", class: "size-4" %></span>
       <span>Tümü</span>
     <% end %>
 
     <% @categories.each do |label, category| %>
       <%= link_to explore_events_path(explore_filter_params_with(category: category)),
-            class: "explore-category-pill #{selected_categories.include?(category) ? "is-active" : ""} focus-ring" do %>
-        <span class="explore-category-dot"></span>
+            class: "explore-category-pill #{event_category_tone_class(category)} #{selected_categories.include?(category) ? "is-active" : ""} focus-ring" do %>
+        <span class="explore-category-icon"><%= render "icons/#{event_category_icon(category)}", class: "size-4" %></span>
         <span><%= label %></span>
       <% end %>
     <% end %>
