@@ -1,42 +1,113 @@
 <% content_for :title, "Etkinlikleri Keşfet" %>
 
-<section class="page-shell space-y-7">
-  <header class="relative overflow-hidden rounded-[1.5rem] bg-ink p-6 text-white md:p-8">
-    <div class="soft-grid absolute inset-0 opacity-40"></div>
-    <div class="hero-energy absolute inset-0 opacity-80"></div>
-    <div class="relative grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
-      <div>
-        <p class="section-eyebrow text-citron">Keşfet</p>
-        <h1 class="font-display mt-3 max-w-4xl text-4xl font-extrabold leading-[0.95] tracking-tight sm:text-6xl">Grup sohbetinden çıkmaya değecek etkinlikler.</h1>
-        <p class="mt-4 max-w-2xl text-base leading-7 text-white/68">Ruh haline, kategoriye, mekana veya merak ettiğin konuya göre şehirdeki planları ara.</p>
-      </div>
-      <p class="w-fit rounded-full bg-white px-4 py-3 font-mono text-xs font-black uppercase tracking-[0.12em] text-stone-950"><%= @events.total_count %> sonuç</p>
+<%
+  view_mode = params[:view] == "list" ? "list" : "grid"
+  selected_categories = Array(params[:category]).flatten.reject(&:blank?)
+%>
+
+<div class="explore-page">
+  <header class="page-shell explore-header">
+    <div class="explore-header-copy">
+      <p class="section-eyebrow text-coral">Keşfet</p>
+      <h1>Tüm etkinlikleri keşfet.</h1>
+      <p>Homepage’de öne çıkanlardan sonra tüm akışı burada tara; kategori, zaman ve kayıt tipine göre hızlıca daralt.</p>
     </div>
   </header>
 
-  <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-    <%= link_to "Tümü", explore_events_path, class: "category-pill bg-stone-950 text-white focus-ring" %>
-    <% Event.categories.keys.each do |category| %>
-      <%= link_to explore_events_path(category: category), class: "category-pill #{event_category_badge_classes(category)} focus-ring" do %>
-        <span class="category-pill-dot"></span>
-        <span><%= event_category_title(category) %></span>
+  <section class="page-shell explore-category-strip" aria-label="Kategoriler">
+    <%= link_to explore_events_path(explore_filter_params_with(category: nil)),
+          class: "explore-category-pill #{selected_categories.blank? ? "is-active" : ""} focus-ring" do %>
+      <span class="explore-category-icon"><%= render "icons/sparkles", class: "size-4" %></span>
+      <span>Tümü</span>
+    <% end %>
+
+    <% @categories.each do |label, category| %>
+      <%= link_to explore_events_path(explore_filter_params_with(category: category)),
+            class: "explore-category-pill #{event_category_tone_class(category)} #{selected_categories.include?(category) ? "is-active" : ""} focus-ring" do %>
+        <span class="explore-category-icon"><%= render "icons/#{event_category_icon(category)}", class: "size-4" %></span>
+        <span><%= label %></span>
       <% end %>
     <% end %>
-  </div>
+  </section>
 
-  <%= render "filters" %>
+  <section class="page-shell explore-workbench">
+    <%= render "filters" %>
 
-  <% if @events.any? %>
-    <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-      <% @events.each_with_index do |event, index| %>
-        <%= render "events/event_card", event: event, index: index %>
+    <% if @events.any? %>
+      <div class="explore-results explore-results-<%= view_mode %>" data-view-mode="<%= view_mode %>">
+        <% @events.each_with_index do |event, index| %>
+          <% if view_mode == "list" %>
+            <% going_count = event.attendees_count %>
+            <% capacity = event.capacity.to_i.positive? ? event.capacity.to_i : nil %>
+            <% spots_left = capacity ? [capacity - going_count, 0].max : nil %>
+
+            <article class="explore-list-card animate-rise-in" style="animation-delay: <%= index * 45 %>ms">
+              <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
+                <div class="poster-art absolute inset-0 <%= event.image.attached? ? "opacity-25" : "opacity-100" %>"></div>
+                <% if event.image.attached? %>
+                  <%= image_tag event.image, alt: "", loading: "lazy", aria: { hidden: true }, class: "event-poster-image event-poster-image-bg absolute inset-0 h-full w-full" %>
+                  <%= image_tag event.image, alt: event.title, loading: "lazy", class: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
+                <% end %>
+                <span class="explore-list-date">
+                  <small><%= event.date.strftime("%b") %></small>
+                  <strong><%= event.date.strftime("%-d") %></strong>
+                </span>
+              <% end %>
+
+              <div class="explore-list-main">
+                <div class="explore-list-tags">
+                  <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
+                  <span class="explore-list-time"><%= event.date.strftime("%d %b, %H:%M") %></span>
+                </div>
+
+                <h2>
+                  <%= link_to event.title, event_path(event), class: "focus-ring" %>
+                </h2>
+                <p><%= truncate(event.description.to_s.squish, length: 150) %></p>
+              </div>
+
+              <dl class="explore-list-facts">
+                <div>
+                  <dt>Nerede</dt>
+                  <dd><%= truncate(event.location, length: 34) %></dd>
+                </div>
+                <div>
+                  <dt>Ücret</dt>
+                  <dd><%= event_price_text(event) %></dd>
+                </div>
+                <div>
+                  <dt><%= capacity ? "Kontenjan" : "Katılım" %></dt>
+                  <dd><%= capacity ? "#{spots_left} yer kaldı" : (going_count.positive? ? "#{going_count} gidiyor" : "İlk sen katıl") %></dd>
+                </div>
+              </dl>
+
+              <%= link_to event_path(event), class: "explore-list-action focus-ring", aria: { label: "#{event.title} detayları" } do %>
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              <% end %>
+            </article>
+          <% else %>
+            <%= render "events/event_card", event: event, index: index %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="explore-pagination">
+        <%= paginate @events, theme: "tailwind" %>
+      </div>
+    <% else %>
+      <% action = capture do %>
+        <div class="explore-empty-actions">
+          <%= link_to "Filtreleri temizle", explore_events_path, class: "btn-outline focus-ring" %>
+          <%= link_to "Etkinlik oluştur", new_organizer_event_path, class: "btn-void focus-ring" if user_signed_in? %>
+        </div>
       <% end %>
-    </div>
-    <%= paginate @events, theme: "tailwind" %>
-  <% else %>
-    <% action = capture do %>
-      <%= link_to "Filtreleri temizle", explore_events_path, class: "btn-outline focus-ring" %>
+      <%= render "shared/empty_state",
+            title: "Henüz eşleşen etkinlik yok",
+            description: "Filtreleri biraz genişlet veya başka bir kategori dene.",
+            action: action,
+            class_name: "explore-empty-state" %>
     <% end %>
-    <%= render "shared/empty_state", title: "Henüz eşleşen etkinlik yok", description: "Daha geniş bir arama dene veya başka bir kategori seç.", action: action %>
-  <% end %>
-</section>
+  </section>
+</div>

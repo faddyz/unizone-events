@@ -47,6 +47,23 @@ module EventsHelper
     "not_going" => "bg-stone-100 text-stone-600 ring-1 ring-stone-200"
   }.freeze
 
+  CATEGORY_ICONS = {
+    "general" => "sparkles",
+    "technology" => "cpu",
+    "music" => "music",
+    "art" => "palette",
+    "sports" => "dumbbell",
+    "education" => "book_open",
+    "concert" => "mic",
+    "festival" => "sparkles",
+    "workshop" => "edit",
+    "party" => "ticket",
+    "theater" => "theater",
+    "exhibition" => "image",
+    "conference" => "calendar",
+    "networking" => "users"
+  }.freeze
+
   def event_category_badge_classes(event_or_category, *_args, **_kwargs)
     key = event_category_key(event_or_category)
     "inline-flex items-center rounded-full px-3 py-1 font-body text-[0.65rem] font-black uppercase tracking-[0.08em] #{CATEGORY_BADGE_COLORS.fetch(key, CATEGORY_BADGE_COLORS["general"])}"
@@ -60,6 +77,15 @@ module EventsHelper
   def event_category_title(event_or_category)
     key = event_category_key(event_or_category)
     I18n.t("categories.#{key}", default: key.to_s.humanize)
+  end
+
+  def event_category_icon(event_or_category)
+    key = event_category_key(event_or_category)
+    CATEGORY_ICONS.fetch(key, CATEGORY_ICONS["general"])
+  end
+
+  def event_category_tone_class(event_or_category)
+    "is-#{event_category_key(event_or_category).tr("_", "-")}"
   end
 
   def event_status_badge_classes(event)
@@ -107,6 +133,47 @@ module EventsHelper
 
   def event_lifecycle_step(event)
     Event.statuses.keys.index(event.status).to_i + 1
+  end
+
+  def explore_filter_params_with(overrides = {})
+    next_params = request.query_parameters.slice(
+      "query",
+      "category",
+      "date_filter",
+      "start_date",
+      "end_date",
+      "time_filter",
+      "price_filter",
+      "availability_filter",
+      "registration_filter",
+      "sort_by",
+      "view"
+    )
+
+    overrides.each do |key, value|
+      key = key.to_s
+      if value.blank?
+        next_params.delete(key)
+      else
+        next_params[key] = value
+      end
+    end
+
+    next_params
+  end
+
+  def explore_filter_remove_params(filter)
+    next_params = explore_filter_params_with
+    key = filter[:key].to_s
+
+    if key == "category" && next_params["category"].is_a?(Array)
+      categories = next_params["category"].reject { |category| category.to_s == filter[:value].to_s }
+      categories.any? ? next_params["category"] = categories : next_params.delete("category")
+    else
+      next_params.delete(key)
+    end
+
+    next_params
   end
 
   private

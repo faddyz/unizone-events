@@ -15,7 +15,10 @@ class EventSearch
     relation = filter_by_exact_date(relation)
     relation = filter_by_date_filter(relation)
     relation = filter_by_custom_dates(relation)
+    relation = filter_by_time(relation)
     relation = filter_by_price(relation)
+    relation = filter_by_availability(relation)
+    relation = filter_by_registration(relation)
     sort(relation)
   end
 
@@ -48,14 +51,33 @@ class EventSearch
       relation.where("DATE(date) = ?", Time.zone.today)
     when "tomorrow"
       relation.where("DATE(date) = ?", Time.zone.tomorrow)
+    when "tonight"
+      relation.where(date: Time.zone.today.beginning_of_day + 18.hours..Time.zone.tomorrow.beginning_of_day + 5.hours)
     when "this_week"
       relation.where(date: Time.zone.today.beginning_of_week..Time.zone.today.end_of_week.end_of_day)
+    when "weekend"
+      relation.where(date: weekend_range)
     when "this_month"
       relation.where(date: Time.zone.today.beginning_of_month..Time.zone.today.end_of_month.end_of_day)
     when "past"
       relation.where("date < ?", Time.zone.now.beginning_of_day)
     when "upcoming"
       relation.where("date >= ?", Time.zone.now.beginning_of_day)
+    else
+      relation
+    end
+  end
+
+  def filter_by_time(relation)
+    case params[:time_filter].to_s
+    when "morning"
+      relation.where("EXTRACT(HOUR FROM date) >= 5 AND EXTRACT(HOUR FROM date) < 12")
+    when "afternoon"
+      relation.where("EXTRACT(HOUR FROM date) >= 12 AND EXTRACT(HOUR FROM date) < 17")
+    when "evening"
+      relation.where("EXTRACT(HOUR FROM date) >= 17 AND EXTRACT(HOUR FROM date) < 22")
+    when "night"
+      relation.where("(EXTRACT(HOUR FROM date) >= 22 OR EXTRACT(HOUR FROM date) < 5)")
     else
       relation
     end
@@ -80,6 +102,30 @@ class EventSearch
       relation.where("price = 0 OR price IS NULL")
     when "paid"
       relation.where("price > 0")
+    else
+      relation
+    end
+  end
+
+  def filter_by_availability(relation)
+    going_count = "SELECT COUNT(*) FROM attendances WHERE attendances.event_id = events.id AND attendances.status = 'going'"
+
+    case params[:availability_filter].to_s
+    when "available"
+      relation.where("capacity IS NULL OR capacity > (#{going_count})")
+    when "limited"
+      relation.where("capacity IS NOT NULL AND capacity > (#{going_count}) AND capacity - (#{going_count}) BETWEEN 1 AND 5")
+    else
+      relation
+    end
+  end
+
+  def filter_by_registration(relation)
+    case params[:registration_filter].to_s
+    when "unizone"
+      relation.where(ticket_url: [ nil, "" ])
+    when "external"
+      relation.where.not(ticket_url: [ nil, "" ])
     else
       relation
     end
@@ -111,5 +157,11 @@ class EventSearch
     Date.parse(value.to_s)
   rescue ArgumentError
     nil
+  end
+
+  def weekend_range
+    saturday = Time.zone.today.beginning_of_week + 5.days
+    saturday = saturday + 7.days if saturday < Time.zone.today
+    saturday.beginning_of_day..(saturday + 1.day).end_of_day
   end
 end

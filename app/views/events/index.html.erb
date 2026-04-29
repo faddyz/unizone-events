@@ -2,11 +2,11 @@
 <% content_for :transparent_nav, true %>
 
 <% category_cards = [
-  { key: "music", icon: "ticket", mood: "Canlı sahne", note: "Konserler, DJ setleri ve geceye tempo veren etkinlikler.", class_name: "is-citron" },
-  { key: "technology", icon: "link", mood: "Yeni fikirler", note: "Yazılım, ürün, yapay zeka ve dijital kültür buluşmaları.", class_name: "is-blue" },
+  { key: "music", icon: "music", mood: "Canlı sahne", note: "Konserler, DJ setleri ve geceye tempo veren etkinlikler.", class_name: "is-citron" },
+  { key: "technology", icon: "cpu", mood: "Yeni fikirler", note: "Yazılım, ürün, yapay zeka ve dijital kültür buluşmaları.", class_name: "is-blue" },
   { key: "workshop", icon: "edit", mood: "Üret ve öğren", note: "Atölyeler, pratik seanslar ve beraber üretme alanları.", class_name: "is-mint" },
-  { key: "festival", icon: "calendar", mood: "Açık hava", note: "Kalabalık, renkli ve uzun soluklu şehir planları.", class_name: "is-ember" },
-  { key: "art", icon: "info", mood: "Kültür rotası", note: "Sergi, tasarım, tiyatro ve bağımsız sahne işleri.", class_name: "is-grape" },
+  { key: "festival", icon: "sparkles", mood: "Açık hava", note: "Kalabalık, renkli ve uzun soluklu şehir planları.", class_name: "is-ember" },
+  { key: "art", icon: "palette", mood: "Kültür rotası", note: "Sergi, tasarım, tiyatro ve bağımsız sahne işleri.", class_name: "is-grape" },
   { key: "networking", icon: "users", mood: "Yeni çevre", note: "İnsanlarla tanışmak, ekip bulmak ve fikir paylaşmak için.", class_name: "is-ice" }
 ] %>
 <% upcoming_events = @events.first(8) %>
