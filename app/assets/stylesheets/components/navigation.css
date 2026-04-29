@@ -3,6 +3,10 @@
   margin-inline: auto;
 }
 
+:root {
+  --mobile-bottom-nav-height: calc(4.65rem + env(safe-area-inset-bottom));
+}
+
 @media (min-width: 640px) {
   .uz-nav-inner {
     width: min(100% - 3rem, 92rem);
@@ -464,21 +468,193 @@
 }
 
 .mobile-bottom-nav {
+  min-height: var(--mobile-bottom-nav-height);
   padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -18px 55px rgba(15, 15, 18, 0.12);
 }
 
 .mobile-nav-item {
   min-width: 0;
+  min-height: 4rem;
+  border: 0;
+  background: transparent;
   color: rgba(15, 15, 18, 0.62);
+  cursor: pointer;
 }
 
 .mobile-nav-item.is-active {
   color: var(--page-text);
 }
 
+.mobile-nav-icon {
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.mobile-nav-item.is-active .mobile-nav-icon {
+  background: rgba(15, 15, 18, 0.07);
+}
+
 .mobile-nav-item.is-accent .mobile-nav-icon {
   background: var(--citron);
   color: var(--page-text);
   box-shadow: 4px 4px 0 var(--page-text);
+}
+
+.mobile-account-avatar {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--page-text);
+  color: var(--citron);
+  font-size: 0.86rem;
+  font-weight: 950;
+  box-shadow:
+    0 10px 24px rgba(15, 15, 18, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.mobile-account-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  align-items: end;
+}
+
+.mobile-account-sheet[hidden] {
+  display: none;
+}
+
+.mobile-account-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(8, 8, 10, 0.56);
+  backdrop-filter: blur(10px);
+}
+
+.mobile-account-panel {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  max-height: calc(100dvh - 4.5rem);
+  overflow-y: auto;
+  border: 1px solid rgba(15, 15, 18, 0.12);
+  border-radius: 1.25rem 1.25rem 0 0;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 241, 0.98), rgba(255, 250, 241, 0.94)),
+    var(--page-bg);
+  padding: 0.65rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  box-shadow:
+    0 -24px 74px rgba(15, 15, 18, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.mobile-account-handle {
+  width: 2.8rem;
+  height: 0.28rem;
+  justify-self: center;
+  border-radius: var(--radius-pill);
+  background: rgba(15, 15, 18, 0.18);
+}
+
+.mobile-account-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(15, 15, 18, 0.08);
+  padding-bottom: 0.85rem;
+}
+
+.mobile-account-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.mobile-account-copy strong,
+.mobile-account-copy span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-account-copy strong {
+  color: var(--page-text);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.mobile-account-copy span {
+  color: rgba(15, 15, 18, 0.5);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.mobile-account-close {
+  display: grid;
+  width: 2.55rem;
+  height: 2.55rem;
+  place-items: center;
+  border: 1px solid rgba(15, 15, 18, 0.1);
+  border-radius: var(--radius-pill);
+  background: white;
+  color: var(--page-text);
+}
+
+.mobile-account-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.mobile-account-list form {
+  margin: 0;
+}
+
+.mobile-account-item {
+  display: flex;
+  min-height: 3.2rem;
+  width: 100%;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid rgba(15, 15, 18, 0.08);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 0.78rem 0.85rem;
+  color: var(--page-text);
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+button.mobile-account-item {
+  cursor: pointer;
+}
+
+.mobile-account-item.is-active {
+  border-color: rgba(215, 255, 57, 0.5);
+  background: var(--page-text);
+  color: var(--citron);
+}
+
+.mobile-account-danger {
+  color: #be123c;
+}
+
+html.mobile-account-open body {
+  overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+  #main-content {
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 2rem);
+  }
 }

@@ -1,9 +1,9 @@
 <% profile_path = user_signed_in? ? account_profile_path : new_user_session_path %>
+<% account_active = controller_path.start_with?("account/") %>
 <% items = [
   { label: "Ana Sayfa", path: root_path, icon: "home", active: current_page?(root_path) },
   { label: "Keşfet", path: explore_events_path, icon: "compass", active: current_page?(explore_events_path) },
-  { label: "Oluştur", path: new_organizer_event_path, icon: "plus", active: current_page?(new_organizer_event_path), accent: true },
-  { label: "Hesap", path: profile_path, icon: "user", active: current_page?(profile_path) }
+  { label: "Oluştur", path: new_organizer_event_path, icon: "plus", active: current_page?(new_organizer_event_path), accent: true }
 ] %>
 
 <nav class="mobile-bottom-nav fixed inset-x-0 bottom-0 z-50 border-t border-stone-950/10 bg-page/95 backdrop-blur-xl lg:hidden" aria-label="Mobil gezinme">
@@ -18,12 +18,103 @@
             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.1 5-5 2.1 2.1-5 5-2.1Z"/></svg>
           <% when "plus" %>
             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-          <% else %>
-            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
           <% end %>
         </span>
         <span class="truncate"><%= item[:label] %></span>
       <% end %>
     <% end %>
+
+    <% if user_signed_in? %>
+      <button type="button"
+              class="mobile-nav-item <%= account_active ? "is-active" : "" %> flex flex-col items-center gap-1 px-2 py-2 text-[0.68rem] font-black focus-ring"
+              aria-label="Hesap menüsünü aç"
+              aria-controls="mobile-account-sheet"
+              aria-expanded="false"
+              data-account-menu-target="mobileTrigger"
+              data-action="account-menu#openMobile">
+        <span class="mobile-nav-icon grid size-8 place-items-center rounded-full">
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
+        </span>
+        <span class="truncate">Hesap</span>
+      </button>
+    <% else %>
+      <%= link_to profile_path, class: "mobile-nav-item #{current_page?(profile_path) ? "is-active" : ""} flex flex-col items-center gap-1 px-2 py-2 text-[0.68rem] font-black focus-ring" do %>
+        <span class="mobile-nav-icon grid size-8 place-items-center rounded-full">
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
+        </span>
+        <span class="truncate">Hesap</span>
+      <% end %>
+    <% end %>
   </div>
 </nav>
+
+<% if user_signed_in? %>
+  <% mobile_account_name = current_user.name.presence || "Unizone hesabı" %>
+  <% mobile_account_initial = (current_user.name.presence || current_user.email).first.upcase %>
+  <% dashboard_active = controller_path == "dashboards" %>
+  <% organizer_active = controller_path.start_with?("organizer/") %>
+  <% admin_active = controller_path.start_with?("admin/") %>
+
+  <div id="mobile-account-sheet"
+       class="mobile-account-sheet lg:hidden"
+       data-account-menu-target="mobileSheet"
+       hidden>
+    <button type="button"
+            class="mobile-account-scrim"
+            aria-label="Hesap menüsünü kapat"
+            data-action="account-menu#closeMobile"></button>
+
+    <section class="mobile-account-panel"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="mobile-account-title"
+             tabindex="-1"
+             data-account-menu-target="mobilePanel">
+      <div class="mobile-account-handle" aria-hidden="true"></div>
+
+      <div class="mobile-account-head">
+        <span class="nav-account-avatar is-large"><%= mobile_account_initial %></span>
+        <span class="mobile-account-copy">
+          <strong id="mobile-account-title"><%= mobile_account_name %></strong>
+          <span><%= current_user.email %></span>
+        </span>
+        <button type="button"
+                class="mobile-account-close focus-ring"
+                aria-label="Hesap menüsünü kapat"
+                data-action="account-menu#closeMobile">
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="mobile-account-list">
+        <%= link_to account_profile_path, class: "mobile-account-item focus-ring #{account_active ? "is-active" : ""}" do %>
+          <%= render "icons/users", class: "size-4" %>
+          <span>Profil</span>
+        <% end %>
+        <%= link_to dashboard_path, class: "mobile-account-item focus-ring #{dashboard_active ? "is-active" : ""}" do %>
+          <%= render "icons/calendar", class: "size-4" %>
+          <span>Planlarım</span>
+        <% end %>
+        <%= link_to organizer_events_path, class: "mobile-account-item focus-ring #{organizer_active ? "is-active" : ""}" do %>
+          <%= render "icons/ticket", class: "size-4" %>
+          <span>Etkinliklerim</span>
+        <% end %>
+        <% if current_user.admin? %>
+          <%= link_to admin_events_path, class: "mobile-account-item focus-ring #{admin_active ? "is-active" : ""}" do %>
+            <span class="nav-review-dot"></span>
+            <span>İnceleme</span>
+          <% end %>
+        <% end %>
+        <%= button_to destroy_user_session_path, method: :delete, class: "mobile-account-item mobile-account-danger w-full text-left focus-ring" do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M16 17l5-5-5-5M21 12H9"/>
+            <path d="M13 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8"/>
+          </svg>
+          <span>Çıkış</span>
+        <% end %>
+      </div>
+    </section>
+  </div>
+<% end %>

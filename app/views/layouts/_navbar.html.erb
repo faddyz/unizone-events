@@ -103,9 +103,15 @@
 
     <div class="ml-auto lg:hidden">
       <% if user_signed_in? %>
-        <%= link_to account_profile_path, class: "grid size-10 place-items-center rounded-full bg-stone-950 text-sm font-black text-citron focus-ring" do %>
+        <button type="button"
+                class="mobile-account-avatar focus-ring"
+                aria-label="Hesap menüsünü aç"
+                aria-controls="mobile-account-sheet"
+                aria-expanded="false"
+                data-account-menu-target="mobileTrigger"
+                data-action="account-menu#openMobile">
           <%= (current_user.name.presence || current_user.email).first.upcase %>
-        <% end %>
+        </button>
       <% else %>
         <%= link_to "Giriş", new_user_session_path, class: "btn-void min-h-10 px-4 py-2 text-sm focus-ring" %>
       <% end %>
