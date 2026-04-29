@@ -1,0 +1,27 @@
+<%
+  cards = local_assigns.fetch(:cards)
+%>
+
+<aside class="auth-showcase" aria-label="<%= local_assigns.fetch(:aria_label) %>">
+  <div class="auth-showcase-copy">
+    <p class="section-eyebrow text-citron"><%= local_assigns.fetch(:eyebrow) %></p>
+    <h2><%= local_assigns.fetch(:title).html_safe %></h2>
+    <p><%= local_assigns.fetch(:summary) %></p>
+  </div>
+
+  <div class="auth-featured-block">
+    <p class="auth-featured-label"><%= local_assigns.fetch(:featured_label) %></p>
+    <div class="auth-featured-list">
+      <% cards.each do |card| %>
+        <div class="auth-feature-card <%= card.fetch(:tone) %>">
+          <span class="auth-feature-dot" aria-hidden="true"></span>
+          <span class="auth-feature-copy">
+            <strong><%= card.fetch(:title) %></strong>
+            <small><%= card.fetch(:meta) %></small>
+          </span>
+          <span class="auth-feature-pill"><%= card.fetch(:label) %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</aside>

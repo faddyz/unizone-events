@@ -1,29 +1,59 @@
 <% content_for :title, "Şifre Sıfırla" %>
 
-<section class="page-shell mx-auto max-w-md space-y-6">
-  <div class="text-center">
-    <div class="mb-5 inline-flex text-stone-950">
-      <%= render "shared/brand_mark", size: "xl", show_wordmark: false %>
+<% email_error = resource.errors[:email].any? %>
+
+<section class="auth-page">
+  <div class="auth-shell page-shell">
+    <div class="auth-workspace auth-workspace-recovery">
+      <%= render "devise/shared/auth_showcase",
+            aria_label: "Hesap erişimi özeti",
+            eyebrow: "Hesap erişimi",
+            title: "Planların<br><span>yerinde</span><br>kalır.",
+            summary: "Sıfırlama bağlantısını gönderelim; hesabına yeni şifrenle dön.",
+            featured_label: "Kısa akış",
+            cards: [
+              { title: "E-postanı yaz", meta: "1 adım", label: "Başla", tone: "is-citron" },
+              { title: "Bağlantıyı aç", meta: "E-posta", label: "Güvenli", tone: "is-blue" },
+              { title: "Yeni şifre belirle", meta: "Devam et", label: "Hesap", tone: "is-coral" }
+            ] %>
+
+      <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-card-head">
+          <p class="section-eyebrow text-coral">Şifre yardımı</p>
+          <h1 id="auth-title">Şifreni sıfırla</h1>
+          <p>E-postanı yaz, bağlantıyı gönderelim.</p>
+        </div>
+
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "auth-form" }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+
+          <div class="auth-field">
+            <%= f.label :email, "E-posta", class: "auth-label" %>
+            <%= f.email_field :email,
+                  autofocus: true,
+                  autocomplete: "email",
+                  required: true,
+                  class: "auth-input #{email_error ? "is-invalid" : ""}",
+                  placeholder: "ornek@unizone.com",
+                  aria: { invalid: email_error ? "true" : "false", describedby: email_error ? "user_email_error" : nil } %>
+            <% if email_error %>
+              <p id="user_email_error" class="auth-field-error"><%= resource.errors.full_messages_for(:email).first %></p>
+            <% end %>
+          </div>
+
+          <button type="submit" class="auth-submit btn-void focus-ring">
+            <span>Sıfırlama bağlantısı gönder</span>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+        <% end %>
+
+        <div class="auth-card-footer">
+          <span>Şifreni hatırladın mı?</span>
+          <%= link_to "Giriş yap", new_user_session_path, class: "focus-ring" %>
+        </div>
+      </section>
     </div>
-    <p class="section-eyebrow text-coral">Hesap erişimi</p>
-    <h1 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Şifreni sıfırla</h1>
-    <p class="mt-2 text-sm font-medium text-stone-600">E-postanı yaz, sıfırlama talimatlarını gönderelim.</p>
   </div>
-
-  <%= render "shared/panel" do %>
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-4" }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <div>
-        <%= f.label :email, "E-posta", class: "mb-2 block section-eyebrow text-stone-500" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "electric-field w-full px-4 py-3 focus:outline-none" %>
-      </div>
-
-      <%= f.submit "Sıfırlama talimatı gönder", class: "btn-void w-full cursor-pointer border-0 focus-ring" %>
-    <% end %>
-
-    <div class="mt-5 border-t border-stone-100 pt-5 text-sm">
-      <%= link_to "Giriş sayfasına dön", new_user_session_path, class: "font-black text-stone-700 hover:text-coral focus-ring" %>
-    </div>
-  <% end %>
 </section>
