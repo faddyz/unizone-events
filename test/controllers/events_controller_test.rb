@@ -22,6 +22,15 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     refute_includes response.body, @owner_draft_event.title
   end
 
+  test "event show surfaces conversion details" do
+    get event_path(@published_event)
+
+    assert_response :success
+    assert_includes response.body, "Kayıt / bilet al"
+    assert_includes response.body, @published_event.ticket_url
+    assert_includes response.body, "Kontenjan"
+  end
+
   test "guest cannot view non public event" do
     get event_path(@owner_draft_event)
 

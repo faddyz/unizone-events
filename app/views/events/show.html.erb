@@ -1,156 +1,412 @@
-<% content_for :title, @event.title %>
+﻿<% content_for :title, @event.title %>
 <% content_for :transparent_nav, true %>
 
-<section class="relative overflow-hidden bg-void text-white">
-  <div class="absolute inset-0 <%= event_poster_background_classes(@event) %> opacity-75"></div>
-  <% if @event.image.attached? %>
-    <%= image_tag @event.image, alt: @event.title, class: "absolute inset-0 h-full w-full object-cover opacity-50" %>
-  <% else %>
-    <div class="poster-noise absolute inset-0"></div>
-  <% end %>
-  <div class="soft-grid absolute inset-0 opacity-50"></div>
-  <div class="absolute inset-0 bg-gradient-to-t from-void via-stone-950/72 to-stone-950/20"></div>
+<%
+  organizer_name = @event.user.name.presence || @event.user.email
+  going_count = @event.attendees_count
+  interested_count = @event.interested_attendees_count
+  not_going_count = @event.not_going_attendees_count
+  total_responses = @event.total_responses_count
+  capacity = @event.capacity.to_i.positive? ? @event.capacity.to_i : nil
+  capacity_percent = capacity ? [[((going_count.to_f / capacity) * 100).round, 100].min, 0].max : nil
+  spots_left = capacity ? [capacity - going_count, 0].max : nil
+  ticket_url = @event.ticket_url.presence
+  attendee_preview = @attendee_preview.to_a
+  selected_status = @attendance&.status
+  share_text = "#{@event.title} - #{l(@event.date, format: :short)}"
+  rsvp_options = [
+    { status: "going", label: "Katılıyorum", active_label: "Yerini aldın", note: "Planın netleşsin." },
+    { status: "interested", label: "Kaydet", active_label: "Kaydedildi", note: "Sonra karar ver." },
+    { status: "not_going", label: "Pas geç", active_label: "Pas geçildi", note: "Akışını temiz tut." }
+  ]
+%>
 
-  <div class="page-shell relative grid min-h-[36rem] content-end gap-5 pb-14 pt-32">
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="<%= event_category_badge_classes(@event) %>"><%= event_category_title(@event) %></span>
-      <% unless @event.published? %>
-        <span class="<%= event_status_badge_classes(@event) %>"><%= event_status_label(@event) %></span>
-      <% end %>
-    </div>
-    <div class="max-w-5xl">
-      <h1 class="font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl"><%= @event.title %></h1>
-      <p class="mt-5 max-w-3xl text-lg leading-8 text-white/76"><%= @event.description %></p>
-    </div>
-  </div>
-</section>
-
-<section class="page-shell relative z-10 -mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_370px]">
-  <div class="space-y-8">
-    <dl class="grid gap-3 sm:grid-cols-2">
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <dt class="section-eyebrow text-stone-400">Ne zaman</dt>
-        <dd class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950"><%= l(@event.date, format: :long) %></dd>
-      </div>
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <dt class="section-eyebrow text-stone-400">Nerede</dt>
-        <dd class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950"><%= @event.location %></dd>
-      </div>
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <dt class="section-eyebrow text-stone-400">Ev sahibi</dt>
-        <dd class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950"><%= @event.user.name.presence || @event.user.email %></dd>
-      </div>
-      <div class="cinema-panel rounded-[1.25rem] p-5">
-        <dt class="section-eyebrow text-stone-400">Ücret</dt>
-        <dd class="font-display mt-2 text-2xl font-extrabold tracking-tight text-stone-950"><%= event_price_text(@event) %></dd>
-      </div>
-    </dl>
-
-    <section class="cinema-panel rounded-[1.25rem] p-6">
-      <p class="section-eyebrow text-coral">Detaylar</p>
-      <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Etkinlik akışı</h2>
-      <p class="mt-4 whitespace-pre-line leading-8 text-stone-700"><%= @event.description %></p>
-    </section>
-
-    <% if @similar_events.any? %>
-      <section class="space-y-4">
-        <h2 class="font-display text-3xl font-extrabold tracking-tight text-stone-950">Benzer etkinlikler</h2>
-        <div class="grid gap-5 md:grid-cols-2">
-          <% @similar_events.each_with_index do |event, index| %>
-            <%= render "events/event_card", event: event, index: index %>
-          <% end %>
-        </div>
-      </section>
+<div class="event-show-page"
+     data-controller="attendance share"
+     data-attendance-url-value="<%= event_attendance_path(@event) %>"
+     data-attendance-signed-in-value="<%= current_user.present? %>"
+     data-attendance-capacity-value="<%= capacity || 0 %>"
+     data-share-title-value="<%= @event.title %>"
+     data-share-text-value="<%= share_text %>"
+     data-share-url-value="<%= request.original_url %>">
+  <section class="event-show-hero relative isolate overflow-hidden bg-void text-white">
+    <div class="absolute inset-0 <%= event_poster_background_classes(@event) %> opacity-80"></div>
+    <% if @event.image.attached? %>
+      <%= image_tag @event.image, alt: "", aria: { hidden: true }, class: "event-show-hero-image absolute inset-0 h-full w-full object-cover" %>
+    <% else %>
+      <div class="poster-noise absolute inset-0"></div>
     <% end %>
+    <div class="hero-atmosphere absolute inset-0 opacity-70"></div>
+    <div class="hero-stage-wash absolute inset-0 opacity-65"></div>
+    <div class="hero-ribbon hero-ribbon-citron"></div>
+    <div class="hero-ribbon hero-ribbon-blue"></div>
+    <div class="soft-grid absolute inset-0 opacity-45"></div>
+    <div class="hero-noise absolute inset-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-void via-stone-950/70 to-stone-950/28"></div>
 
-    <% if @organizer_other_events.any? %>
-      <section class="space-y-4">
-        <h2 class="font-display text-3xl font-extrabold tracking-tight text-stone-950">Bu ev sahibinden diğerleri</h2>
-        <div class="grid gap-5 md:grid-cols-2">
-          <% @organizer_other_events.each_with_index do |event, index| %>
-            <%= render "events/event_card", event: event, index: index %>
+    <div class="page-shell relative z-10 grid min-h-[46rem] content-end gap-10 pb-24 pt-32 lg:min-h-[50rem] lg:grid-cols-[minmax(0,1fr)_25rem] lg:items-end lg:pb-28">
+      <div class="hero-copy max-w-5xl">
+        <%= link_to explore_events_path, class: "mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white/72 backdrop-blur-xl transition hover:border-citron/60 hover:text-citron focus-ring" do %>
+          <%= render "icons/arrow_left", class: "size-4" %>
+          Keşfe dön
+        <% end %>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="<%= event_category_badge_classes(@event) %>"><%= event_category_title(@event) %></span>
+          <% unless @event.published? %>
+            <span class="<%= event_status_badge_classes(@event) %>"><%= event_status_label(@event) %></span>
           <% end %>
+          <span class="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.12em] text-white/70"><%= @event.date.strftime("%H:%M") %></span>
         </div>
-      </section>
-    <% end %>
-  </div>
 
-  <aside class="space-y-4">
-    <section class="cinema-panel sticky top-28 rounded-[1.25rem] p-5"
-             data-controller="attendance"
-             data-attendance-url-value="<%= event_attendance_path(@event) %>"
-             data-attendance-signed-in-value="<%= current_user.present? %>">
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <p class="section-eyebrow text-coral">RSVP</p>
-          <h2 class="font-display mt-1 text-2xl font-extrabold tracking-tight text-stone-950">Yerini kaydet</h2>
-        </div>
-        <span class="rounded-full bg-citron px-3 py-1 font-mono text-xs font-black uppercase tracking-[0.12em] text-stone-950"><span data-attendance-target="count"><%= @event.attendees_count %></span> gidiyor</span>
-      </div>
+        <h1 class="mt-5 max-w-5xl text-pretty font-display text-5xl font-extrabold leading-[0.9] tracking-tight sm:text-7xl lg:text-[84px]">
+          <%= @event.title %>
+        </h1>
+        <p class="mt-6 max-w-3xl text-base font-medium leading-7 text-white/74 sm:text-xl sm:leading-8">
+          <%= truncate(@event.description.to_s.squish, length: 190) %>
+        </p>
 
-      <div class="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
-        <div class="rounded-lg bg-emerald-50 px-2 py-3 text-emerald-800">
-          <p class="font-display text-2xl font-extrabold"><%= @event.attendees_count %></p>
-          <p class="font-bold">Gidiyor</p>
-        </div>
-        <div class="rounded-lg bg-blue-50 px-2 py-3 text-blue-800">
-          <p class="font-display text-2xl font-extrabold"><%= @event.interested_attendees_count %></p>
-          <p class="font-bold">İlgili</p>
-        </div>
-        <div class="rounded-lg bg-stone-100 px-2 py-3 text-stone-700">
-          <p class="font-display text-2xl font-extrabold"><%= @event.not_going_attendees_count %></p>
-          <p class="font-bold">Gitmiyor</p>
-        </div>
-      </div>
-
-      <% if @attendee_preview.any? %>
-        <div class="mt-5 flex items-center gap-2">
-          <div class="flex -space-x-2">
-            <% @attendee_preview.each do |user| %>
-              <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-stone-950 text-xs font-black text-citron"><%= (user.name.presence || user.email).first.upcase %></span>
+        <div class="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <% if ticket_url %>
+            <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "event-cta-primary focus-ring" do %>
+              <span>Kayıt / bilet al</span>
+              <%= render "icons/ticket", class: "size-5" %>
             <% end %>
-          </div>
-          <p class="text-sm font-medium leading-5 text-stone-600">İnsanlar şimdiden plana dahil.</p>
-        </div>
-      <% end %>
-
-      <% if current_user %>
-        <div class="mt-5 space-y-2">
-          <% [["going", attendance_status_label("going")], ["interested", attendance_status_label("interested")], ["not_going", attendance_status_label("not_going")]].each do |status, label| %>
-            <% selected = @attendance&.status == status %>
+          <% else %>
+            <% selected = selected_status == "going" %>
             <button type="button"
-                    data-attendance-status="<%= status %>"
+                    class="event-cta-primary <%= selected ? "is-active" : "" %> focus-ring"
+                    data-attendance-status="going"
                     data-attendance-target="button"
+                    data-attendance-active-class="is-active"
+                    data-attendance-inactive-class=""
+                    data-attendance-default-label="Katılacağım"
+                    data-attendance-selected-label="Yerini aldın"
                     data-action="click->attendance#update"
-                    aria-pressed="<%= selected %>"
-                    class="flex h-12 w-full items-center justify-between rounded-xl border px-3 text-left text-sm font-black transition focus-ring <%= selected ? "border-stone-950 bg-stone-950 text-white" : "border-stone-200 bg-white text-stone-800 hover:border-stone-950" %>">
-              <span><%= label %></span>
-              <span><%= selected ? t("ui.saved") : t("ui.choose") %></span>
+                    aria-pressed="<%= selected %>">
+              <span data-attendance-state><%= selected ? "Yerini aldın" : "Katılacağım" %></span>
+              <%= render "icons/check_circle", class: "size-5" %>
             </button>
           <% end %>
-          <div data-attendance-target="toast" class="hidden" role="status" aria-live="polite"></div>
-        </div>
-      <% else %>
-        <div class="mt-5 space-y-2">
-          <%= link_to "RSVP için giriş yap", new_user_session_path, class: "btn-void flex w-full focus-ring" %>
-          <%= link_to "Hesap oluştur", new_user_registration_path, class: "btn-outline flex w-full focus-ring" %>
-        </div>
-      <% end %>
-    </section>
 
-    <% if policy(@event).edit? %>
-      <section class="cinema-panel rounded-[1.25rem] p-5">
-        <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Yönet</h2>
-        <p class="mt-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(@event) %></p>
-        <div class="mt-4 flex flex-col gap-2">
-          <% if current_user == @event.user %>
-            <%= link_to "Etkinliklerimde aç", organizer_event_path(@event), class: "btn-void flex w-full focus-ring" %>
+          <button type="button" class="event-cta-ghost focus-ring" data-action="share#share">
+            <%= render "icons/link", class: "size-5" %>
+            <span data-share-target="label">Paylaş</span>
+          </button>
+        </div>
+
+        <div class="mt-7 flex flex-wrap items-center gap-3 text-sm font-semibold text-white/66">
+          <div class="event-show-avatar-stack" aria-hidden="true">
+            <% if attendee_preview.any? %>
+              <% attendee_preview.each_with_index do |user, avatar_index| %>
+                <% avatar_name = user.name.presence || user.email %>
+                <span class="event-show-avatar" style="--avatar-hue: <%= (avatar_name.to_s.sum + avatar_index * 37) % 360 %>"><%= avatar_name.to_s.first.upcase %></span>
+              <% end %>
+            <% else %>
+              <span class="event-show-live-dot"></span>
+            <% end %>
+          </div>
+          <p>
+            <strong class="text-white" data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
+            kişi gidiyor
+            <% if capacity %>
+              <span class="text-white/38">/</span>
+              <span data-attendance-target="spots"><%= spots_left %></span> yer kaldı
+            <% elsif total_responses.positive? %>
+              <span class="text-white/38">/</span> <%= total_responses %> yanıt
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <aside class="event-show-poster-card hidden lg:block">
+        <div class="event-show-date-ticket">
+          <span><%= @event.date.strftime("%b") %></span>
+          <strong><%= @event.date.strftime("%-d") %></strong>
+        </div>
+        <div class="event-show-poster-frame <%= event_poster_background_classes(@event) %>">
+          <div class="poster-art absolute inset-0 <%= @event.image.attached? ? "opacity-35" : "opacity-100" %>"></div>
+          <% if @event.image.attached? %>
+            <%= image_tag @event.image, alt: @event.title, class: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl" %>
+          <% else %>
+            <div class="relative z-10 grid h-full place-items-center p-8 text-center">
+              <p class="font-display text-4xl font-extrabold leading-none"><%= @event.title %></p>
+            </div>
           <% end %>
-          <% if current_user&.admin? %>
-            <%= link_to "İncelemede aç", admin_event_path(@event), class: "btn-outline flex w-full focus-ring" %>
+          <div class="poster-chrome absolute inset-0"></div>
+          <div class="poster-spotlight absolute inset-0"></div>
+        </div>
+        <p class="mt-4 font-mono text-xs font-black uppercase tracking-[0.14em] text-white/45">Unizone seçkisi</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page-shell relative z-20 -mt-12">
+    <dl class="event-essentials-grid">
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 40ms">
+        <dt>Ne zaman</dt>
+        <dd><%= l(@event.date, format: :long) %></dd>
+      </div>
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 100ms">
+        <dt>Nerede</dt>
+        <dd><%= @event.location %></dd>
+      </div>
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 160ms">
+        <dt>Ücret</dt>
+        <dd><%= event_price_text(@event) %></dd>
+      </div>
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 220ms">
+        <dt><%= capacity ? "Kontenjan" : "Ev sahibi" %></dt>
+        <dd><%= capacity ? "#{going_count}/#{capacity} dolu" : organizer_name %></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="page-shell mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
+    <article class="space-y-8">
+      <section class="event-section-head">
+        <p class="section-eyebrow text-coral">Neden bu plan?</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950 lg:text-5xl">Karar vermen için kısa sinyaller.</h2>
+      </section>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="event-signal-card is-citron">
+          <p class="section-eyebrow">Mod</p>
+          <h3><%= event_category_title(@event) %></h3>
+          <p>Bu etkinlik <%= event_category_title(@event).downcase %> enerjisine yakın: hızlı anlaşılır, net bir plan.</p>
+        </div>
+        <div class="event-signal-card is-blue">
+          <p class="section-eyebrow">Kalabalık</p>
+          <h3><span data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></span> kişi gidiyor</h3>
+          <p><%= going_count.positive? ? "İnsanlar şimdiden plana dahil." : "İlk katılanlardan biri olup akışı başlat." %></p>
+        </div>
+        <div class="event-signal-card is-coral">
+          <p class="section-eyebrow">Eşik</p>
+          <h3><%= event_price_text(@event) %></h3>
+          <p><%= @event.free? ? "Bariyer yok; karar vermesi kolay." : "Ücret net, sürprizsiz ve önden görünüyor." %></p>
+        </div>
+        <div class="event-signal-card is-mint">
+          <p class="section-eyebrow"><%= capacity ? "Doluluk" : "Kayıt" %></p>
+          <h3><%= capacity ? "%#{capacity_percent}" : (ticket_url ? "Dış kayıt" : "Unizone RSVP") %></h3>
+          <% if capacity %>
+            <div class="event-capacity-track mt-4">
+              <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
+            </div>
+            <p class="mt-3"><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı; kararını erteleme.</p>
+          <% else %>
+            <p><%= ticket_url ? "Bilet veya kayıt akışı organizatör bağlantısında tamamlanır." : "Tek tıkla planını işaretleyebilirsin." %></p>
           <% end %>
         </div>
+      </div>
+
+      <section class="event-story-card">
+        <div class="event-story-orb"></div>
+        <p class="section-eyebrow text-coral">Hikaye</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950 lg:text-5xl">Oraya gittiğinde ne hissedeceksin?</h2>
+        <p class="mt-6 whitespace-pre-line text-lg font-medium leading-8 text-stone-700"><%= @event.description %></p>
       </section>
+
+      <section class="event-practical-card">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="section-eyebrow text-coral">Pratik bilgiler</p>
+            <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Planı netleştir.</h2>
+          </div>
+          <% if ticket_url %>
+            <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "section-cta focus-ring" do %>
+              <span>Kayıt bağlantısı</span>
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <% end %>
+          <% end %>
+        </div>
+
+        <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div>
+            <dt><%= render "icons/calendar", class: "size-4" %> Tarih</dt>
+            <dd><%= l(@event.date, format: :long) %></dd>
+          </div>
+          <div>
+            <dt><%= render "icons/location", class: "size-4" %> Konum</dt>
+            <dd><%= @event.location %></dd>
+          </div>
+          <div>
+            <dt><%= render "icons/ticket", class: "size-4" %> Ücret</dt>
+            <dd><%= event_price_text(@event) %></dd>
+          </div>
+          <div>
+            <dt><%= render "icons/users", class: "size-4" %> Ev sahibi</dt>
+            <dd><%= organizer_name %></dd>
+          </div>
+        </dl>
+      </section>
+
+      <% if @similar_events.any? %>
+        <section class="space-y-5" data-controller="carousel">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="section-eyebrow text-coral">Benzer akışlar</p>
+              <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Bu moda yakın etkinlikler</h2>
+            </div>
+            <%= link_to explore_events_path(category: @event.category), class: "section-cta focus-ring" do %>
+              <span>Kategoriyi aç</span>
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <% end %>
+          </div>
+          <div class="carousel-stage">
+            <button type="button" class="carousel-side-button is-left focus-ring" aria-label="Önceki benzer etkinlikler" data-action="carousel#previous">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div class="carousel-viewport scrollbar-none" data-carousel-target="viewport">
+              <div class="featured-carousel-track">
+                <% @similar_events.each_with_index do |event, index| %>
+                  <div class="featured-carousel-slide">
+                    <%= render "events/event_card", event: event, compact: true, index: index %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            <button type="button" class="carousel-side-button is-right focus-ring" aria-label="Sonraki benzer etkinlikler" data-action="carousel#next">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
+            </button>
+          </div>
+        </section>
+      <% end %>
+
+      <% if @organizer_other_events.any? %>
+        <section class="space-y-5">
+          <div>
+            <p class="section-eyebrow text-emerald-700">Ev sahibinden</p>
+            <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Aynı ekibin diğer planları</h2>
+          </div>
+          <div class="grid gap-5 md:grid-cols-2">
+            <% @organizer_other_events.each_with_index do |event, index| %>
+              <%= render "events/event_card", event: event, compact: true, index: index %>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+    </article>
+
+    <aside class="space-y-4 lg:sticky lg:top-28">
+      <section class="event-action-card">
+        <p class="section-eyebrow text-coral">Aksiyon</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Yerini seç.</h2>
+        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500">Katıl, kaydet ya da pas geç. Plan akışın temiz kalsın.</p>
+
+        <% if ticket_url %>
+          <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "event-side-ticket focus-ring" do %>
+            <span>Kayıt / bilet al</span>
+            <%= render "icons/ticket", class: "size-5" %>
+          <% end %>
+        <% end %>
+
+        <div class="mt-5 grid gap-2">
+          <% rsvp_options.each do |option| %>
+            <% selected = selected_status == option[:status] %>
+            <button type="button"
+                    class="event-rsvp-choice <%= selected ? "is-active" : "" %> focus-ring"
+                    data-attendance-status="<%= option[:status] %>"
+                    data-attendance-target="button"
+                    data-attendance-active-class="is-active"
+                    data-attendance-inactive-class=""
+                    data-attendance-default-label="<%= option[:label] %>"
+                    data-attendance-selected-label="<%= option[:active_label] %>"
+                    data-action="click->attendance#update"
+                    aria-pressed="<%= selected %>">
+              <span>
+                <strong data-attendance-state><%= selected ? option[:active_label] : option[:label] %></strong>
+                <small><%= option[:note] %></small>
+              </span>
+              <span class="event-rsvp-choice-dot"></span>
+            </button>
+          <% end %>
+        </div>
+
+        <div class="mt-5 grid grid-cols-3 gap-2 text-center">
+          <div class="event-rsvp-stat">
+            <strong data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
+            <span>Gidiyor</span>
+          </div>
+          <div class="event-rsvp-stat">
+            <strong data-attendance-target="count" data-attendance-count-key="interested_attendees_count"><%= interested_count %></strong>
+            <span>Kayıtlı</span>
+          </div>
+          <div class="event-rsvp-stat">
+            <strong data-attendance-target="count" data-attendance-count-key="not_going_attendees_count"><%= not_going_count %></strong>
+            <span>Pas</span>
+          </div>
+        </div>
+
+        <% if capacity %>
+          <div class="mt-5 rounded-2xl bg-stone-950 p-4 text-white">
+            <div class="flex items-center justify-between gap-3 text-sm font-bold">
+              <span>Doluluk</span>
+              <span><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı</span>
+            </div>
+            <div class="event-capacity-track mt-3 bg-white/12">
+              <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
+            </div>
+          </div>
+        <% end %>
+
+        <button type="button" class="event-share-button focus-ring" data-action="share#share">
+          <%= render "icons/link", class: "size-4" %>
+          <span data-share-target="label">Paylaş</span>
+        </button>
+        <div class="event-share-toast hidden" role="status" aria-live="polite" data-share-target="toast"></div>
+        <div data-attendance-target="toast" class="hidden" role="status" aria-live="polite"></div>
+      </section>
+
+      <% if policy(@event).edit? %>
+        <section class="cinema-panel rounded-[1.25rem] p-5">
+          <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Yönet</h2>
+          <p class="mt-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(@event) %></p>
+          <div class="mt-4 flex flex-col gap-2">
+            <% if current_user == @event.user %>
+              <%= link_to "Etkinliklerimde aç", organizer_event_path(@event), class: "btn-void flex w-full focus-ring" %>
+            <% end %>
+            <% if current_user&.admin? %>
+              <%= link_to "İncelemede aç", admin_event_path(@event), class: "btn-outline flex w-full focus-ring" %>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+    </aside>
+  </section>
+
+  <div class="event-mobile-actions lg:hidden">
+    <% if ticket_url %>
+      <%= link_to "Kayıt / bilet", ticket_url, target: "_blank", rel: "noopener", class: "event-mobile-primary focus-ring" %>
+    <% else %>
+      <% selected = selected_status == "going" %>
+      <button type="button"
+              class="event-mobile-primary <%= selected ? "is-active" : "" %> focus-ring"
+              data-attendance-status="going"
+              data-attendance-target="button"
+              data-attendance-active-class="is-active"
+              data-attendance-inactive-class=""
+              data-attendance-default-label="Katılacağım"
+              data-attendance-selected-label="Yerini aldın"
+              data-action="click->attendance#update"
+              aria-pressed="<%= selected %>">
+        <span data-attendance-state><%= selected ? "Yerini aldın" : "Katılacağım" %></span>
+      </button>
     <% end %>
-  </aside>
-</section>
+    <% selected = selected_status == "interested" %>
+    <button type="button"
+            class="event-mobile-secondary <%= selected ? "is-active" : "" %> focus-ring"
+            data-attendance-status="interested"
+            data-attendance-target="button"
+            data-attendance-active-class="is-active"
+            data-attendance-inactive-class=""
+            data-attendance-default-label="Kaydet"
+            data-attendance-selected-label="Kaydedildi"
+            data-action="click->attendance#update"
+            aria-pressed="<%= selected %>">
+      <span data-attendance-state><%= selected ? "Kaydedildi" : "Kaydet" %></span>
+    </button>
+    <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+      <%= render "icons/link", class: "size-5" %>
+    </button>
+  </div>
+</div>
