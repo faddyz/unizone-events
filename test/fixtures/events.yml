@@ -4,6 +4,8 @@ published_event:
   date: <%= 2.weeks.from_now %>
   location: Main Hall
   price: 9.99
+  ticket_url: https://example.com/tickets/published-event
+  capacity: 120
   description: Published event description
   approved: true
   status: published

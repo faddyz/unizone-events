@@ -30,6 +30,8 @@ tr:
         date: "Tarih ve saat"
         location: "Konum"
         price: "Ücret"
+        ticket_url: "Bilet / kayıt bağlantısı"
+        capacity: "Kontenjan"
         description: "Açıklama"
         image: "Afiş görseli"
         status: "Durum"

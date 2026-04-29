@@ -20,6 +20,18 @@
       <%= form.number_field :price, step: "0.01", min: 0, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "0" %>
       <p class="mt-2 text-xs font-medium text-stone-500">Ücretsiz etkinlik için 0 yaz veya boş bırak.</p>
     </div>
+
+    <div>
+      <%= form.label :capacity, "Kontenjan", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.number_field :capacity, min: 1, step: 1, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "120" %>
+      <p class="mt-2 text-xs font-medium text-stone-500">Boş bırakırsan sayfada kontenjan gösterilmez.</p>
+    </div>
+
+    <div>
+      <%= form.label :ticket_url, "Bilet / kayıt bağlantısı", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.url_field :ticket_url, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "https://..." %>
+      <p class="mt-2 text-xs font-medium text-stone-500">Varsa ana aksiyon bu bağlantıya gider.</p>
+    </div>
   </div>
 </section>
 

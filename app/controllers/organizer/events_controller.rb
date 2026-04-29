@@ -66,6 +66,6 @@ class Organizer::EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(:title, :description, :date, :location, :category, :price, :image)
+    params.require(:event).permit(:title, :description, :date, :location, :category, :price, :ticket_url, :capacity, :image)
   end
 end
