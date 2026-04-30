@@ -57,6 +57,14 @@ DATABASE_URL="postgres://..." RAILS_ENV=production RAILS_MASTER_KEY="..." SECRET
 
 You can also use `bin/rails db:seed`; `demo:refresh` is just a clearer alias.
 
+Windows PowerShell helper:
+
+```powershell
+Copy-Item .env.production.local.example .env.production.local
+# Fill .env.production.local with production DATABASE_URL, RAILS_MASTER_KEY, and SECRET_KEY_BASE.
+.\script\refresh_demo_seed.ps1
+```
+
 ## Refreshing Demo Dates
 
 The seed uses relative dates. Re-run this whenever the public demo looks stale:

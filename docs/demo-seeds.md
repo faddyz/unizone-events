@@ -14,6 +14,20 @@ Equivalent explicit refresh command:
 bin/rails demo:refresh
 ```
 
+On Windows PowerShell, use the helper script:
+
+```powershell
+Copy-Item .env.production.local.example .env.production.local
+# Fill .env.production.local with the Supabase DATABASE_URL and Rails keys.
+.\script\refresh_demo_seed.ps1
+```
+
+To reset existing demo account passwords while refreshing:
+
+```powershell
+.\script\refresh_demo_seed.ps1 -ResetPasswords
+```
+
 The seed is idempotent. It looks up users by email, refreshes known demo events by owner and title, and only reconciles RSVP records created by demo users on seeded demo events. Non-demo user data is preserved.
 
 ## Demo Accounts
