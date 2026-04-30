@@ -13,10 +13,10 @@
     <div class="auth-workspace">
       <%= render "devise/shared/auth_showcase",
             aria_label: "Unizone başlangıç özeti",
-            eyebrow: "Yeni plan alanı",
+            eyebrow: "Yeni Planlar Burada",
             title: "Şehre<br><span>yakın</span><br>kal.",
-            summary: "Hesabınla etkinlikleri kaydet, katılımını seç ve kendi planını hazırlamaya başla.",
-            featured_label: "En çok katılım alanlar",
+            summary: "Etkinlikleri keşfet, ilgini çekenleri kaydet ve kendi şehir planını oluşturmaya başla.",
+            featured_label: "En popüler etkinlikler",
             cards: [
               { title: "Planları kaydet", meta: "Tek dokunuş", label: "Keşif", tone: "is-citron" },
               { title: "Katılımını seç", meta: "Gidiyorum / kayıtlı", label: "RSVP", tone: "is-blue" },
@@ -27,7 +27,7 @@
         <div class="auth-card-head">
           <p class="section-eyebrow text-coral">Yeni hesap</p>
           <h1 id="auth-title">Unizone’a katıl</h1>
-          <p>Adını, e-postanı ve şifreni belirle.</p>
+          <p>Hesabını oluştur, şehirdeki planları kaydetmeye başla.</p>
         </div>
 
         <nav class="auth-switcher" aria-label="Hesap işlemleri">
@@ -45,7 +45,7 @@
                   autocomplete: "name",
                   required: true,
                   class: "auth-input #{name_error ? "is-invalid" : ""}",
-                  placeholder: "Adın",
+                  placeholder: "Adın Soyadın",
                   aria: { invalid: name_error ? "true" : "false", describedby: name_error ? "user_name_error" : nil } %>
             <% if name_error %>
               <p id="user_name_error" class="auth-field-error"><%= resource.errors.full_messages_for(:name).first %></p>
@@ -71,7 +71,7 @@
                   autocomplete: "new-password",
                   required: true,
                   class: "auth-input #{password_error ? "is-invalid" : ""}",
-                  placeholder: "En az #{@minimum_password_length || 6} karakter",
+                  placeholder: "En az #{@minimum_password_length || 6} karakter.",
                   aria: { invalid: password_error ? "true" : "false", describedby: password_describedby } %>
             <% if @minimum_password_length %>
               <p id="user_password_hint" class="auth-field-hint">En az <%= @minimum_password_length %> karakter.</p>
@@ -87,7 +87,7 @@
                   autocomplete: "new-password",
                   required: true,
                   class: "auth-input #{confirmation_error ? "is-invalid" : ""}",
-                  placeholder: "Tekrar yaz",
+                  placeholder: "Şifreni tekrar gir.",
                   aria: { invalid: confirmation_error ? "true" : "false", describedby: confirmation_error ? "user_password_confirmation_error" : nil } %>
             <% if confirmation_error %>
               <p id="user_password_confirmation_error" class="auth-field-error"><%= resource.errors.full_messages_for(:password_confirmation).first %></p>
@@ -104,7 +104,7 @@
 
         <div class="auth-card-footer">
           <span>Zaten hesabın var mı?</span>
-          <%= link_to "Giriş yap", new_user_session_path, class: "focus-ring" %>
+          <%= link_to "Giriş yap!", new_user_session_path, class: "focus-ring" %>
         </div>
       </section>
     </div>
