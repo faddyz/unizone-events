@@ -6,6 +6,33 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     @popular_event = events(:published_event)
   end
 
+  test "faq page renders successfully" do
+    get faq_path
+
+    assert_response :success
+    assert_select "h1", "Sık sorulan sorular"
+    assert_includes response.body, "Etkinlik keşfi"
+    assert_includes response.body, "Biletler ve destek"
+  end
+
+  test "privacy policy page renders successfully" do
+    get privacy_policy_path
+
+    assert_response :success
+    assert_select "h1", "Gizlilik Politikası"
+    assert_includes response.body, "formal hukuki görüş"
+    assert_includes response.body, "support@unizone.app"
+  end
+
+  test "contact page renders successfully" do
+    get contact_path
+
+    assert_response :success
+    assert_select "h1", "Unizone destek kanalı"
+    assert_includes response.body, "support@unizone.app"
+    assert_select "a[href^='mailto:support@unizone.app']"
+  end
+
   test "auth pages show most attended published events" do
     Attendance.create!(user: users(:three), event: @popular_event, status: "going")
 

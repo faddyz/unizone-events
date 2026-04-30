@@ -1,0 +1,71 @@
+<% content_for :title, "İletişim" %>
+<% support_email = "support@unizone.app" %>
+
+<% contact_cards = [
+  {
+    title: "Ürün ve hesap desteği",
+    body: "Giriş, profil, planlarım, RSVP veya hesap ayarlarıyla ilgili sorunları bu kanaldan iletebilirsin.",
+    subject: "Unizone destek"
+  },
+  {
+    title: "Etkinlik ve organizatör desteği",
+    body: "Etkinlik oluşturma, inceleme süreci, yayın durumu veya etkinlik bilgisi güncelleme talepleri için yazabilirsin.",
+    subject: "Unizone organizatör desteği"
+  },
+  {
+    title: "Gizlilik ve güven",
+    body: "Gizlilik politikası, hesap verisi, içerik bildirimi veya güvenlik odaklı geri bildirimler için bizimle iletişime geçebilirsin.",
+    subject: "Unizone gizlilik talebi"
+  }
+] %>
+
+<main class="static-page">
+  <div class="page-shell static-page-shell">
+    <header class="static-hero">
+      <p class="section-eyebrow text-coral">İletişim</p>
+      <h1 class="mt-3">Unizone destek kanalı</h1>
+      <p class="mt-4">
+        Etkinlik keşfi, hesap, organizatör akışı veya gizlilik konularında bize ulaşabilirsin. Şimdilik en hızlı kanal e-posta.
+      </p>
+      <div class="static-hero-actions">
+        <%= mail_to support_email, "E-posta gönder", subject: "Unizone destek", class: "static-pill-link is-primary focus-ring" %>
+        <%= link_to "SSS'ye bak", faq_path, class: "static-pill-link focus-ring" %>
+      </div>
+    </header>
+
+    <section class="static-contact-grid">
+      <% contact_cards.each do |card| %>
+        <article class="static-contact-card">
+          <p class="section-eyebrow text-coral">Destek</p>
+          <h2><%= card[:title] %></h2>
+          <p><%= card[:body] %></p>
+          <%= mail_to support_email, support_email, subject: card[:subject], class: "static-contact-link focus-ring" %>
+        </article>
+      <% end %>
+    </section>
+
+    <div class="static-layout">
+      <aside class="static-side-card is-dark">
+        <p class="section-eyebrow text-citron">Yanıt için ipucu</p>
+        <p class="mt-3 text-sm font-semibold leading-6 text-white/68">
+          Etkinlik bağlantısı, hesap e-postası ve ekran görüntüsü gibi bağlamlar eklenirse destek talebini daha hızlı anlayabiliriz.
+        </p>
+      </aside>
+
+      <section class="static-content-card">
+        <header>
+          <p class="section-eyebrow text-coral">Ne yazmalı?</p>
+          <h2 class="mt-2">Talebini netleştiren bilgiler</h2>
+          <p class="mt-3">
+            Mesajına mümkünse ilgili etkinlik adını, yaşadığın adımı, beklediğin sonucu ve gördüğün hatayı ekle. Gizlilik veya hesap taleplerinde hesabınla ilişkili e-posta adresini belirtmen yeterli olur.
+          </p>
+          <ul>
+            <li>Etkinlik yayını veya inceleme talebi için etkinlik başlığını paylaş.</li>
+            <li>Hesap sorunu için kullandığın e-posta adresini belirt.</li>
+            <li>Gizlilik taleplerinde hangi veriye dair işlem istediğini açıkça yaz.</li>
+          </ul>
+        </header>
+      </section>
+    </div>
+  </div>
+</main>

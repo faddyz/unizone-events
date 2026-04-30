@@ -35,5 +35,7 @@ Rails.application.routes.draw do
   end
 
   get "faq", to: "pages#faq", as: :faq
+  get "gizlilik-politikasi", to: "pages#privacy", as: :privacy_policy
+  get "iletisim", to: "pages#contact", as: :contact
   get "up" => "rails/health#show", as: :rails_health_check
 end
