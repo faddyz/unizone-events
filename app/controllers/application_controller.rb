@@ -34,4 +34,25 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_resource)
     dashboard_path
   end
+
+  def prepare_event_card_data(events, preview_limit: 3)
+    records = Array(events).compact
+    ids = records.map(&:id).compact.uniq
+    return if ids.blank?
+
+    @event_attendance_counts ||= {}
+    @event_attendee_previews ||= {}
+
+    @event_attendance_counts.merge!(
+      Attendance.where(event_id: ids, status: "going").group(:event_id).count
+    )
+
+    previews = Hash.new { |hash, key| hash[key] = [] }
+    Attendance.where(event_id: ids, status: "going").includes(:user).order(:created_at).each do |attendance|
+      preview = previews[attendance.event_id]
+      preview << attendance.user if preview.length < preview_limit
+    end
+
+    @event_attendee_previews.merge!(previews)
+  end
 end

@@ -1,4 +1,5 @@
 <% content_for :title, "Yeni Şifre" %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/auth") %>
 
 <%
   password_error = resource.errors[:password].any?

@@ -1,4 +1,5 @@
 <% content_for :title, "Hesap" %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/account-settings") %>
 
 <%
   account_name = @user.name.presence || "Unizone üyesi"

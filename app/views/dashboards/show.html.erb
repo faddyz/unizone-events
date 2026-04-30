@@ -1,4 +1,5 @@
 <% content_for :title, "Planlarım" %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/member-workbench") %>
 
 <% user_label = current_user.name.presence || current_user.email %>
 <% next_event = @next_plan&.event %>
@@ -118,7 +119,15 @@
               <article class="dashboard-mini-event">
                 <div class="dashboard-mini-poster <%= event_poster_background_classes(event) %>">
                   <% if event.image.attached? %>
-                    <%= image_tag event.image, alt: "", loading: "lazy", aria: { hidden: true } %>
+                    <%= image_tag event.image,
+                          event_image_options(
+                            :thumb,
+                            alt: "",
+                            loading: "lazy",
+                            sizes: "4rem",
+                            class_name: "",
+                            aria: { hidden: true }
+                          ) %>
                   <% else %>
                     <div class="poster-noise absolute inset-0"></div>
                   <% end %>

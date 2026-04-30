@@ -19,7 +19,15 @@
       <%= link_to event_path(lead_event), class: "auth-feature-hero focus-ring" do %>
         <span class="auth-feature-hero-art <%= event_poster_background_classes(lead_event) %>">
           <% if lead_event.image.attached? %>
-            <%= image_tag lead_event.image, alt: "", loading: "lazy", aria: { hidden: true } %>
+            <%= image_tag lead_event.image,
+                  event_image_options(
+                    :card,
+                    alt: "",
+                    loading: "lazy",
+                    sizes: "(min-width: 1024px) 24rem, 92vw",
+                    class_name: "",
+                    aria: { hidden: true }
+                  ) %>
           <% else %>
             <span><%= lead_event.title.first.upcase %></span>
           <% end %>
@@ -27,7 +35,7 @@
         <span class="auth-feature-hero-copy">
           <span class="auth-feature-kicker"><%= event_category_title(lead_event) %></span>
           <strong><%= lead_event.title %></strong>
-          <small><%= l(lead_event.date, format: :short) %> · <%= lead_event.attendees_count %> kişi gidiyor</small>
+          <small><%= l(lead_event.date, format: :short) %> · <%= event_going_score(lead_event) %> kişi gidiyor</small>
         </span>
       <% end %>
 
@@ -38,7 +46,7 @@
               <span class="auth-feature-dot" aria-hidden="true"></span>
               <span class="auth-feature-copy">
                 <strong><%= event.title %></strong>
-                <small><%= event_category_title(event) %> · <%= event.attendees_count %> kişi</small>
+                <small><%= event_category_title(event) %> · <%= event_going_score(event) %> kişi</small>
               </span>
               <span class="auth-feature-pill"><%= l(event.date, format: :short) %></span>
             <% end %>

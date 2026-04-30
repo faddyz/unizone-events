@@ -1,4 +1,5 @@
 <% content_for :title, "Hesap Oluştur" %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/auth") %>
 
 <%
   name_error = resource.errors[:name].any?

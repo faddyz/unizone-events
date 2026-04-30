@@ -47,6 +47,14 @@ module EventsHelper
     "not_going" => "bg-stone-100 text-stone-600 ring-1 ring-stone-200"
   }.freeze
 
+  EVENT_IMAGE_DIMENSIONS = {
+    card: [ 960, 540 ],
+    list: [ 640, 360 ],
+    thumb: [ 360, 220 ],
+    detail: [ 1200, 1500 ],
+    lightbox: [ 1800, 2200 ]
+  }.freeze
+
   CATEGORY_ICONS = {
     "general" => "sparkles",
     "technology" => "cpu",
@@ -140,6 +148,51 @@ module EventsHelper
     I18n.t("rsvps.#{status}", default: status.to_s.humanize)
   end
 
+  def event_attendance_count(event)
+    prepared_event_attendance_counts.fetch(event.id) { event.attendees_count }.to_i
+  end
+
+  def event_going_score(event)
+    if event.respond_to?(:has_attribute?) && event.has_attribute?(:going_score)
+      event[:going_score].to_i
+    else
+      event_attendance_count(event)
+    end
+  end
+
+  def event_attendee_preview(event, limit: 3)
+    prepared = prepared_event_attendee_previews[event.id]
+    return prepared.first(limit) if prepared
+
+    event.going_users.limit(limit).to_a
+  end
+
+  def event_image_options(variant, alt:, class_name:, loading: "lazy", sizes: nil, fetchpriority: nil, data: nil, aria: nil)
+    width, height = EVENT_IMAGE_DIMENSIONS.fetch(variant)
+    {
+      alt: alt,
+      class: class_name.presence,
+      loading: loading,
+      decoding: "async",
+      width: width,
+      height: height,
+      sizes: sizes || "#{width}px",
+      fetchpriority: fetchpriority,
+      data: data,
+      aria: aria
+    }.compact
+  end
+
+  def event_card_image_sizes(featured: false, compact: false)
+    if featured
+      "(min-width: 1024px) 34rem, 88vw"
+    elsif compact
+      "(min-width: 1024px) 16rem, 88vw"
+    else
+      "(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 92vw"
+    end
+  end
+
   def event_lifecycle_hint(event)
     case event.status
     when "draft"
@@ -229,5 +282,13 @@ module EventsHelper
 
   def event_category_key(event_or_category)
     event_or_category.respond_to?(:category) ? event_or_category.category.to_s : event_or_category.to_s
+  end
+
+  def prepared_event_attendance_counts
+    @event_attendance_counts || {}
+  end
+
+  def prepared_event_attendee_previews
+    @event_attendee_previews || {}
   end
 end

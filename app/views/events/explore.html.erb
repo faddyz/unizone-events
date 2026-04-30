@@ -1,4 +1,5 @@
 <% content_for :title, "Etkinlikleri Keşfet" %>
+<% content_for :stylesheets, page_stylesheet_tags("components/cards", "components/carousel", "pages/explore") %>
 
 <%
   view_mode = params[:view] == "list" ? "list" : "grid"
@@ -66,7 +67,7 @@
       <div class="explore-results explore-results-<%= view_mode %>" data-view-mode="<%= view_mode %>">
         <% @events.each_with_index do |event, index| %>
           <% if view_mode == "list" %>
-            <% going_count = event.attendees_count %>
+            <% going_count = event_attendance_count(event) %>
             <% capacity = event.capacity.to_i.positive? ? event.capacity.to_i : nil %>
             <% spots_left = capacity ? [capacity - going_count, 0].max : nil %>
 
@@ -74,7 +75,14 @@
               <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
                 <div class="poster-art absolute inset-0 opacity-100"></div>
                 <% if event.image.attached? %>
-                  <%= image_tag event.image, alt: event.title, loading: "lazy", class: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
+                  <%= image_tag event.image,
+                        event_image_options(
+                          :list,
+                          alt: event.title,
+                          loading: "lazy",
+                          sizes: "(min-width: 1024px) 12.5rem, (min-width: 640px) 12rem, 92vw",
+                          class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full"
+                        ) %>
                 <% end %>
                 <span class="explore-list-date">
                   <small><%= event.date.strftime("%b") %></small>

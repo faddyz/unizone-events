@@ -1,5 +1,6 @@
 <% content_for :title, "Unizone" %>
 <% content_for :transparent_nav, true %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/home-hero", "components/cards", "components/carousel", "pages/home") %>
 
 <% category_cards = [
   { key: "music", icon: "music", mood: "Canlı sahne", note: "Konserler, DJ setleri ve geceye tempo veren etkinlikler.", class_name: "is-citron" },

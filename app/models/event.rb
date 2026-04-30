@@ -167,19 +167,23 @@ class Event < ApplicationRecord
   scope :published_visible, -> { published.where("date >= ?", 1.day.ago) }
 
   def attendees_count
-    attendances.where(status: "going").count
+    attendance_count_for("going")
   end
 
   def interested_attendees_count
-    attendances.where(status: "interested").count
+    attendance_count_for("interested")
   end
 
   def not_going_attendees_count
-    attendances.where(status: "not_going").count
+    attendance_count_for("not_going")
   end
 
   def total_responses_count
-    attendances.count
+    if association(:attendances).loaded?
+      attendances.size
+    else
+      attendances.count
+    end
   end
 
   def going_users
@@ -277,6 +281,14 @@ class Event < ApplicationRecord
       self.review_note = nil
     else
       self.approved = false
+    end
+  end
+
+  def attendance_count_for(status)
+    if association(:attendances).loaded?
+      attendances.count { |attendance| attendance.status == status.to_s }
+    else
+      attendances.where(status: status).count
     end
   end
 end

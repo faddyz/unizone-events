@@ -2,30 +2,34 @@ class EventsController < ApplicationController
   before_action :set_event, only: :show
 
   def index
-    @events = EventSearch.new(scope: published_scope, params: search_params).results.limit(8)
+    @events = EventSearch.new(scope: published_scope, params: search_params).results.limit(8).to_a
     @featured_events = published_scope
                        .left_joins(:attendances)
                        .select("events.*, COALESCE(SUM(CASE WHEN attendances.status = 'going' THEN 1 ELSE 0 END), 0) AS going_score")
                        .group("events.id")
                        .order(Arel.sql("going_score DESC"), date: :asc)
                        .limit(6)
+                       .to_a
     @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
+    prepare_event_card_data(@events + @featured_events)
   end
 
   def explore
     @events = EventSearch.new(scope: published_scope, params: search_params).results.page(params[:page]).per(12)
     @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
     @active_filters = active_explore_filters
+    prepare_event_card_data(@events.to_a)
   end
 
   def show
     authorize @event
 
     @preview_mode = !@event.published?
-    @similar_events = @event.similar_events
-    @organizer_other_events = @event.organizer_other_events
+    @similar_events = @event.similar_events.to_a
+    @organizer_other_events = @event.organizer_other_events.to_a
     @attendance = current_user&.attendances&.find_by(event: @event)
-    @attendee_preview = @event.going_users.limit(5)
+    prepare_event_card_data([ @event ] + @similar_events + @organizer_other_events, preview_limit: 5)
+    @attendee_preview = @event_attendee_previews.fetch(@event.id, [])
   end
 
   private

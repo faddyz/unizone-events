@@ -2,7 +2,7 @@ class DashboardsController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    @owned_events = current_user.events.order(created_at: :desc)
+    @owned_events = current_user.events.with_attached_image.order(created_at: :desc)
     @rsvps = current_user.attendances.includes(:event).order(updated_at: :desc)
     @upcoming_rsvps = current_user.attendances.includes(:event).joins(:event).where("events.date >= ?", Time.current).order("events.date ASC")
     @next_plan = @upcoming_rsvps.first
