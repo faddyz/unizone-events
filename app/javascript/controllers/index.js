@@ -9,6 +9,8 @@ import EventPreviewController from "controllers/event_preview_controller"
 import ExploreFiltersController from "controllers/explore_filters_controller"
 import HeroController from "controllers/hero_controller"
 import NavbarController from "controllers/navbar_controller"
+import PosterLightboxController from "controllers/poster_lightbox_controller"
+import PosterPaletteController from "controllers/poster_palette_controller"
 import ShareController from "controllers/share_controller"
 import WizardController from "controllers/wizard_controller"
 
@@ -21,5 +23,7 @@ application.register("event-preview", EventPreviewController)
 application.register("explore-filters", ExploreFiltersController)
 application.register("hero", HeroController)
 application.register("navbar", NavbarController)
+application.register("poster-lightbox", PosterLightboxController)
+application.register("poster-palette", PosterPaletteController)
 application.register("share", ShareController)
 application.register("wizard", WizardController)

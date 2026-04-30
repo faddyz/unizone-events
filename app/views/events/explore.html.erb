@@ -72,9 +72,8 @@
 
             <article class="explore-list-card animate-rise-in" style="animation-delay: <%= index * 45 %>ms">
               <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
-                <div class="poster-art absolute inset-0 <%= event.image.attached? ? "opacity-25" : "opacity-100" %>"></div>
+                <div class="poster-art absolute inset-0 opacity-100"></div>
                 <% if event.image.attached? %>
-                  <%= image_tag event.image, alt: "", loading: "lazy", aria: { hidden: true }, class: "event-poster-image event-poster-image-bg absolute inset-0 h-full w-full" %>
                   <%= image_tag event.image, alt: event.title, loading: "lazy", class: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
                 <% end %>
                 <span class="explore-list-date">

@@ -8,12 +8,11 @@
          style="animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) <%= index * 80 %>ms both">
   <%= link_to event_path(event), class: "block focus-ring" do %>
     <div class="event-poster relative aspect-video overflow-hidden <%= event_poster_background_classes(event) %>">
-      <div class="poster-art absolute inset-0 <%= event.image.attached? ? "opacity-35" : "opacity-100" %>"></div>
+      <div class="poster-art absolute inset-0 opacity-100"></div>
 
       <% if event.image.attached? %>
-        <%= image_tag event.image, alt: "", loading: "lazy", aria: { hidden: true }, class: "event-poster-image event-poster-image-bg absolute inset-0 h-full w-full" %>
         <%= image_tag event.image, alt: event.title, loading: "lazy", class: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full transition duration-500 group-hover:scale-[1.025]" %>
-        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/88 via-stone-950/20 to-stone-950/8"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/72 via-stone-950/16 to-white/10"></div>
       <% else %>
         <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/16 to-white/10"></div>
       <% end %>

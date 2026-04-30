@@ -14,6 +14,8 @@
   attendee_preview = @attendee_preview.to_a
   selected_status = @attendance&.status
   share_text = "#{@event.title} etkinliğine göz at."
+  show_controllers = [ "attendance", "share" ]
+  show_controllers << "poster-lightbox" if @event.image.attached?
   rsvp_options = [
     { status: "going", label: "Katıl!", active_label: "Yerini aldın!", note: "Katılımını netleştir ve etkinlikteki yerini ayır." },
     { status: "interested", label: "İlgilendiğini göster!", active_label: "İlgileniyorsun!", note: "Henüz kesin değilse etkinliği radarında tut." },
@@ -22,7 +24,7 @@
 %>
 
 <div class="event-show-page"
-     data-controller="attendance share"
+     data-controller="<%= show_controllers.join(" ") %>"
      data-attendance-url-value="<%= event_attendance_path(@event) %>"
      data-attendance-signed-in-value="<%= current_user.present? %>"
      data-attendance-capacity-value="<%= capacity || 0 %>"
@@ -32,11 +34,7 @@
      data-share-url-value="<%= request.original_url %>">
   <section class="event-show-hero relative isolate overflow-hidden bg-void text-white">
     <div class="absolute inset-0 <%= event_poster_background_classes(@event) %> opacity-80"></div>
-    <% if @event.image.attached? %>
-      <%= image_tag @event.image, alt: "", aria: { hidden: true }, class: "event-show-hero-image absolute inset-0 h-full w-full object-cover" %>
-    <% else %>
-      <div class="poster-noise absolute inset-0"></div>
-    <% end %>
+    <div class="poster-noise absolute inset-0"></div>
     <div class="hero-atmosphere absolute inset-0 opacity-70"></div>
     <div class="hero-stage-wash absolute inset-0 opacity-65"></div>
     <div class="hero-ribbon hero-ribbon-citron"></div>
@@ -131,23 +129,37 @@
         </div>
       </div>
 
-      <aside class="event-show-poster-card hidden lg:block">
+      <aside class="event-show-poster-card hidden lg:block" <%= tag.attributes(data: { controller: "poster-palette" }) if @event.image.attached? %>>
         <div class="event-show-date-ticket">
           <span><%= @event.date.strftime("%b") %></span>
           <strong><%= @event.date.strftime("%-d") %></strong>
         </div>
-        <div class="event-show-poster-frame <%= event_poster_background_classes(@event) %>">
-          <div class="poster-art absolute inset-0 <%= @event.image.attached? ? "opacity-35" : "opacity-100" %>"></div>
-          <% if @event.image.attached? %>
-            <%= image_tag @event.image, alt: @event.title, class: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl" %>
-          <% else %>
+        <% if @event.image.attached? %>
+          <button type="button"
+                  class="event-show-poster-frame event-show-poster-button <%= event_poster_background_classes(@event) %> focus-ring"
+                  data-action="poster-lightbox#open"
+                  aria-haspopup="dialog"
+                  aria-controls="event-poster-lightbox"
+                  aria-label="<%= @event.title %> afişini büyüt">
+            <div class="poster-art absolute inset-0 opacity-35"></div>
+            <%= image_tag @event.image, alt: @event.title, class: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl", data: { poster_palette_target: "image" } %>
+            <span class="event-show-poster-zoom">
+              <%= render "icons/image", class: "size-4" %>
+              <span>Afişi büyüt</span>
+            </span>
+            <div class="poster-chrome absolute inset-0"></div>
+            <div class="poster-spotlight absolute inset-0"></div>
+          </button>
+        <% else %>
+          <div class="event-show-poster-frame <%= event_poster_background_classes(@event) %>">
+            <div class="poster-art absolute inset-0 opacity-100"></div>
             <div class="relative z-10 grid h-full place-items-center p-8 text-center">
               <p class="font-display text-4xl font-extrabold leading-none"><%= @event.title %></p>
             </div>
-          <% end %>
-          <div class="poster-chrome absolute inset-0"></div>
-          <div class="poster-spotlight absolute inset-0"></div>
-        </div>
+            <div class="poster-chrome absolute inset-0"></div>
+            <div class="poster-spotlight absolute inset-0"></div>
+          </div>
+        <% end %>
         
       </aside>
     </div>
@@ -406,6 +418,37 @@
   </section>
 
   <%= render "shared/share_panel", dom_id: "event-share-panel" %>
+
+  <% if @event.image.attached? %>
+    <dialog class="event-poster-lightbox"
+            id="event-poster-lightbox"
+            aria-labelledby="event-poster-lightbox-title"
+            data-poster-lightbox-target="dialog"
+            data-action="click->poster-lightbox#closeFromBackdrop">
+      <div class="event-poster-lightbox-panel">
+        <header class="event-poster-lightbox-head">
+          <div>
+            <p class="section-eyebrow text-citron">Afiş</p>
+            <h2 id="event-poster-lightbox-title"><%= @event.title %></h2>
+          </div>
+          <button type="button"
+                  class="event-poster-lightbox-close focus-ring"
+                  data-action="poster-lightbox#close"
+                  aria-label="Afişi kapat">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/>
+            </svg>
+          </button>
+        </header>
+        <div class="event-poster-lightbox-media <%= event_poster_background_classes(@event) %>" data-controller="poster-palette">
+          <div class="poster-art absolute inset-0 opacity-35"></div>
+          <%= image_tag @event.image, alt: @event.title, class: "event-poster-lightbox-image", data: { poster_palette_target: "image" } %>
+          <div class="poster-noise absolute inset-0"></div>
+          <div class="poster-chrome absolute inset-0"></div>
+        </div>
+      </div>
+    </dialog>
+  <% end %>
 
   <div class="event-mobile-actions lg:hidden">
     <% if ticket_url %>

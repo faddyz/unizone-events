@@ -56,13 +56,6 @@
   max-width: none;
 }
 
-.event-poster-image-bg {
-  object-fit: cover;
-  filter: blur(18px) saturate(1.15);
-  opacity: 0.72;
-  transform: scale(1.12);
-}
-
 .event-poster-image-main {
   object-fit: contain;
   object-position: center;
