@@ -161,6 +161,28 @@ module EventsHelper
     Event.statuses.keys.index(event.status).to_i + 1
   end
 
+  def event_lifecycle_statuses(event)
+    statuses = %w[draft submitted]
+    statuses << event.status if event.rejected? || event.cancelled?
+    statuses << "published"
+    statuses
+  end
+
+  def event_lifecycle_completed?(event, status)
+    case event.status
+    when "draft"
+      status == "draft"
+    when "submitted"
+      %w[draft submitted].include?(status)
+    when "published"
+      %w[draft submitted published].include?(status)
+    when "rejected", "cancelled"
+      %w[draft submitted].include?(status) || status == event.status
+    else
+      status == event.status
+    end
+  end
+
   def explore_filter_params_with(overrides = {})
     next_params = request.query_parameters.slice(
       "query",

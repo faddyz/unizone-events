@@ -23,6 +23,8 @@
         <%= link_to "Düzenle", edit_admin_event_path(@event), class: "admin-primary-action focus-ring" %>
         <% if @event.published? %>
           <%= link_to "Public sayfa", event_path(@event), class: "admin-secondary-action focus-ring" %>
+        <% else %>
+          <%= link_to "Önizle", event_path(@event), class: "admin-secondary-action focus-ring" %>
         <% end %>
       </div>
     </div>
@@ -174,7 +176,7 @@
           </div>
         </div>
         <ol class="admin-flow-list">
-          <% Event.statuses.keys.each_with_index do |status, index| %>
+          <% event_lifecycle_statuses(@event).each_with_index do |status, index| %>
             <li class="<%= status == @event.status ? "is-current" : "" %>">
               <span><%= index + 1 %></span>
               <strong><%= event_status_label(Event.new(status: status)) %></strong>

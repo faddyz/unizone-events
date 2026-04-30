@@ -160,6 +160,8 @@
                 <%= link_to "Düzenle", edit_organizer_event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
                 <% if event.published? %>
                   <%= link_to "Yayındaki sayfa", event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                <% else %>
+                  <%= link_to "Önizle", event_path(event), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
                 <% end %>
                 <% unless event.submitted? || event.cancelled? %>
                   <%= button_to "İncelemeye gönder", submit_organizer_event_path(event), method: :patch, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>

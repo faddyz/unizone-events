@@ -200,12 +200,37 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "owner can preview non public event on public show route" do
+    sign_in @member
+
+    get event_path(@owner_draft_event)
+
+    assert_response :success
+    assert_select "meta[name='robots'][content='noindex, nofollow']"
+    assert_includes response.body, "Önizleme modu"
+    assert_includes response.body, "Önizleme kilidi"
+    refute_includes response.body, "data-action=\"share#share\""
+    refute_includes response.body, "data-action=\"click-&gt;attendance#update\""
+  end
+
   test "owner can view organizer event page" do
     sign_in @member
 
     get organizer_event_path(@owner_draft_event)
 
     assert_response :success
+    assert_select "a[href='#{event_path(@owner_draft_event)}']", text: "Önizle"
+    assert_select "a", text: "Yayındaki sayfa", count: 0
+  end
+
+  test "organizer event page links to live page once published" do
+    sign_in @member
+
+    get organizer_event_path(@published_event)
+
+    assert_response :success
+    assert_select "a[href='#{event_path(@published_event)}']", text: "Yayındaki sayfa"
+    assert_select "a", text: "Önizle", count: 0
   end
 
   test "organizer can submit draft for review" do

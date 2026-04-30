@@ -21,6 +21,7 @@ class EventsController < ApplicationController
   def show
     authorize @event
 
+    @preview_mode = !@event.published?
     @similar_events = @event.similar_events
     @organizer_other_events = @event.organizer_other_events
     @attendance = current_user&.attendances&.find_by(event: @event)

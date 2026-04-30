@@ -19,6 +19,8 @@
       <% end %>
       <% if @event.published? %>
         <%= link_to "Yayındaki sayfa", event_path(@event), class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>
+      <% else %>
+        <%= link_to "Önizle", event_path(@event), class: "btn-outline border-white/25 bg-white/10 text-white hover:bg-white hover:text-stone-950 focus-ring" %>
       <% end %>
     </div>
   </header>
@@ -62,9 +64,9 @@
       <section class="cinema-panel rounded-[1.25rem] p-5">
         <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Akış</h2>
         <ol class="mt-4 space-y-3 text-sm">
-          <% Event.statuses.keys.each_with_index do |status, index| %>
+          <% event_lifecycle_statuses(@event).each_with_index do |status, index| %>
             <li class="flex items-center gap-3">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-black <%= index + 1 <= event_lifecycle_step(@event) ? "bg-stone-950 text-citron" : "bg-stone-100 text-stone-500" %>"><%= index + 1 %></span>
+              <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-black <%= event_lifecycle_completed?(@event, status) ? "bg-stone-950 text-citron" : "bg-stone-100 text-stone-500" %>"><%= index + 1 %></span>
               <span class="<%= status == @event.status ? "font-black text-stone-950" : "font-semibold text-stone-600" %>"><%= event_status_label(Event.new(status: status)) %></span>
             </li>
           <% end %>

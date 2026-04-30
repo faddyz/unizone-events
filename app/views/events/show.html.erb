@@ -2,6 +2,7 @@
 <% content_for :transparent_nav, true %>
 
 <%
+  preview_mode = @preview_mode
   organizer_name = @event.user.name.presence || @event.user.email
   going_count = @event.attendees_count
   interested_count = @event.interested_attendees_count
@@ -12,16 +13,45 @@
   spots_left = capacity ? [capacity - going_count, 0].max : nil
   ticket_url = @event.ticket_url.presence
   attendee_preview = @attendee_preview.to_a
-  selected_status = @attendance&.status
+  selected_status = preview_mode ? nil : @attendance&.status
   share_text = "#{@event.title} etkinliğine göz at."
-  show_controllers = [ "attendance", "share" ]
+  show_controllers = []
+  show_controllers << "attendance" unless preview_mode
+  show_controllers << "share" unless preview_mode
   show_controllers << "poster-lightbox" if @event.image.attached?
+  preview_back_path = if preview_mode && current_user&.admin?
+    admin_event_path(@event)
+  elsif preview_mode && current_user == @event.user
+    organizer_event_path(@event)
+  else
+    explore_events_path
+  end
+  preview_back_label = if preview_mode && current_user&.admin?
+    "İncelemeye dön"
+  elsif preview_mode
+    "Etkinliklerime dön"
+  else
+    "Keşfe dön"
+  end
+  public_action_label = if ticket_url
+    "Kayıt / Bilet Al"
+  elsif current_user.blank?
+    "Giriş yap"
+  else
+    "Katıl!"
+  end
   rsvp_options = [
     { status: "going", label: "Katıl!", active_label: "Yerini aldın!", note: "Katılımını netleştir ve etkinlikteki yerini ayır." },
     { status: "interested", label: "İlgilendiğini göster!", active_label: "İlgileniyorsun!", note: "Henüz kesin değilse etkinliği radarında tut." },
     { status: "not_going", label: "Pas geç.", active_label: "Pas geçildi.", note: "Sana uygun değilse seçimini temiz tut." }
   ]
 %>
+
+<% if preview_mode %>
+  <% content_for :head do %>
+    <meta name="robots" content="noindex, nofollow">
+  <% end %>
+<% end %>
 
 <div class="event-show-page"
      data-controller="<%= show_controllers.join(" ") %>"
@@ -43,11 +73,24 @@
     <div class="hero-noise absolute inset-0"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-void via-stone-950/70 to-stone-950/28"></div>
 
+    <% if preview_mode %>
+      <div class="event-preview-banner page-shell relative z-20">
+        <div class="event-preview-banner-inner">
+          <div>
+            <p class="section-eyebrow text-citron">Önizleme modu</p>
+            <strong>Bu sayfa sadece etkinlik sahibi ve adminler tarafından görülebilir.</strong>
+            <span>Yayına alınana kadar keşifte listelenmez; katılım, paylaşım ve bilet aksiyonları kapalıdır.</span>
+          </div>
+          <%= link_to preview_back_label, preview_back_path, class: "event-preview-back focus-ring" %>
+        </div>
+      </div>
+    <% end %>
+
     <div class="page-shell relative z-10 grid min-h-[46rem] content-end gap-10 pb-24 pt-32 lg:min-h-[50rem] lg:grid-cols-[minmax(0,1fr)_25rem] lg:items-end lg:pb-28">
       <div class="hero-copy max-w-5xl">
-        <%= link_to explore_events_path, class: "mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white/72 backdrop-blur-xl transition hover:border-citron/60 hover:text-citron focus-ring" do %>
+        <%= link_to preview_back_path, class: "mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white/72 backdrop-blur-xl transition hover:border-citron/60 hover:text-citron focus-ring" do %>
           <%= render "icons/arrow_left", class: "size-4" %>
-          Keşfe dön
+          <%= preview_back_label %>
         <% end %>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -66,7 +109,12 @@
         </p>
 
         <div class="event-hero-actions mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <% if ticket_url %>
+          <% if preview_mode %>
+            <button type="button" class="event-cta-primary is-preview-disabled" disabled aria-disabled="true">
+              <span><%= public_action_label %></span>
+              <%= render ticket_url ? "icons/ticket" : "icons/check_circle", class: "size-5" %>
+            </button>
+          <% elsif ticket_url %>
             <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "event-cta-primary focus-ring" do %>
               <span>Kayıt / Bilet Al</span>
               <%= render "icons/ticket", class: "size-5" %>
@@ -93,16 +141,23 @@
             </button>
           <% end %>
 
-          <button type="button"
-                  class="event-cta-ghost focus-ring"
-                  data-share-target="trigger"
-                  data-action="share#share"
-                  aria-haspopup="dialog"
-                  aria-expanded="false"
-                  aria-controls="event-share-panel">
-            <%= render "icons/link", class: "size-5" %>
-            <span data-share-target="label">Paylaş</span>
-          </button>
+          <% if preview_mode %>
+            <button type="button" class="event-cta-ghost is-preview-disabled" disabled aria-disabled="true">
+              <%= render "icons/link", class: "size-5" %>
+              <span>Paylaş</span>
+            </button>
+          <% else %>
+            <button type="button"
+                    class="event-cta-ghost focus-ring"
+                    data-share-target="trigger"
+                    data-action="share#share"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                    aria-controls="event-share-panel">
+              <%= render "icons/link", class: "size-5" %>
+              <span data-share-target="label">Paylaş</span>
+            </button>
+          <% end %>
         </div>
 
         <div class="mt-7 flex flex-wrap items-center gap-3 text-sm font-semibold text-white/66">
@@ -117,13 +172,17 @@
             <% end %>
           </div>
           <p>
-            <strong class="text-white" data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
-            kişi katılıyor!
-            <% if capacity %>
-              <span class="text-white/38">/</span>
-              <span data-attendance-target="spots"><%= spots_left %></span> yer kaldı
-            <% elsif total_responses.positive? %>
-              <span class="text-white/38">/</span> <%= total_responses %> toplam geri bildirim.
+            <% if preview_mode %>
+              Yayına çıkınca katılım hareketi burada görünür.
+            <% else %>
+              <strong class="text-white" data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
+              kişi katılıyor!
+              <% if capacity %>
+                <span class="text-white/38">/</span>
+                <span data-attendance-target="spots"><%= spots_left %></span> yer kaldı
+              <% elsif total_responses.positive? %>
+                <span class="text-white/38">/</span> <%= total_responses %> toplam geri bildirim.
+              <% end %>
             <% end %>
           </p>
         </div>
@@ -315,8 +374,33 @@
       <section class="event-action-card">
         <p class="section-eyebrow text-coral">Aksiyon</p>
         <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Bu etkinlikte var mısın?</h2>
-        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500"><%= current_user.present? ? "Katılacağını netleştir, ilgini göster ya da sana uygun değilse pas geç." : "Katılımını bildirmek ve etkinliği hesabında takip etmek için giriş yap." %></p>
+        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500"><%= preview_mode ? "Bu alan yayındaki sayfanın aksiyon düzenini gösterir." : (current_user.present? ? "Katılacağını netleştir, ilgini göster ya da sana uygun değilse pas geç." : "Katılımını bildirmek ve etkinliği hesabında takip etmek için giriş yap.") %></p>
 
+        <% if preview_mode %>
+          <div class="event-preview-action-note">
+            <strong>Önizleme kilidi</strong>
+            <p>Etkinlik yayına alınmadan katılım, paylaşım ve dış kayıt aksiyonları çalışmaz.</p>
+          </div>
+
+          <% if ticket_url %>
+            <button type="button" class="event-side-ticket is-preview-disabled" disabled aria-disabled="true">
+              <span>Kayıt / Bilet Al</span>
+              <%= render "icons/ticket", class: "size-5" %>
+            </button>
+          <% end %>
+
+          <div class="mt-5 grid gap-2">
+            <% rsvp_options.each do |option| %>
+              <button type="button" class="event-rsvp-choice is-preview-disabled" disabled aria-disabled="true">
+                <span>
+                  <strong><%= option[:label] %></strong>
+                  <small><%= option[:note] %></small>
+                </span>
+                <span class="event-rsvp-choice-dot"></span>
+              </button>
+            <% end %>
+          </div>
+        <% else %>
         <% unless current_user.present? %>
           <div class="event-rsvp-auth-card">
             <strong>Katılmak için giriş yap</strong>
@@ -398,6 +482,7 @@
         </button>
         <div class="event-share-toast hidden" role="status" aria-live="polite" data-share-target="toast"></div>
         <div data-attendance-target="toast" class="hidden" role="status" aria-live="polite"></div>
+        <% end %>
       </section>
 
       <% if policy(@event).edit? %>
@@ -417,7 +502,7 @@
     </aside>
   </section>
 
-  <%= render "shared/share_panel", dom_id: "event-share-panel" %>
+  <%= render "shared/share_panel", dom_id: "event-share-panel" unless preview_mode %>
 
   <% if @event.image.attached? %>
     <dialog class="event-poster-lightbox"
@@ -451,7 +536,14 @@
   <% end %>
 
   <div class="event-mobile-actions lg:hidden">
-    <% if ticket_url %>
+    <% if preview_mode %>
+      <button type="button" class="event-mobile-primary is-preview-disabled" disabled aria-disabled="true">
+        <%= public_action_label %>
+      </button>
+      <%= link_to preview_back_path, class: "event-mobile-icon focus-ring", aria: { label: preview_back_label } do %>
+        <%= render "icons/arrow_left", class: "size-5" %>
+      <% end %>
+    <% elsif ticket_url %>
       <%= link_to "Kayıt / bilet", ticket_url, target: "_blank", rel: "noopener", class: "event-mobile-primary focus-ring" %>
       <button type="button"
               class="event-mobile-icon focus-ring"
