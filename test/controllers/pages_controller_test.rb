@@ -47,6 +47,51 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @popular_event.title
   end
 
+  test "user can sign in through devise session flow" do
+    post user_session_path, params: {
+      user: {
+        email: @user.email,
+        password: "password123"
+      }
+    }
+
+    assert_redirected_to dashboard_path
+  end
+
+  test "invalid sign in keeps user on session form" do
+    post user_session_path, params: {
+      user: {
+        email: @user.email,
+        password: "wrong-password"
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_select "form[action='#{user_session_path}']"
+  end
+
+  test "guest can register through devise registration flow" do
+    assert_difference "User.count", 1 do
+      post user_registration_path, params: {
+        user: {
+          name: "New Member",
+          email: "new-member@example.com",
+          password: "password123",
+          password_confirmation: "password123"
+        }
+      }
+    end
+
+    assert_redirected_to dashboard_path
+  end
+
+  test "password reset request page renders" do
+    get new_user_password_path
+
+    assert_response :success
+    assert_select "form[action='#{user_password_path}'][method='post']"
+  end
+
   test "signed in user can view account settings" do
     sign_in @user
 

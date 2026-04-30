@@ -14,7 +14,7 @@ class Organizer::EventsController < ApplicationController
     @query = params[:query].to_s.strip
 
     events_scope = current_user.events.with_attached_image.includes(:attendances).order(created_at: :desc)
-    events_scope = events_scope.public_send(@selected_status) unless @selected_status == "all"
+    events_scope = events_scope.where(status: @selected_status) unless @selected_status == "all"
     if @query.present?
       events_scope = events_scope.where(
         "LOWER(title) LIKE :query OR LOWER(location) LIKE :query OR LOWER(city) LIKE :query",
