@@ -556,6 +556,15 @@
   box-shadow:
     0 -24px 74px rgba(15, 15, 18, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  touch-action: pan-y;
+  transition: transform 180ms ease;
+  will-change: transform;
+}
+
+.mobile-account-panel.is-dragging {
+  cursor: grabbing;
+  transition: none;
+  user-select: none;
 }
 
 .mobile-account-handle {
@@ -564,6 +573,8 @@
   justify-self: center;
   border-radius: var(--radius-pill);
   background: rgba(15, 15, 18, 0.18);
+  cursor: grab;
+  touch-action: none;
 }
 
 .mobile-account-head {
@@ -573,6 +584,8 @@
   gap: 0.75rem;
   border-bottom: 1px solid rgba(15, 15, 18, 0.08);
   padding-bottom: 0.85rem;
+  cursor: grab;
+  touch-action: none;
 }
 
 .mobile-account-copy {
