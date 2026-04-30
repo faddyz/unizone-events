@@ -737,7 +737,7 @@
   position: fixed;
   right: 1rem;
   left: 1rem;
-  bottom: calc(4.7rem + env(safe-area-inset-bottom));
+  bottom: calc(var(--mobile-bottom-nav-height) + 0.55rem);
   z-index: 45;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -834,7 +834,7 @@
 
 @media (max-width: 1023px) {
   .event-show-page {
-    padding-bottom: 7rem;
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 6rem);
   }
 
   .event-show-hero {
@@ -854,5 +854,91 @@
   .event-mobile-secondary {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 639px) {
+  .event-show-hero {
+    min-height: 34rem;
+  }
+
+  .event-show-hero .page-shell {
+    min-height: 34rem;
+    gap: 1.25rem;
+    padding-top: 5.75rem;
+    padding-bottom: 5.5rem;
+  }
+
+  .event-show-hero + .page-shell {
+    margin-top: 1rem;
+  }
+
+  .event-show-title {
+    font-size: clamp(2.6rem, 12vw, 3.75rem);
+    line-height: 0.88;
+  }
+
+  .event-show-hero .hero-copy > p {
+    margin-top: 1rem;
+    font-size: 0.96rem;
+    line-height: 1.55;
+  }
+
+  .event-hero-actions {
+    display: none;
+  }
+
+  .event-show-avatar-stack {
+    max-width: 7.2rem;
+  }
+
+  .event-essentials-grid {
+    gap: 0.65rem;
+  }
+
+  .event-essential-card {
+    border-radius: 0.95rem;
+    padding: 0.85rem;
+  }
+
+  .event-essential-card dd {
+    font-size: 1.05rem;
+    line-height: 1.1;
+  }
+
+  .event-signal-card {
+    min-height: 11rem;
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .event-signal-card h3 {
+    font-size: clamp(1.55rem, 9vw, 2.35rem);
+    letter-spacing: 0;
+  }
+
+  .event-story-card,
+  .event-practical-card,
+  .event-action-card {
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .event-mobile-actions {
+    right: max(0.5rem, env(safe-area-inset-right));
+    left: max(0.5rem, env(safe-area-inset-left));
+    grid-template-columns: minmax(0, 1fr) auto;
+    border-radius: 1rem;
+    padding: 0.45rem;
+  }
+
+  .event-mobile-primary,
+  .event-mobile-secondary,
+  .event-mobile-icon {
+    min-height: 2.85rem;
+  }
+
+  .event-mobile-secondary {
+    display: none;
   }
 }

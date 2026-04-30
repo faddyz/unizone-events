@@ -53,6 +53,28 @@
   scroll-snap-align: start;
 }
 
+@media (max-width: 767px) {
+  .featured-carousel-track,
+  .category-card-track,
+  .upcoming-carousel-track {
+    gap: 0.85rem;
+  }
+
+  .featured-carousel-slide,
+  .upcoming-carousel-slide {
+    flex-basis: min(82vw, 22rem);
+  }
+
+  .carousel-stage::before,
+  .carousel-stage::after {
+    width: 1.15rem;
+  }
+
+  .carousel-side-button {
+    display: none;
+  }
+}
+
 @media (min-width: 1024px) {
   .featured-carousel-slide {
     flex-basis: calc((100% - 2.5rem) / 3);

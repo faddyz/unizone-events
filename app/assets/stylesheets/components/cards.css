@@ -375,3 +375,52 @@
 .event-card-compact {
   border-radius: 1rem;
 }
+
+@media (hover: none), (max-width: 767px) {
+  .event-card-action {
+    opacity: 1;
+    transform: none;
+    background: rgba(15, 15, 18, 0.04);
+  }
+
+  .event-card:hover .poster-chrome,
+  .event-card:hover .poster-spotlight,
+  .event-card:hover .event-date-ticket {
+    transform: none;
+  }
+
+  .lift-card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .event-card-body {
+    min-height: auto;
+    padding: 0.9rem;
+  }
+
+  .event-card-meta {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+  }
+
+  .event-card-meta > div:first-child {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .event-card-price {
+    align-self: flex-start;
+    white-space: normal;
+  }
+
+  .event-card-heading {
+    font-size: 1rem;
+  }
+
+  .event-card-description {
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+}

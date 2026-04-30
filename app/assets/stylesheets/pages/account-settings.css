@@ -453,6 +453,10 @@
 }
 
 @media (max-width: 639px) {
+  .account-settings-page {
+    padding-block: 0.25rem calc(var(--mobile-bottom-nav-height) + 2rem);
+  }
+
   .account-settings-shell.page-shell {
     width: min(100% - 1rem, 78rem);
   }
@@ -461,13 +465,64 @@
     font-size: 2.25rem;
   }
 
+  .account-settings-header {
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+  }
+
   .account-summary-head,
   .account-card-head,
   .account-form {
     padding: 1rem;
   }
 
+  .account-summary-head {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .account-avatar {
+    width: 3.45rem;
+    height: 3.45rem;
+    font-size: 1.45rem;
+  }
+
   .account-summary-head h2 {
     font-size: 1.55rem;
+  }
+
+  .account-summary-stats div {
+    padding: 0.85rem 1rem;
+  }
+
+  .account-summary-stats dd {
+    font-size: 1.7rem;
+  }
+
+  .account-settings-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .account-settings-nav a {
+    min-height: 3rem;
+    justify-content: center;
+  }
+
+  .account-trust-list {
+    padding: 0.85rem 1rem 1rem;
+  }
+
+  .account-card-head {
+    display: block;
+  }
+
+  .account-card-head h2 {
+    font-size: 1.5rem;
+  }
+
+  .account-input {
+    min-height: 3.05rem;
+    padding: 0.78rem 0.9rem;
   }
 }

@@ -770,14 +770,21 @@
 
 @media (max-width: 1023px) {
   .event-form-steps {
-    grid-template-columns: repeat(4, minmax(10.5rem, 1fr));
+    grid-template-columns: repeat(4, minmax(8.2rem, 1fr));
     overflow-x: auto;
     padding-bottom: 0.9rem;
+    scroll-padding-inline: 0.55rem;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
 
   .event-form-steps::-webkit-scrollbar {
     display: none;
+  }
+
+  .event-form-step-tab {
+    min-height: 3.2rem;
+    scroll-snap-align: start;
   }
 
   .event-form-step-tab-copy small {
@@ -786,12 +793,69 @@
 }
 
 @media (max-width: 639px) {
+  .event-creator-page {
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 1.5rem);
+  }
+
+  .event-creator-hero {
+    min-height: auto;
+  }
+
   .event-creator-hero-inner {
-    padding-block: 3rem 5.5rem;
+    min-height: auto;
+    gap: 1.1rem;
+    padding-block: 1.35rem 3.2rem;
+  }
+
+  .event-creator-hero-copy h1 {
+    font-size: clamp(2.2rem, 11vw, 3.35rem);
+    line-height: 0.92;
+  }
+
+  .event-creator-hero-copy p:not(.section-eyebrow) {
+    margin-top: 0.85rem;
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .event-creator-back-link {
+    margin-bottom: 1rem;
+  }
+
+  .event-creator-hero-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .event-creator-hero-signals > div {
+    min-width: 0;
+    border-radius: 0.8rem;
+    padding: 0.65rem;
+  }
+
+  .event-creator-hero-signals span {
+    font-size: 0.52rem;
+  }
+
+  .event-creator-hero-signals strong {
+    margin-top: 0.42rem;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    white-space: nowrap;
+  }
+
+  .event-creator-hero-signals p {
+    display: none;
   }
 
   .event-creator-body {
-    margin-top: -3.5rem;
+    margin-top: -2.1rem;
+  }
+
+  .event-creator-body.page-shell {
+    width: min(100% - 1rem, 86rem);
   }
 
   .event-form-workspace-head,
@@ -803,6 +867,77 @@
 
   .event-form-actions > * {
     flex: 1 1 auto;
+    min-height: 2.9rem;
+  }
+
+  .event-form-actions {
+    position: sticky;
+    bottom: var(--mobile-bottom-nav-height);
+    z-index: 35;
+    margin-inline: -1rem;
+    border-top-color: rgba(15, 15, 18, 0.1);
+    background: rgba(255, 250, 241, 0.94);
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    box-shadow: 0 -16px 38px rgba(15, 15, 18, 0.12);
+    backdrop-filter: blur(18px);
+  }
+
+  .event-form-step-rail,
+  .event-form-workspace,
+  .event-form-preview-card {
+    border-radius: 1rem;
+  }
+
+  .event-form-rail-head p:not(.section-eyebrow) {
+    display: none;
+  }
+
+  .event-form-steps {
+    grid-template-columns: repeat(4, minmax(7.25rem, 1fr));
+    padding-inline: 0.5rem;
+  }
+
+  .event-form-step-tab {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.52rem;
+    padding: 0.6rem;
+  }
+
+  .event-form-step-tab-index,
+  .event-form-step-tab-check {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+
+  .event-form-step-tab-check {
+    display: none;
+  }
+
+  .event-form-workspace-head h2,
+  .event-form-step-intro h3 {
+    font-size: clamp(1.65rem, 9vw, 2.25rem);
+    line-height: 0.98;
+  }
+
+  .event-form-grid {
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  .event-form-control {
+    min-height: 3.05rem;
+    border-radius: 0.82rem;
+    padding: 0.78rem 0.88rem;
+  }
+
+  .event-form-textarea {
+    min-height: 10.5rem;
+  }
+
+  .event-form-file::file-selector-button {
+    display: block;
+    width: 100%;
+    margin: 0 0 0.7rem;
   }
 
   .event-form-preview-poster {
