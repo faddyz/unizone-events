@@ -91,14 +91,6 @@ class Event < ApplicationRecord
 
   belongs_to :user
 
-  IMAGE_VARIANTS = {
-    card: { resize_to_fill: [ 960, 540 ], format: :webp, saver: { quality: 82 } },
-    list: { resize_to_fill: [ 640, 360 ], format: :webp, saver: { quality: 82 } },
-    thumb: { resize_to_fill: [ 320, 200 ], format: :webp, saver: { quality: 78 } },
-    detail: { resize_to_limit: [ 1200, 1500 ], format: :webp, saver: { quality: 84 } },
-    lightbox: { resize_to_limit: [ 1800, 2200 ], format: :webp, saver: { quality: 86 } }
-  }.freeze
-
   has_one_attached :image
 
   before_validation :normalize_conversion_fields
@@ -255,22 +247,6 @@ class Event < ApplicationRecord
 
   def display_image
     image.attached? ? image : "https://placehold.co/600x350/e2e8f0/0f172a?text=#{title.truncate(20)}"
-  end
-
-  def image_variant(variant)
-    image.variant(IMAGE_VARIANTS.fetch(variant))
-  end
-
-  def preprocess_image_variants
-    return 0 unless image.attached?
-
-    IMAGE_VARIANTS.keys.sum do |variant|
-      image_variant(variant).processed
-      1
-    rescue StandardError => error
-      Rails.logger.warn("Event #{id} image #{variant} variant failed: #{error.class}: #{error.message}")
-      0
-    end
   end
 
   def normalize_friendly_id(string)

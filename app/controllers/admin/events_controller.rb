@@ -42,7 +42,6 @@ class Admin::EventsController < ApplicationController
     authorize @event, :publish?
 
     if @event.update(event_params)
-      @event.preprocess_image_variants if event_image_uploaded?
       redirect_to admin_event_path(@event), notice: t("flash.event_details_updated")
     else
       render :edit, status: :unprocessable_entity
@@ -52,7 +51,6 @@ class Admin::EventsController < ApplicationController
   def publish
     authorize @event, :publish?
     @event.publish!
-    @event.preprocess_image_variants
     redirect_to admin_event_path(@event), notice: t("flash.event_live")
   end
 
@@ -101,9 +99,5 @@ class Admin::EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image, :status, :review_note)
-  end
-
-  def event_image_uploaded?
-    params.dig(:event, :image).present?
   end
 end

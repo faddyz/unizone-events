@@ -94,7 +94,7 @@
           <article class="admin-event-card">
             <div class="admin-event-poster <%= event_poster_background_classes(event) %>">
               <% if event.image.attached? %>
-                <%= image_tag event_image_source(event, :thumb),
+                <%= image_tag event.image,
                       event_image_options(
                         :thumb,
                         alt: event.title,

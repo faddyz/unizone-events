@@ -19,7 +19,7 @@
       <%= link_to event_path(lead_event), class: "auth-feature-hero focus-ring" do %>
         <span class="auth-feature-hero-art <%= event_poster_background_classes(lead_event) %>">
           <% if lead_event.image.attached? %>
-            <%= image_tag event_image_source(lead_event, :card),
+            <%= image_tag lead_event.image,
                   event_image_options(
                     :card,
                     alt: "",

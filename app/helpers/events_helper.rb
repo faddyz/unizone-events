@@ -167,12 +167,6 @@ module EventsHelper
     event.going_users.limit(limit).to_a
   end
 
-  def event_image_source(event, variant)
-    event.image_variant(variant)
-  rescue KeyError
-    event.image
-  end
-
   def event_image_options(variant, alt:, class_name:, loading: "lazy", sizes: nil, fetchpriority: nil, data: nil, aria: nil)
     width, height = EVENT_IMAGE_DIMENSIONS.fetch(variant)
     {
