@@ -1,0 +1,96 @@
+<% content_for :title, "Gizlilik Politikası" %>
+
+<% privacy_sections = [
+  {
+    id: "kapsam",
+    title: "Bu metnin kapsamı",
+    body: "Bu sayfa, Unizone ürün deneyimi için hazırlanmış pratik bir gizlilik bilgilendirmesidir. Resmi hukuki danışmanlık yerine geçmez; ürün büyüdükçe ve veri işleme süreçleri netleştikçe güncellenebilir."
+  },
+  {
+    id: "veriler",
+    title: "Hangi veriler toplanır?",
+    body: "Hesap oluşturduğunda ad, e-posta adresi ve şifre gibi hesap bilgileri; etkinlik oluşturduğunda başlık, açıklama, tarih, konum, kategori ve görsel gibi etkinlik bilgileri işlenir. Etkinliklere verdiğin katılım durumu da hesabınla ilişkilendirilir."
+  },
+  {
+    id: "kullanim",
+    title: "Veriler nasıl kullanılır?",
+    body: "Veriler etkinlikleri yayınlamak, hesabını yönetmek, planlarını göstermek, organizatör akışını çalıştırmak, güvenli oturum sağlamak ve ürün deneyimini iyileştirmek için kullanılır."
+  },
+  {
+    id: "oturum",
+    title: "Çerezler ve oturum",
+    body: "Unizone, giriş durumunu korumak ve güvenli oturum yönetimi sağlamak için zorunlu oturum çerezleri kullanır. Bu çerezler temel uygulama işlevleri için gereklidir."
+  },
+  {
+    id: "ucuncu-taraf",
+    title: "Üçüncü taraf bilet bağlantıları",
+    body: "Etkinliklerde bilet veya kayıt bağlantısı varsa seni ilgili organizatör ya da üçüncü taraf platforma yönlendirebiliriz. Bu platformlarda gerçekleşen ödeme, kayıt, iade ve veri işleme süreçleri ilgili hizmetin kendi koşullarına tabidir."
+  },
+  {
+    id: "saklama",
+    title: "Saklama ve güncelleme",
+    body: "Hesap ve etkinlik bilgileri, uygulama deneyimini sunmak ve kayıtlarını yönetmek için gerekli olduğu sürece saklanır. Profil bilgilerini hesap alanından güncelleyebilir, destek kanalı üzerinden gizlilik taleplerini iletebilirsin."
+  }
+] %>
+
+<main class="static-page">
+  <div class="page-shell static-page-shell">
+    <header class="static-hero">
+      <p class="section-eyebrow text-coral">Gizlilik</p>
+      <h1 class="mt-3">Gizlilik Politikası</h1>
+      <p class="mt-4">
+        Unizone'da hangi bilgilerin işlendiğini, bu bilgilerin ne için kullanıldığını ve destek taleplerini nasıl iletebileceğini açık şekilde özetliyoruz.
+      </p>
+      <div class="static-hero-actions">
+        <%= link_to "Destekle iletişime geç", contact_path, class: "static-pill-link is-primary focus-ring" %>
+        <%= link_to "SSS'yi oku", faq_path, class: "static-pill-link focus-ring" %>
+      </div>
+    </header>
+
+    <div class="static-layout">
+      <aside class="static-side-card is-dark" aria-label="Gizlilik başlıkları">
+        <p class="section-eyebrow text-citron">Kısa özet</p>
+        <p class="mt-3 text-sm font-semibold leading-6 text-white/68">
+          Verileri hesabını, etkinliklerini ve planlarını çalıştırmak için kullanırız. Bilet satın alma gibi üçüncü taraf işlemleri ilgili platformun koşullarına tabidir.
+        </p>
+        <nav class="static-nav-list mt-4">
+          <% privacy_sections.each do |section| %>
+            <a href="#<%= section[:id] %>" class="focus-ring"><%= section[:title] %></a>
+          <% end %>
+        </nav>
+      </aside>
+
+      <div class="static-content-stack">
+        <section class="static-content-card">
+          <div class="static-note">
+            <p>
+              Bu metin genel ürün bilgilendirmesi olarak hazırlanmıştır; formal hukuki görüş veya kapsamlı KVKK/GDPR uyumluluk dokümanı yerine geçmez.
+            </p>
+          </div>
+        </section>
+
+        <% privacy_sections.each do |section| %>
+          <section id="<%= section[:id] %>" class="static-content-card">
+            <header>
+              <p class="section-eyebrow text-coral">Politika</p>
+              <h2 class="mt-2"><%= section[:title] %></h2>
+              <p class="mt-3"><%= section[:body] %></p>
+            </header>
+          </section>
+        <% end %>
+
+        <section class="static-content-card">
+          <header>
+            <p class="section-eyebrow text-coral">İletişim</p>
+            <h2 class="mt-2">Gizlilik talepleri</h2>
+            <p class="mt-3">
+              Gizlilik, hesap verisi veya etkinlik içeriğiyle ilgili bir talebin varsa
+              <%= mail_to "support@unizone.app", "support@unizone.app", class: "font-black text-stone-950 underline decoration-coral/40 underline-offset-4" %>
+              adresinden bize ulaşabilirsin.
+            </p>
+          </header>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>

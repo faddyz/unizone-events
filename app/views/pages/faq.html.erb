@@ -1,38 +1,102 @@
-<% content_for :title, "Yardım" %>
+<% content_for :title, "SSS" %>
 
-<% faq_items = [
-  ["Nasıl etkinlik oluştururum?", "Etkinlik Oluştur sayfasından taslak başlat, temel detayları ekle ve hazır olduğunda incelemeye gönder."],
-  ["Etkinlik ne zaman yayına çıkar?", "Etkinlikler kısa bir kalite incelemesinden sonra yayına alınır; böylece takvim güvenilir ve kullanışlı kalır."],
-  ["Yayındaki etkinliği düzenleyebilir miyim?", "Evet. Önemli değişiklikler yeniden incelenir ve ardından herkese görünür hale gelir."],
-  ["RSVP nasıl çalışır?", "Giriş yapan kullanıcılar etkinlik için gidiyorum, ilgileniyorum veya gitmiyorum seçebilir."],
-  ["Etkinlik iptal edilebilir mi?", "Evet. İptal edilen etkinlikler keşiften kaldırılır; geçmişi etkinliği oluşturan kullanıcı için korunur."]
+<% faq_groups = [
+  {
+    id: "kesif",
+    title: "Etkinlik keşfi",
+    intro: "Unizone, şehirdeki etkinlikleri daha hızlı taraman ve sana uyan planları kaybetmemen için tasarlandı.",
+    items: [
+      ["Unizone'da nasıl etkinlik bulurum?", "Ana sayfadaki arama alanını veya Keşfet sayfasındaki kategori, tarih ve sıralama filtrelerini kullanabilirsin. Etkinlik kartları tarih, konum, kategori ve katılım sinyallerini öne çıkarır."],
+      ["Etkinlik detayında hangi bilgileri görürüm?", "Etkinlik sayfasında açıklama, tarih-saat, konum, kategori, organizatör bilgisi, bilet bağlantısı varsa yönlendirme ve katılım seçenekleri yer alır."],
+      ["Planlarımı nereden takip ederim?", "Giriş yaptıktan sonra Planlarım alanında ilgilendiğin veya katılacağını belirttiğin etkinlikleri görebilirsin."]
+    ]
+  },
+  {
+    id: "hesap",
+    title: "Hesap ve katılım",
+    intro: "Hesap, planlarını kaydetmek ve etkinlik oluşturmak için kullanılır.",
+    items: [
+      ["Hesap açmadan etkinlikleri görebilir miyim?", "Evet. Etkinlikleri gezebilir ve detay sayfalarını inceleyebilirsin. Katılım durumu seçmek, planlarını saklamak ve etkinlik oluşturmak için giriş yapman gerekir."],
+      ["RSVP seçenekleri ne anlama geliyor?", "Gidiyorum, ilgileniyorum veya gitmiyorum seçenekleri etkinlikle ilişkini kaydetmeni sağlar. Bu bilgi planlarını düzenlemek ve etkinlik ilgisini göstermek için kullanılır."],
+      ["Profil bilgilerimi değiştirebilir miyim?", "Evet. Hesap alanından adını, e-posta adresini ve şifreni güncelleyebilirsin."]
+    ]
+  },
+  {
+    id: "organize",
+    title: "Etkinlik oluşturma",
+    intro: "Organizatör akışı, etkinliği taslaktan yayına hazırlamak için adım adım ilerler.",
+    items: [
+      ["Nasıl etkinlik oluştururum?", "Etkinlik Oluştur sayfasından temel bilgileri, tarih-saat detaylarını, konumu, açıklamayı ve görseli ekleyerek taslak oluşturabilirsin."],
+      ["Etkinlik neden incelemeye gider?", "Unizone, keşif deneyimini güvenilir tutmak için yeni veya önemli ölçüde değişen etkinlikleri kısa bir kalite kontrolünden geçirir."],
+      ["Yayındaki etkinliği düzenleyebilir miyim?", "Evet. Yayındaki etkinlikleri düzenleyebilirsin. Kritik değişiklikler tekrar inceleme gerektirebilir."]
+    ]
+  },
+  {
+    id: "bilet",
+    title: "Biletler ve destek",
+    intro: "Unizone etkinlik keşfine odaklanır; bilet satışı veya ödeme akışı varsa genellikle organizatörün bağlantısına yönlendirir.",
+    items: [
+      ["Unizone bilet satıyor mu?", "Bu sürümde Unizone doğrudan bilet satışı yapmaz. Etkinlikte bilet bağlantısı varsa seni organizatörün veya ilgili üçüncü taraf platformun sayfasına yönlendirir."],
+      ["Üçüncü taraf bilet linklerinde sorumluluk kimde?", "Bilet satın alma, iade, ücret ve giriş koşulları ilgili organizatörün veya bilet platformunun kurallarına tabidir."],
+      ["Destek için nasıl ulaşırım?", "İletişim sayfasındaki destek adresinden etkinlik, hesap, gizlilik veya geri bildirim konularında bize yazabilirsin."]
+    ]
+  }
 ] %>
 
-<section class="page-shell mx-auto max-w-3xl space-y-6">
-  <%= render "shared/page_header", eyebrow: "Yardım", title: "Sık sorulan sorular" %>
+<main class="static-page">
+  <div class="page-shell static-page-shell">
+    <header class="static-hero">
+      <p class="section-eyebrow text-coral">Yardım merkezi</p>
+      <h1 class="mt-3">Sık sorulan sorular</h1>
+      <p class="mt-4">
+        Unizone'da etkinlik keşfetme, plan kaydetme, etkinlik oluşturma ve destek alma konusunda en sık sorulan yanıtları burada topladık.
+      </p>
+      <div class="static-hero-actions">
+        <%= link_to "İletişime geç", contact_path, class: "static-pill-link is-primary focus-ring" %>
+        <%= link_to "Gizlilik politikası", privacy_policy_path, class: "static-pill-link focus-ring" %>
+      </div>
+    </header>
 
-  <div class="space-y-3" data-controller="accordion">
-    <% faq_items.each_with_index do |(question, answer), index| %>
-      <% item_index = index + 1 %>
-      <section class="cinema-panel rounded-[1.5rem]">
-        <button type="button"
-                class="flex w-full items-center justify-between gap-4 px-4 py-4 text-left focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-400"
-                data-action="accordion#toggle"
-                data-accordion-target="button"
-                data-accordion-index="<%= item_index %>"
-                aria-expanded="false"
-                aria-controls="faq-panel-<%= item_index %>"
-                data-accordion-index-param="<%= item_index %>">
-          <span class="font-black text-stone-950"><%= question %></span>
-          <span class="text-lg leading-none text-stone-400" data-accordion-target="icon" data-accordion-index="<%= item_index %>" aria-hidden="true">+</span>
-        </button>
-        <div id="faq-panel-<%= item_index %>"
-             class="hidden px-4 pb-4 text-sm font-semibold leading-6 text-stone-600"
-             data-accordion-target="panel"
-             data-accordion-index="<%= item_index %>">
-          <%= answer %>
-        </div>
-      </section>
-    <% end %>
+    <div class="static-layout">
+      <aside class="static-side-card" aria-label="SSS başlıkları">
+        <p class="section-eyebrow text-coral">Konular</p>
+        <nav class="static-nav-list mt-3">
+          <% faq_groups.each do |group| %>
+            <a href="#<%= group[:id] %>" class="focus-ring"><%= group[:title] %></a>
+          <% end %>
+        </nav>
+      </aside>
+
+      <div class="static-content-stack">
+        <% faq_groups.each do |group| %>
+          <section id="<%= group[:id] %>" class="static-content-card">
+            <header>
+              <p class="section-eyebrow text-coral">SSS</p>
+              <h2 class="mt-2"><%= group[:title] %></h2>
+              <p class="mt-3"><%= group[:intro] %></p>
+            </header>
+
+            <div class="static-faq-grid pt-0">
+              <% group[:items].each do |question, answer| %>
+                <details class="static-faq-item">
+                  <summary><%= question %></summary>
+                  <p><%= answer %></p>
+                </details>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
+        <section id="topluluk" class="static-content-card">
+          <header>
+            <p class="section-eyebrow text-coral">Topluluk</p>
+            <h2 class="mt-2">Güvenli ve kullanışlı bir etkinlik akışı</h2>
+            <p class="mt-3">
+              Etkinliklerin doğru, güncel ve katılımcılar için anlaşılır olmasını bekleriz. Yanıltıcı başlıklar, eksik konum bilgisi veya güvenli olmayan içerikler yayına alınmayabilir.
+            </p>
+          </header>
+        </section>
+      </div>
+    </div>
   </div>
-</section>
+</main>
