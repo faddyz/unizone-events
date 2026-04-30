@@ -119,7 +119,7 @@
               <article class="dashboard-mini-event">
                 <div class="dashboard-mini-poster <%= event_poster_background_classes(event) %>">
                   <% if event.image.attached? %>
-                    <%= image_tag event.image,
+                    <%= image_tag event_image_source(event, :thumb),
                           event_image_options(
                             :thumb,
                             alt: "",

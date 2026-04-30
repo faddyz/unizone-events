@@ -60,7 +60,7 @@
         </div>
         <div class="admin-uploaded-media <%= event_poster_background_classes(@event) %>">
           <% if @event.image.attached? %>
-            <%= image_tag @event.image,
+            <%= image_tag event_image_source(@event, :detail),
                   event_image_options(
                     :detail,
                     alt: @event.title,

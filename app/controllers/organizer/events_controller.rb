@@ -46,6 +46,7 @@ class Organizer::EventsController < ApplicationController
     authorize @event
 
     if @event.save
+      @event.preprocess_image_variants if event_image_uploaded?
       redirect_to organizer_event_path(@event), notice: t("flash.event_submitted")
     else
       render :new, status: :unprocessable_entity
@@ -61,6 +62,7 @@ class Organizer::EventsController < ApplicationController
 
     if @event.update(event_params)
       @event.submit_for_review! if @event.published?
+      @event.preprocess_image_variants if event_image_uploaded?
       redirect_to organizer_event_path(@event), notice: t("flash.event_saved")
     else
       render :edit, status: :unprocessable_entity
@@ -87,6 +89,10 @@ class Organizer::EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image)
+  end
+
+  def event_image_uploaded?
+    params.dig(:event, :image).present?
   end
 
   def event_status_label_for(status)

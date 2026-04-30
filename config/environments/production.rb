@@ -25,6 +25,7 @@ Rails.application.configure do
   # Render free has an ephemeral filesystem, so use ACTIVE_STORAGE_SERVICE=supabase
   # when event images should survive deploys, restarts, and spin-downs.
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
+  config.active_storage.service_urls_expire_in = 1.hour
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true

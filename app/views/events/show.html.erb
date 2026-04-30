@@ -202,7 +202,7 @@
                   aria-controls="event-poster-lightbox"
                   aria-label="<%= @event.title %> afişini büyüt">
             <div class="poster-art absolute inset-0 opacity-35"></div>
-            <%= image_tag @event.image,
+            <%= image_tag event_image_source(@event, :detail),
                   event_image_options(
                     :detail,
                     alt: @event.title,
@@ -537,7 +537,7 @@
         </header>
         <div class="event-poster-lightbox-media <%= event_poster_background_classes(@event) %>" data-controller="poster-palette">
           <div class="poster-art absolute inset-0 opacity-35"></div>
-          <%= image_tag @event.image,
+          <%= image_tag event_image_source(@event, :lightbox),
                 event_image_options(
                   :lightbox,
                   alt: @event.title,
