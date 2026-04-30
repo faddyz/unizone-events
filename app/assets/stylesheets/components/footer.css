@@ -2,6 +2,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  padding-bottom: clamp(4.25rem, 7vw, 6.5rem);
   background:
     linear-gradient(180deg, rgba(8, 8, 10, 0.98) 0%, rgba(5, 5, 8, 1) 72%),
     var(--void);
@@ -36,13 +37,13 @@
 
 .footer-backdrop-word {
   position: absolute;
-  top: clamp(1.8rem, 5vw, 4.4rem);
+  bottom: clamp(-2.35rem, -2.2vw, -0.85rem);
   left: 50%;
   z-index: 0;
   max-width: none;
-  color: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.052);
   font-family: var(--font-display);
-  font-size: clamp(5.5rem, 16vw, 15rem);
+  font-size: clamp(7rem, 20vw, 18rem);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 0.78;
@@ -51,9 +52,9 @@
   transform: translateX(-50%);
   user-select: none;
   white-space: nowrap;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 20%, #000 56%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, #000 20%, #000 56%, transparent 100%);
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.055);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 74%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 74%, transparent 100%);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.065);
 }
 
 .footer-shell {
@@ -421,15 +422,15 @@
 
 @media (max-width: 1023px) {
   .site-footer {
-    padding-bottom: calc(var(--mobile-bottom-nav-height) + 1rem) !important;
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + clamp(2.25rem, 8vw, 4.25rem)) !important;
   }
 }
 
 @media (max-width: 639px) {
   .footer-backdrop-word {
-    top: 1.4rem;
-    font-size: clamp(4.7rem, 31vw, 7.4rem);
-    color: rgba(255, 255, 255, 0.032);
+    bottom: calc(var(--mobile-bottom-nav-height) - 1.1rem);
+    font-size: clamp(4.35rem, 27vw, 6.8rem);
+    color: rgba(255, 255, 255, 0.038);
   }
 
   .footer-shell {
