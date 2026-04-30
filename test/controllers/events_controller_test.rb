@@ -217,6 +217,36 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "submitted", @owner_draft_event.reload.status
   end
 
+  test "organizer create rerenders invalid form with selected image" do
+    sign_in @member
+
+    file = Tempfile.new([ "poster", ".png" ])
+    file.binmode
+    file.write("png")
+    file.rewind
+
+    upload = Rack::Test::UploadedFile.new(file.path, "image/png", true, original_filename: "poster.png")
+
+    assert_no_difference "Event.count" do
+      post organizer_events_path, params: {
+        event: {
+          title: "Missing Date Poster Event",
+          description: "This event is intentionally missing a date so the form rerenders.",
+          category: "music",
+          city: "Ankara",
+          location: "Test Hall",
+          price: "0",
+          image: upload
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Missing Date Poster Event"
+  ensure
+    file&.close!
+  end
+
   test "admin can publish submitted event" do
     sign_in @admin
 

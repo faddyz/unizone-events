@@ -94,12 +94,12 @@
             <span data-event-preview-target="previewMonth"><%= preview_month %></span>
             <strong data-event-preview-target="previewDay"><%= preview_day %></strong>
           </div>
-          <% if model.image.attached? %>
+          <% if model.image.attached? && model.image.attachment&.persisted? %>
             <%= image_tag model.image, alt: "", class: "event-form-preview-image", data: { event_preview_target: "previewImage" } %>
           <% else %>
             <img alt="" class="event-form-preview-image hidden" data-event-preview-target="previewImage">
           <% end %>
-          <div class="event-form-preview-fallback <%= model.image.attached? ? "hidden" : "" %>" data-event-preview-target="previewFallback">
+          <div class="event-form-preview-fallback <%= (model.image.attached? && model.image.attachment&.persisted?) ? "hidden" : "" %>" data-event-preview-target="previewFallback">
             <span class="section-eyebrow">Afiş önizlemesi</span>
             <strong data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı" %></strong>
           </div>

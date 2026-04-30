@@ -134,7 +134,7 @@
         <%= form.file_field :image,
               accept: "image/png,image/jpeg,image/jpg",
               class: "event-form-file",
-              data: { event_preview_target: "imageInput", existing: model.image.attached? ? "true" : "false" } %>
+              data: { event_preview_target: "imageInput", existing: (model.image.attached? && model.image.attachment&.persisted?) ? "true" : "false" } %>
         <p>PNG veya JPG, en fazla 5 MB.</p>
       </div>
     </div>
