@@ -28,11 +28,13 @@ docker compose up --build
 
 ## Demo Accounts
 
-After running `bin/rails db:seed`, use:
+Demo data is seeded manually. After running `bin/rails db:seed`, use:
 
 - Admin: `admin@example.com` / `password123`
 - Sample user: `member@example.com` / `password123`
 - Sample host: `mina@example.com` / `password123`
+
+See `docs/demo-seeds.md` for seed behavior, refresh notes, and password reset options. See `docs/render-supabase.md` for the free Render + Supabase deployment setup.
 
 ## Key Routes
 
@@ -55,9 +57,9 @@ bin/rails db:seed
 
 - Set `DATABASE_URL` to the Supabase PostgreSQL connection string.
 - Set `RAILS_MASTER_KEY`, `SECRET_KEY_BASE`, and `APP_HOST` in Render.
-- Run `bin/rails db:migrate` on deploy, then `bin/rails db:seed` only for demo/staging environments.
+- Run `bin/rails db:migrate` on deploy. Run `bin/rails db:seed` manually only for demo/staging environments that should show the fictional data set.
 - Use `bin/rails admin:create` with `ADMIN_EMAIL` and `ADMIN_PASSWORD` to bootstrap an admin safely.
-- Free-tier deployments should rely on generated placeholder event posters unless persistent Active Storage is configured.
+- Free-tier deployments should rely on generated placeholder event posters unless persistent Active Storage is configured with Supabase Storage.
 
 ## License
 

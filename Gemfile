@@ -45,6 +45,9 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+# Store Active Storage uploads on S3-compatible services such as Supabase Storage.
+gem "aws-sdk-s3", require: false
+
 # SEO friendly permalinks and slugs
 gem "friendly_id", "~> 5.5.0"
 

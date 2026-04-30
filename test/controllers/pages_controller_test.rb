@@ -38,12 +38,12 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     get new_user_session_path
     assert_response :success
-    assert_includes response.body, "En çok katılım alanlar"
+    assert_match(/En [Pp]opüler [Ee]tkinlikler/, response.body)
     assert_includes response.body, @popular_event.title
 
     get new_user_registration_path
     assert_response :success
-    assert_includes response.body, "En çok katılım alanlar"
+    assert_match(/En [Pp]opüler [Ee]tkinlikler/, response.body)
     assert_includes response.body, @popular_event.title
   end
 

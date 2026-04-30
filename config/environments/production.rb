@@ -21,8 +21,10 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Store uploaded files on the configured service.
+  # Render free has an ephemeral filesystem, so use ACTIVE_STORAGE_SERVICE=supabase
+  # when event images should survive deploys, restarts, and spin-downs.
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
@@ -46,12 +48,14 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # Render free runs a single ephemeral web instance. Keep the default cache local
+  # unless SOLID_CACHE=true is set and the solid cache schema is provisioned.
+  config.cache_store = ENV["SOLID_CACHE"] == "true" ? :solid_cache_store : :memory_store
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Keep jobs inline for the free demo deployment. Use ACTIVE_JOB_ADAPTER=solid_queue
+  # only when a queue database/schema and worker process are intentionally enabled.
+  config.active_job.queue_adapter = ENV.fetch("ACTIVE_JOB_ADAPTER", "inline").to_sym
+  config.solid_queue.connects_to = { database: { writing: :queue } } if config.active_job.queue_adapter == :solid_queue
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
