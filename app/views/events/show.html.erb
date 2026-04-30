@@ -13,7 +13,7 @@
   ticket_url = @event.ticket_url.presence
   attendee_preview = @attendee_preview.to_a
   selected_status = @attendance&.status
-  share_text = "#{@event.title} - #{l(@event.date, format: :short)}"
+  share_text = "#{@event.title} etkinliğine göz at."
   rsvp_options = [
     { status: "going", label: "Katıl!", active_label: "Yerini aldın!", note: "Katılımını netleştir ve etkinlikteki yerini ayır." },
     { status: "interested", label: "İlgilendiğini göster!", active_label: "İlgileniyorsun!", note: "Henüz kesin değilse etkinliği radarında tut." },
@@ -70,7 +70,7 @@
         <div class="event-hero-actions mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
           <% if ticket_url %>
             <%= link_to ticket_url, target: "_blank", rel: "noopener", class: "event-cta-primary focus-ring" do %>
-              <span>Kayıt / bilet al</span>
+              <span>Kayıt / Bilet Al</span>
               <%= render "icons/ticket", class: "size-5" %>
             <% end %>
           <% elsif current_user.blank? %>
@@ -95,7 +95,13 @@
             </button>
           <% end %>
 
-          <button type="button" class="event-cta-ghost focus-ring" data-action="share#share">
+          <button type="button"
+                  class="event-cta-ghost focus-ring"
+                  data-share-target="trigger"
+                  data-action="share#share"
+                  aria-haspopup="dialog"
+                  aria-expanded="false"
+                  aria-controls="event-share-panel">
             <%= render "icons/link", class: "size-5" %>
             <span data-share-target="label">Paylaş</span>
           </button>
@@ -368,7 +374,13 @@
           </div>
         <% end %>
 
-        <button type="button" class="event-share-button focus-ring" data-action="share#share">
+        <button type="button"
+                class="event-share-button focus-ring"
+                data-share-target="trigger"
+                data-action="share#share"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                aria-controls="event-share-panel">
           <%= render "icons/link", class: "size-4" %>
           <span data-share-target="label">Paylaş</span>
         </button>
@@ -393,10 +405,19 @@
     </aside>
   </section>
 
+  <%= render "shared/share_panel", dom_id: "event-share-panel" %>
+
   <div class="event-mobile-actions lg:hidden">
     <% if ticket_url %>
       <%= link_to "Kayıt / bilet", ticket_url, target: "_blank", rel: "noopener", class: "event-mobile-primary focus-ring" %>
-      <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+      <button type="button"
+              class="event-mobile-icon focus-ring"
+              aria-label="Etkinliği paylaş"
+              data-share-target="trigger"
+              data-action="share#share"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="event-share-panel">
         <%= render "icons/link", class: "size-5" %>
       </button>
     <% elsif current_user.present? %>
@@ -443,12 +464,26 @@
               <%= "hidden" unless not_going_selected %>>
         <span data-attendance-state><%= not_going_selected ? "Pas geçildi." : "Pas geç." %></span>
       </button>
-      <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+      <button type="button"
+              class="event-mobile-icon focus-ring"
+              aria-label="Etkinliği paylaş"
+              data-share-target="trigger"
+              data-action="share#share"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="event-share-panel">
         <%= render "icons/link", class: "size-5" %>
       </button>
     <% else %>
       <%= link_to "Giriş yap", new_user_session_path, class: "event-mobile-primary focus-ring" %>
-      <button type="button" class="event-mobile-icon focus-ring" aria-label="Etkinliği paylaş" data-action="share#share">
+      <button type="button"
+              class="event-mobile-icon focus-ring"
+              aria-label="Etkinliği paylaş"
+              data-share-target="trigger"
+              data-action="share#share"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="event-share-panel">
         <%= render "icons/link", class: "size-5" %>
       </button>
     <% end %>

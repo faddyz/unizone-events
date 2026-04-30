@@ -1,0 +1,119 @@
+<% share_dom_id = local_assigns.fetch(:dom_id, "share-panel") %>
+
+<div class="event-share-popover"
+     data-share-target="popover"
+     hidden
+     aria-hidden="true">
+  <div class="event-share-backdrop" data-action="click->share#close" aria-hidden="true"></div>
+
+  <section id="<%= share_dom_id %>"
+           class="event-share-panel"
+           data-share-target="panel"
+           role="dialog"
+           aria-modal="false"
+           aria-labelledby="<%= share_dom_id %>-title"
+           tabindex="-1">
+    <div class="event-share-panel-glow" aria-hidden="true"></div>
+
+    <header class="event-share-header">
+      <div>
+        <p class="event-share-kicker">Unizone</p>
+        <h2 id="<%= share_dom_id %>-title">Etkinliği paylaş</h2>
+      </div>
+      <button type="button"
+              class="event-share-close focus-ring"
+              data-action="share#close"
+              aria-label="Paylaşımı kapat">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <div class="event-share-url-card">
+      <span>Link</span>
+      <strong data-share-target="urlPreview"></strong>
+    </div>
+
+    <button type="button"
+            class="event-share-copy focus-ring"
+            data-share-target="copyButton"
+            data-action="share#copy">
+      <span class="event-share-option-icon" aria-hidden="true">
+        <%= render "icons/link", class: "size-4" %>
+      </span>
+      <span>
+        <strong data-share-target="copyLabel">Bağlantıyı kopyala</strong>
+        <small data-share-target="status" role="status" aria-live="polite">Panoya hazır</small>
+      </span>
+    </button>
+
+    <div class="event-share-options" aria-label="Paylaşım kanalları">
+      <a href="#"
+         class="event-share-option focus-ring"
+         data-share-target="shareLink"
+         data-share-channel="x"
+         data-action="click->share#closeSoon"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="X'te paylaş">
+        <span class="event-share-option-icon" aria-hidden="true">
+          <%= render "icons/x", class: "size-4" %>
+        </span>
+        <span>X</span>
+      </a>
+
+      <a href="#"
+         class="event-share-option focus-ring"
+         data-share-target="shareLink"
+         data-share-channel="whatsapp"
+         data-action="click->share#closeSoon"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="WhatsApp Web'de paylaş">
+        <span class="event-share-option-icon" aria-hidden="true">
+          <%= render "icons/whatsapp", class: "size-4" %>
+        </span>
+        <span>WhatsApp</span>
+      </a>
+
+      <a href="#"
+         class="event-share-option focus-ring"
+         data-share-target="shareLink"
+         data-share-channel="linkedin"
+         data-action="click->share#closeSoon"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="LinkedIn'de paylaş">
+        <span class="event-share-option-icon" aria-hidden="true">
+          <%= render "icons/linkedin", class: "size-4" %>
+        </span>
+        <span>LinkedIn</span>
+      </a>
+
+      <a href="mailto:"
+         class="event-share-option focus-ring"
+         data-share-target="shareLink"
+         data-share-channel="email"
+         data-action="click->share#closeSoon"
+         aria-label="E-posta ile paylaş">
+        <span class="event-share-option-icon" aria-hidden="true">
+          <%= render "icons/mail", class: "size-4" %>
+        </span>
+        <span>E-posta</span>
+      </a>
+
+      <a href="#"
+         class="event-share-option focus-ring"
+         data-share-target="shareLink"
+         data-share-channel="telegram"
+         data-action="click->share#closeSoon"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Telegram'da paylaş">
+        <span class="event-share-option-icon" aria-hidden="true">
+          <%= render "icons/telegram", class: "size-4" %>
+        </span>
+        <span>Telegram</span>
+      </a>
+    </div>
+  </section>
+</div>

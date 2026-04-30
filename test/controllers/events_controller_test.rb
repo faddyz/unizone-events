@@ -166,7 +166,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     get event_path(@published_event)
 
     assert_response :success
-    assert_includes response.body, "Kayıt / bilet al"
+    assert_includes response.body, "Kayıt / Bilet Al"
     assert_includes response.body, @published_event.ticket_url
     assert_includes response.body, "Kontenjan"
   end
