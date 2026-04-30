@@ -33,6 +33,43 @@
   padding-block: 4rem 6.5rem;
 }
 
+.event-creator-hero-compact {
+  min-height: 14rem;
+}
+
+.event-creator-hero-compact::after {
+  height: 3.5rem;
+}
+
+.event-creator-hero-compact .event-creator-hero-inner {
+  min-height: 14rem;
+  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: 1.65rem 2.35rem;
+}
+
+.event-creator-hero-compact .event-creator-hero-copy {
+  max-width: 42rem;
+}
+
+.event-creator-hero-compact .event-creator-back-link {
+  margin-bottom: 0.75rem;
+}
+
+.event-creator-hero-compact .event-creator-hero-copy h1 {
+  max-width: 38rem;
+  margin-top: 0.55rem;
+  font-size: clamp(2rem, 3.2vw, 3.25rem);
+  line-height: 0.98;
+}
+
+.event-creator-hero-compact .event-creator-hero-copy p:not(.section-eyebrow) {
+  max-width: 34rem;
+  margin-top: 0.75rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
 .event-creator-hero-copy {
   max-width: 56rem;
 }
@@ -115,6 +152,10 @@
   position: relative;
   z-index: 5;
   margin-top: -4.5rem;
+}
+
+.event-creator-hero-compact + .event-creator-body {
+  margin-top: 1.25rem;
 }
 
 .event-creator-body.page-shell {
@@ -801,15 +842,28 @@
     min-height: auto;
   }
 
+  .event-creator-hero-compact::after {
+    height: 5rem;
+  }
+
   .event-creator-hero-inner {
     min-height: auto;
     gap: 1.1rem;
     padding-block: 1.35rem 3.2rem;
   }
 
+  .event-creator-hero-compact .event-creator-hero-inner {
+    padding-block: 0.85rem 1.45rem;
+  }
+
   .event-creator-hero-copy h1 {
     font-size: clamp(2.2rem, 11vw, 3.35rem);
     line-height: 0.92;
+  }
+
+  .event-creator-hero-compact .event-creator-hero-copy h1 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+    line-height: 1;
   }
 
   .event-creator-hero-copy p:not(.section-eyebrow) {
@@ -818,8 +872,16 @@
     line-height: 1.55;
   }
 
+  .event-creator-hero-compact .event-creator-hero-copy p:not(.section-eyebrow) {
+    margin-top: 0.55rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
   .event-creator-back-link {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
+    min-height: 2.15rem;
+    padding: 0.38rem 0.7rem;
   }
 
   .event-creator-hero-signals {
@@ -852,6 +914,10 @@
 
   .event-creator-body {
     margin-top: -2.1rem;
+  }
+
+  .event-creator-hero-compact + .event-creator-body {
+    margin-top: 0.85rem;
   }
 
   .event-creator-body.page-shell {
