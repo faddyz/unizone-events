@@ -588,7 +588,7 @@ a.auth-switcher-item:hover {
 
 @media (max-width: 639px) {
   .auth-page {
-    padding-block: 0.5rem 3.5rem;
+    padding-block: 0.5rem calc(var(--mobile-bottom-nav-height) + 2rem);
   }
 
   .auth-shell.page-shell {
@@ -604,8 +604,36 @@ a.auth-switcher-item:hover {
     padding: 1rem;
   }
 
+  .auth-card-head h1 {
+    font-size: clamp(1.95rem, 9vw, 2.5rem);
+    line-height: 0.98;
+  }
+
+  .auth-form {
+    gap: 0.85rem;
+  }
+
+  .auth-input {
+    min-height: 3.1rem;
+    border-radius: 0.72rem;
+    padding: 0.78rem 0.9rem;
+  }
+
+  .auth-showcase {
+    gap: 1.1rem;
+  }
+
   .auth-showcase-copy h2 {
-    font-size: clamp(2.35rem, 14vw, 3.35rem);
+    font-size: clamp(2rem, 11vw, 2.85rem);
+    line-height: 0.9;
+  }
+
+  .auth-showcase-copy p:not(.section-eyebrow) {
+    display: none;
+  }
+
+  .auth-featured-block {
+    display: none;
   }
 
   .auth-feature-card {

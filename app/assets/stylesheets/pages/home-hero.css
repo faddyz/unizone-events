@@ -344,6 +344,29 @@
 }
 
 @media (max-width: 767px) {
+  .electric-hero .hero-layout {
+    min-height: 39rem;
+    align-items: end;
+    padding-top: 7rem;
+    padding-bottom: 6.5rem;
+  }
+
+  .electric-hero .hero-copy h1 {
+    max-width: 100%;
+    font-size: clamp(2.75rem, 12.4vw, 3.75rem);
+    line-height: 0.88;
+  }
+
+  .electric-hero .hero-copy > .mb-7 {
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-search {
+    margin-top: 1.35rem;
+    gap: 0.6rem;
+    padding: 0.75rem;
+  }
+
   .hero-beam {
     width: 22rem;
     filter: blur(16px);
@@ -373,6 +396,17 @@
 
   .carousel-side-button.is-right {
     right: 0.4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .electric-hero .hero-layout {
+    min-height: 36rem;
+    padding-bottom: 5.75rem;
+  }
+
+  .electric-hero .hero-copy h1 {
+    font-size: clamp(2.55rem, 12vw, 3.2rem);
   }
 }
 
