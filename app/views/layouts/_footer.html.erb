@@ -25,10 +25,9 @@
           </svg>
         </a>
         <a href="#" class="footer-social-link focus-ring" aria-label="X">
-          <%= render "icons/twitter", class: "size-4" %>
-        </a>
-        <a href="#" class="footer-social-link focus-ring" aria-label="Facebook">
-          <%= render "icons/facebook", class: "size-4" %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.2 3h3.1l-6.8 7.8L22.5 21h-6.3l-4.9-6.4L5.7 21H2.6l7.3-8.4L2.2 3h6.5l4.4 5.8L18.2 3Zm-1.1 16.2h1.7L7.8 4.7H6L17.1 19.2Z"/>
+          </svg>
         </a>
         <a href="#" class="footer-social-link focus-ring" aria-label="LinkedIn">
           <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -93,10 +92,9 @@
   </div>
 
   <div class="page-shell footer-bottom">
-    <span>© <%= Time.current.year %> Unizone</span>
+    <span>© <%= Time.current.year %> Unizone. Tüm hakları saklıdır.</span>
     <div class="footer-bottom-meta">
-      <span>Electric City arayüzü ile şehir planları için tasarlandı.</span>
-      <%= link_to "Gizlilik", faq_path(anchor: "gizlilik"), class: "footer-bottom-link focus-ring" %>
+      <%= link_to "Gizlilik", privacy_policy_path, class: "footer-bottom-link focus-ring" %>
       <%= link_to "Topluluk", faq_path(anchor: "topluluk"), class: "footer-bottom-link focus-ring" %>
     </div>
   </div>
