@@ -308,9 +308,9 @@ module EventsHelper
   def event_image_source(image, variant)
   return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
 
-  representation = image.variant(Event::IMAGE_VARIANTS.fetch(variant)).processed
+  representation = image.variant(Event::IMAGE_VARIANTS.fetch(variant))
 
-  main_app.rails_representation_proxy_path(
+  rails_storage_proxy_path(
     representation,
     expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
   )
