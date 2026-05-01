@@ -40,8 +40,10 @@ class Admin::EventsController < ApplicationController
 
   def update
     authorize @event, :publish?
+    remove_existing_image = remove_image_requested? && !event_image_upload_present?
 
     if @event.update(event_params)
+      @event.image.purge_later if remove_existing_image && @event.image.attached?
       redirect_to admin_event_path(@event), notice: t("flash.event_details_updated")
     else
       render :edit, status: :unprocessable_entity
@@ -79,7 +81,7 @@ class Admin::EventsController < ApplicationController
   end
 
   def set_event
-    @event = Event.friendly.find(params[:id])
+    @event = Event.with_attached_image.includes(:user).friendly.find(params[:id])
   end
 
   def filtered_events
@@ -98,6 +100,16 @@ class Admin::EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image, :status, :review_note)
+    permitted = params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image, :status, :review_note)
+    permitted.delete(:image) if permitted[:image].blank?
+    permitted
+  end
+
+  def remove_image_requested?
+    ActiveModel::Type::Boolean.new.cast(params.dig(:event, :remove_image))
+  end
+
+  def event_image_upload_present?
+    params.dig(:event, :image).present?
   end
 end

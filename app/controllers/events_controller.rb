@@ -35,7 +35,7 @@ class EventsController < ApplicationController
   private
 
   def set_event
-    @event = policy_scope(Event).friendly.find(params[:id])
+    @event = policy_scope(Event).with_attached_image.includes(:user).friendly.find(params[:id])
   end
 
   def published_scope

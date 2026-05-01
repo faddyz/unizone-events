@@ -110,14 +110,12 @@
           <article class="organizer-event-card">
             <div class="organizer-event-poster <%= event_poster_background_classes(event) %>">
               <% if event.image.attached? %>
-                <%= image_tag event.image,
-                      event_image_options(
-                        :thumb,
-                        alt: event.title,
-                        loading: "lazy",
-                        sizes: "5rem",
-                        class_name: ""
-                      ) %>
+                <%= event_image_tag event,
+                      :thumb,
+                      alt: event.title,
+                      loading: "lazy",
+                      sizes: "5rem",
+                      class_name: "" %>
                 <div class="organizer-event-poster-shade"></div>
               <% else %>
                 <div class="poster-noise absolute inset-0"></div>

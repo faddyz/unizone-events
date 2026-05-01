@@ -119,15 +119,13 @@
               <article class="dashboard-mini-event">
                 <div class="dashboard-mini-poster <%= event_poster_background_classes(event) %>">
                   <% if event.image.attached? %>
-                    <%= image_tag event.image,
-                          event_image_options(
-                            :thumb,
-                            alt: "",
-                            loading: "lazy",
-                            sizes: "4rem",
-                            class_name: "",
-                            aria: { hidden: true }
-                          ) %>
+                    <%= event_image_tag event,
+                          :thumb,
+                          alt: "",
+                          loading: "lazy",
+                          sizes: "4rem",
+                          class_name: "",
+                          aria: { hidden: true } %>
                   <% else %>
                     <div class="poster-noise absolute inset-0"></div>
                   <% end %>

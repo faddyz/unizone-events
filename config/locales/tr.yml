@@ -52,7 +52,7 @@ tr:
   errors:
     messages:
       image_too_large: "çok büyük (en fazla 5 MB)"
-      image_invalid_type: "JPEG, JPG veya PNG olmalı"
+      image_invalid_type: "JPEG, JPG, PNG veya WebP olmalı"
   categories:
     general: "Topluluk"
     technology: "Teknoloji"

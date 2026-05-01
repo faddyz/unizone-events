@@ -528,6 +528,41 @@
   font-weight: 750;
 }
 
+.event-form-remove-image {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin-top: 0.75rem;
+  border: 1px solid rgba(225, 29, 72, 0.14);
+  border-radius: 0.95rem;
+  background: rgba(255, 241, 242, 0.72);
+  padding: 0.85rem;
+  color: #9f1239;
+  cursor: pointer;
+}
+
+.event-form-remove-image-checkbox {
+  margin-top: 0.15rem;
+  accent-color: #9f1239;
+}
+
+.event-form-remove-image strong,
+.event-form-remove-image small {
+  display: block;
+}
+
+.event-form-remove-image strong {
+  font-size: 0.88rem;
+  font-weight: 950;
+}
+
+.event-form-remove-image small {
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
 .event-form-review {
   display: grid;
   gap: 0.75rem;

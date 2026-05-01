@@ -11,14 +11,12 @@
       <div class="poster-art absolute inset-0 opacity-100"></div>
 
       <% if event.image.attached? %>
-        <%= image_tag event.image,
-              event_image_options(
-                :card,
-                alt: event.title,
-                loading: "lazy",
-                sizes: event_card_image_sizes(featured: featured, compact: compact),
-                class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full transition duration-500 group-hover:scale-[1.025]"
-              ) %>
+        <%= event_image_tag event,
+              :card,
+              alt: event.title,
+              loading: "lazy",
+              sizes: event_card_image_sizes(featured: featured, compact: compact),
+              class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full transition duration-500 group-hover:scale-[1.025]" %>
         <div class="absolute inset-0 bg-gradient-to-t from-stone-950/72 via-stone-950/16 to-white/10"></div>
       <% else %>
         <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/16 to-white/10"></div>

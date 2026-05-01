@@ -2,6 +2,23 @@ class Event < ApplicationRecord
   extend FriendlyId
 
   VALID_TICKET_URL = /\Ahttps?:\/\/[^\s]+\z/i
+  MAX_IMAGE_SIZE = 5.megabytes
+  ACCEPTABLE_IMAGE_TYPES = [ "image/jpeg", "image/jpg", "image/png", "image/webp" ].freeze
+  IMAGE_VARIANT_DIMENSIONS = {
+    card: [ 960, 540 ],
+    list: [ 640, 360 ],
+    thumb: [ 360, 220 ],
+    detail: [ 1200, 1500 ],
+    lightbox: [ 1800, 2200 ]
+  }.freeze
+  IMAGE_VARIANT_SAVER_OPTIONS = { strip: true }.freeze
+  IMAGE_VARIANTS = {
+    card: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:card), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    list: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:list), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    thumb: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:thumb), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    detail: { resize_to_limit: IMAGE_VARIANT_DIMENSIONS.fetch(:detail), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    lightbox: { resize_to_limit: IMAGE_VARIANT_DIMENSIONS.fetch(:lightbox), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS }
+  }.freeze
 
   CITY_OPTIONS = [
     "Adana",
@@ -92,6 +109,7 @@ class Event < ApplicationRecord
   belongs_to :user
 
   has_one_attached :image
+  attr_accessor :remove_image
 
   before_validation :normalize_conversion_fields
   before_save :sync_status_metadata
@@ -266,10 +284,11 @@ class Event < ApplicationRecord
   def acceptable_image
     return unless image.attached?
 
-    errors.add(:image, I18n.t("errors.messages.image_too_large")) if image.blob.byte_size > 5.megabytes
+    if image.blob.byte_size > MAX_IMAGE_SIZE
+      errors.add(:image, I18n.t("errors.messages.image_too_large"))
+    end
 
-    acceptable_types = [ "image/jpeg", "image/jpg", "image/png" ]
-    return if acceptable_types.include?(image.blob.content_type)
+    return if ACCEPTABLE_IMAGE_TYPES.include?(image.blob.content_type.to_s)
 
     errors.add(:image, I18n.t("errors.messages.image_invalid_type"))
   end

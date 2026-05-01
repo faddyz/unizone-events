@@ -47,10 +47,19 @@ class ApplicationController < ActionController::Base
       Attendance.where(event_id: ids, status: "going").group(:event_id).count
     )
 
+    ranked_attendances = Attendance
+                         .where(event_id: ids, status: "going")
+                         .select("attendances.*, ROW_NUMBER() OVER (PARTITION BY attendances.event_id ORDER BY attendances.created_at ASC) AS preview_rank")
+
     previews = Hash.new { |hash, key| hash[key] = [] }
-    Attendance.where(event_id: ids, status: "going").includes(:user).order(:created_at).each do |attendance|
+    Attendance
+      .from(ranked_attendances, :attendances)
+      .where("preview_rank <= ?", preview_limit)
+      .includes(:user)
+      .order(:event_id, :created_at)
+      .each do |attendance|
       preview = previews[attendance.event_id]
-      preview << attendance.user if preview.length < preview_limit
+      preview << attendance.user
     end
 
     @event_attendee_previews.merge!(previews)

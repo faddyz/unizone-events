@@ -132,11 +132,20 @@
       <%= form.label :image, "Afiş görseli", class: "event-form-label" %>
       <div class="event-form-upload">
         <%= form.file_field :image,
-              accept: "image/png,image/jpeg,image/jpg",
+              accept: "image/png,image/jpeg,image/jpg,image/webp",
               class: "event-form-file",
               data: { event_preview_target: "imageInput", existing: (model.image.attached? && model.image.attachment&.persisted?) ? "true" : "false" } %>
-        <p>PNG veya JPG, en fazla 5 MB.</p>
+        <p>PNG, JPG veya WebP, en fazla 5 MB.</p>
       </div>
+      <% if model.persisted? && model.image.attached? && model.image.attachment&.persisted? %>
+        <label class="event-form-remove-image">
+          <%= form.check_box :remove_image, { class: "event-form-remove-image-checkbox" }, "1", "0" %>
+          <span>
+            <strong>Mevcut afişi kaldır</strong>
+            <small>Yeni görsel seçmezsen kaydettiğinde mevcut afiş silinir.</small>
+          </span>
+        </label>
+      <% end %>
     </div>
 
     <div class="event-form-review md:col-span-2">

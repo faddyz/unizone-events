@@ -202,16 +202,14 @@
                   aria-controls="event-poster-lightbox"
                   aria-label="<%= @event.title %> afişini büyüt">
             <div class="poster-art absolute inset-0 opacity-35"></div>
-            <%= image_tag @event.image,
-                  event_image_options(
-                    :detail,
-                    alt: @event.title,
-                    loading: "eager",
-                    fetchpriority: "high",
-                    sizes: "(min-width: 1024px) 25rem, 92vw",
-                    class_name: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl",
-                    data: { poster_palette_target: "image" }
-                  ) %>
+            <%= event_image_tag @event,
+                  :detail,
+                  alt: @event.title,
+                  loading: "eager",
+                  fetchpriority: "high",
+                  sizes: "(min-width: 1024px) 25rem, 92vw",
+                  class_name: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl",
+                  data: { poster_palette_target: "image" } %>
             <span class="event-show-poster-zoom">
               <%= render "icons/image", class: "size-4" %>
               <span>Afişi büyüt</span>
@@ -537,15 +535,13 @@
         </header>
         <div class="event-poster-lightbox-media <%= event_poster_background_classes(@event) %>" data-controller="poster-palette">
           <div class="poster-art absolute inset-0 opacity-35"></div>
-          <%= image_tag @event.image,
-                event_image_options(
-                  :lightbox,
-                  alt: @event.title,
-                  loading: "lazy",
-                  sizes: "min(64rem, 100vw)",
-                  class_name: "event-poster-lightbox-image",
-                  data: { poster_palette_target: "image" }
-                ) %>
+          <%= event_image_tag @event,
+                :lightbox,
+                alt: @event.title,
+                loading: "lazy",
+                sizes: "min(64rem, 100vw)",
+                class_name: "event-poster-lightbox-image",
+                data: { poster_palette_target: "image" } %>
           <div class="poster-noise absolute inset-0"></div>
           <div class="poster-chrome absolute inset-0"></div>
         </div>

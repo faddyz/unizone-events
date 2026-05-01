@@ -58,8 +58,10 @@ class Organizer::EventsController < ApplicationController
 
   def update
     authorize @event
+    remove_existing_image = remove_image_requested? && !event_image_upload_present?
 
     if @event.update(event_params)
+      @event.image.purge_later if remove_existing_image && @event.image.attached?
       @event.submit_for_review! if @event.published?
       redirect_to organizer_event_path(@event), notice: t("flash.event_saved")
     else
@@ -82,11 +84,21 @@ class Organizer::EventsController < ApplicationController
   private
 
   def set_event
-    @event = current_user.events.friendly.find(params[:id])
+    @event = current_user.events.with_attached_image.friendly.find(params[:id])
   end
 
   def event_params
-    params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image)
+    permitted = params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image)
+    permitted.delete(:image) if permitted[:image].blank?
+    permitted
+  end
+
+  def remove_image_requested?
+    ActiveModel::Type::Boolean.new.cast(params.dig(:event, :remove_image))
+  end
+
+  def event_image_upload_present?
+    params.dig(:event, :image).present?
   end
 
   def event_status_label_for(status)

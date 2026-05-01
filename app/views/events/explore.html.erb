@@ -75,14 +75,12 @@
               <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
                 <div class="poster-art absolute inset-0 opacity-100"></div>
                 <% if event.image.attached? %>
-                  <%= image_tag event.image,
-                        event_image_options(
-                          :list,
-                          alt: event.title,
-                          loading: "lazy",
-                          sizes: "(min-width: 1024px) 12.5rem, (min-width: 640px) 12rem, 92vw",
-                          class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full"
-                        ) %>
+                  <%= event_image_tag event,
+                        :list,
+                        alt: event.title,
+                        loading: "lazy",
+                        sizes: "(min-width: 1024px) 12.5rem, (min-width: 640px) 12rem, 92vw",
+                        class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
                 <% end %>
                 <span class="explore-list-date">
                   <small><%= event.date.strftime("%b") %></small>

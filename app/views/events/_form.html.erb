@@ -95,7 +95,13 @@
             <strong data-event-preview-target="previewDay"><%= preview_day %></strong>
           </div>
           <% if model.image.attached? && model.image.attachment&.persisted? %>
-            <%= image_tag model.image, alt: "", class: "event-form-preview-image", data: { event_preview_target: "previewImage" } %>
+            <%= event_image_tag model,
+                  :detail,
+                  alt: "",
+                  loading: "lazy",
+                  sizes: "(min-width: 1024px) 22rem, 92vw",
+                  class_name: "event-form-preview-image",
+                  data: { event_preview_target: "previewImage" } %>
           <% else %>
             <img alt="" class="event-form-preview-image hidden" data-event-preview-target="previewImage">
           <% end %>

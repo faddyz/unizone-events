@@ -8,6 +8,7 @@ import DragScrollController from "controllers/drag_scroll_controller"
 import EventPreviewController from "controllers/event_preview_controller"
 import ExploreFiltersController from "controllers/explore_filters_controller"
 import HeroController from "controllers/hero_controller"
+import ImageFallbackController from "controllers/image_fallback_controller"
 import NavbarController from "controllers/navbar_controller"
 import PosterLightboxController from "controllers/poster_lightbox_controller"
 import PosterPaletteController from "controllers/poster_palette_controller"
@@ -22,6 +23,7 @@ application.register("drag-scroll", DragScrollController)
 application.register("event-preview", EventPreviewController)
 application.register("explore-filters", ExploreFiltersController)
 application.register("hero", HeroController)
+application.register("image-fallback", ImageFallbackController)
 application.register("navbar", NavbarController)
 application.register("poster-lightbox", PosterLightboxController)
 application.register("poster-palette", PosterPaletteController)

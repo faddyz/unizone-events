@@ -19,15 +19,13 @@
       <%= link_to event_path(lead_event), class: "auth-feature-hero focus-ring" do %>
         <span class="auth-feature-hero-art <%= event_poster_background_classes(lead_event) %>">
           <% if lead_event.image.attached? %>
-            <%= image_tag lead_event.image,
-                  event_image_options(
-                    :card,
-                    alt: "",
-                    loading: "lazy",
-                    sizes: "(min-width: 1024px) 24rem, 92vw",
-                    class_name: "",
-                    aria: { hidden: true }
-                  ) %>
+            <%= event_image_tag lead_event,
+                  :card,
+                  alt: "",
+                  loading: "lazy",
+                  sizes: "(min-width: 1024px) 24rem, 92vw",
+                  class_name: "",
+                  aria: { hidden: true } %>
           <% else %>
             <span><%= lead_event.title.first.upcase %></span>
           <% end %>

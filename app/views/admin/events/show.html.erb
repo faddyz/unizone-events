@@ -60,14 +60,12 @@
         </div>
         <div class="admin-uploaded-media <%= event_poster_background_classes(@event) %>">
           <% if @event.image.attached? %>
-            <%= image_tag @event.image,
-                  event_image_options(
-                    :detail,
-                    alt: @event.title,
-                    loading: "lazy",
-                    sizes: "(min-width: 1024px) 28rem, 92vw",
-                    class_name: "admin-uploaded-image"
-                  ) %>
+            <%= event_image_tag @event,
+                  :detail,
+                  alt: @event.title,
+                  loading: "lazy",
+                  sizes: "(min-width: 1024px) 28rem, 92vw",
+                  class_name: "admin-uploaded-image" %>
           <% else %>
             <div class="poster-noise absolute inset-0"></div>
             <div class="admin-uploaded-empty">

@@ -47,13 +47,8 @@ module EventsHelper
     "not_going" => "bg-stone-100 text-stone-600 ring-1 ring-stone-200"
   }.freeze
 
-  EVENT_IMAGE_DIMENSIONS = {
-    card: [ 960, 540 ],
-    list: [ 640, 360 ],
-    thumb: [ 360, 220 ],
-    detail: [ 1200, 1500 ],
-    lightbox: [ 1800, 2200 ]
-  }.freeze
+  EVENT_IMAGE_DIMENSIONS = Event::IMAGE_VARIANT_DIMENSIONS
+  EVENT_IMAGE_PROXY_EXPIRES_IN = 1.year
 
   CATEGORY_ICONS = {
     "general" => "sparkles",
@@ -183,6 +178,24 @@ module EventsHelper
     }.compact
   end
 
+  def event_image_tag(event, variant, alt:, class_name:, loading: "lazy", sizes: nil, fetchpriority: nil, data: nil, aria: nil)
+    return unless event.image.attached?
+
+    image_tag(
+      event_image_source(event.image, variant),
+      event_image_options(
+        variant,
+        alt: alt,
+        class_name: class_name,
+        loading: loading,
+        sizes: sizes,
+        fetchpriority: fetchpriority,
+        data: event_image_data(event.image, data),
+        aria: aria
+      )
+    )
+  end
+
   def event_card_image_sizes(featured: false, compact: false)
     if featured
       "(min-width: 1024px) 34rem, 88vw"
@@ -290,5 +303,25 @@ module EventsHelper
 
   def prepared_event_attendee_previews
     @event_attendee_previews || {}
+  end
+
+  def event_image_source(image, variant)
+    return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
+
+    rails_storage_proxy_path(
+      image.variant(Event::IMAGE_VARIANTS.fetch(variant)),
+      expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
+    )
+  rescue StandardError => error
+    Rails.logger.warn("Falling back to original event image after variant URL failure: #{error.class}: #{error.message}")
+    url_for(image)
+  end
+
+  def event_image_data(image, data)
+    merged = (data || {}).dup
+    merged[:controller] = [ merged[:controller], "image-fallback" ].compact_blank.join(" ")
+    merged[:action] = [ merged[:action], "error->image-fallback#recover" ].compact_blank.join(" ")
+    merged[:image_fallback_src_value] = rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
+    merged
   end
 end

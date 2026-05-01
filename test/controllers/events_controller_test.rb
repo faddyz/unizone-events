@@ -162,6 +162,16 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".explore-list-card"
   end
 
+  test "public event cards render proxied optimized image variants" do
+    attach_test_image(@published_event)
+
+    get root_path
+
+    assert_response :success
+    assert_select "img[src*='/rails/active_storage/representations/proxy/']", minimum: 1
+    assert_select "img[src*='/rails/active_storage/blobs/redirect/']", count: 0
+  end
+
   test "event show surfaces conversion details" do
     get event_path(@published_event)
 
@@ -242,6 +252,61 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "submitted", @owner_draft_event.reload.status
   end
 
+  test "organizer update keeps existing image unless removal is requested" do
+    sign_in @member
+    attach_test_image(@owner_draft_event)
+
+    patch organizer_event_path(@owner_draft_event), params: {
+      event: {
+        title: "Retitled Draft Event"
+      }
+    }
+
+    assert_response :redirect
+    assert @owner_draft_event.reload.image.attached?
+    assert_equal "Retitled Draft Event", @owner_draft_event.title
+  end
+
+  test "organizer update removes image only when explicitly requested" do
+    sign_in @member
+    attach_test_image(@owner_draft_event)
+
+    patch organizer_event_path(@owner_draft_event), params: {
+      event: {
+        title: "Draft Without Poster",
+        remove_image: "1"
+      }
+    }
+
+    assert_response :redirect
+    assert_not @owner_draft_event.reload.image.attached?
+  end
+
+  test "replacement image wins over remove image checkbox" do
+    sign_in @member
+    attach_test_image(@owner_draft_event, filename: "old.png")
+
+    file = Tempfile.new([ "replacement", ".png" ])
+    file.binmode
+    file.write("new image")
+    file.rewind
+    upload = Rack::Test::UploadedFile.new(file.path, "image/png", true, original_filename: "replacement.png")
+
+    patch organizer_event_path(@owner_draft_event), params: {
+      event: {
+        title: "Draft With Replacement Poster",
+        remove_image: "1",
+        image: upload
+      }
+    }
+
+    assert_response :redirect
+    assert @owner_draft_event.reload.image.attached?
+    assert_equal "replacement.png", @owner_draft_event.image.filename.to_s
+  ensure
+    file&.close!
+  end
+
   test "organizer create rerenders invalid form with selected image" do
     sign_in @member
 
@@ -301,5 +366,9 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
   def results_html
     Nokogiri::HTML(response.body).at_css(".explore-results").to_html
+  end
+
+  def attach_test_image(event, filename: "poster.png", content_type: "image/png")
+    event.image.attach(io: StringIO.new("image"), filename: filename, content_type: content_type)
   end
 end
