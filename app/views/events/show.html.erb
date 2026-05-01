@@ -232,6 +232,34 @@
     </div>
   </section>
 
+  <% if @event.image.attached? %>
+    <section class="event-mobile-poster-shell page-shell relative z-20 lg:hidden">
+      <button type="button"
+              class="event-mobile-poster-card <%= event_poster_background_classes(@event) %> focus-ring"
+              data-action="poster-lightbox#open"
+              aria-haspopup="dialog"
+              aria-controls="event-poster-lightbox"
+              aria-label="<%= @event.title %> afişini göster">
+        <span class="event-mobile-poster-thumb">
+          <%= event_image_tag @event,
+                :thumb,
+                alt: "",
+                loading: "lazy",
+                sizes: "4.5rem",
+                class_name: "event-mobile-poster-thumb-image",
+                aria: { hidden: true } %>
+        </span>
+        <span class="event-mobile-poster-copy">
+          <span>Afişi göster</span>
+          <strong><%= @event.title %></strong>
+        </span>
+        <span class="event-mobile-poster-icon" aria-hidden="true">
+          <%= render "icons/image", class: "size-4" %>
+        </span>
+      </button>
+    </section>
+  <% end %>
+
   <section class="page-shell relative z-20 -mt-12">
     <dl class="event-essentials-grid">
       <div class="event-essential-card animate-rise-in" style="animation-delay: 40ms">
