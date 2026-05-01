@@ -26,61 +26,11 @@
 }
 
 .hero-orb,
-.hero-ribbon,
-.hero-beam {
+.hero-ribbon {
   position: absolute;
   pointer-events: none;
   mix-blend-mode: screen;
   will-change: transform, opacity;
-}
-
-.hero-beam {
-  z-index: 3;
-  width: 32rem;
-  height: 120%;
-  top: -8%;
-  transform-origin: 50% 100%;
-  filter: blur(16px);
-  opacity: 0.42;
-}
-
-.hero-beam::before,
-.hero-beam::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.09), transparent 28%),
-    linear-gradient(90deg, transparent 44%, currentColor 50%, transparent 58%);
-  clip-path: polygon(44% 0, 58% 0, 74% 100%, 16% 100%);
-}
-
-.hero-beam::after {
-  filter: blur(26px);
-  opacity: 0.58;
-}
-
-.hero-beam-left {
-  left: 12%;
-  color: rgba(215, 255, 57, 0.34);
-  transform: rotate(-16deg) translateY(-4rem);
-  animation: beamSweepLeft 12s ease-in-out infinite alternate;
-}
-
-.hero-beam-right {
-  right: 11%;
-  color: rgba(47, 107, 255, 0.4);
-  transform: rotate(18deg) translateY(-2rem);
-  animation: beamSweepRight 14s ease-in-out infinite alternate;
-}
-
-.hero-beam-center {
-  left: 43%;
-  width: 22rem;
-  color: rgba(255, 77, 61, 0.22);
-  transform: rotate(4deg) translateY(-6rem);
-  opacity: 0.34;
-  animation: beamSweepCenter 18s ease-in-out infinite alternate;
 }
 
 .hero-orb {
@@ -365,19 +315,6 @@
     margin-top: 1.35rem;
     gap: 0.6rem;
     padding: 0.75rem;
-  }
-
-  .hero-beam {
-    width: 22rem;
-    filter: blur(16px);
-  }
-
-  .hero-beam-left {
-    left: -16%;
-  }
-
-  .hero-beam-right {
-    right: -28%;
   }
 
   .carousel-stage::before,

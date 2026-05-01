@@ -122,52 +122,6 @@
   }
 }
 
-@keyframes beamSweepLeft {
-  0% {
-    transform: rotate(-24deg) translate3d(-8rem, -5rem, 0);
-    opacity: 0.26;
-  }
-
-  48% {
-    transform: rotate(-10deg) translate3d(12rem, -2rem, 0);
-    opacity: 0.72;
-  }
-
-  100% {
-    transform: rotate(-18deg) translate3d(1rem, -4rem, 0);
-    opacity: 0.42;
-  }
-}
-
-@keyframes beamSweepRight {
-  0% {
-    transform: rotate(25deg) translate3d(10rem, -3rem, 0);
-    opacity: 0.28;
-  }
-
-  52% {
-    transform: rotate(9deg) translate3d(-13rem, -1rem, 0);
-    opacity: 0.78;
-  }
-
-  100% {
-    transform: rotate(17deg) translate3d(-2rem, -4rem, 0);
-    opacity: 0.5;
-  }
-}
-
-@keyframes beamSweepCenter {
-  0% {
-    transform: rotate(-2deg) translate3d(-4rem, -7rem, 0);
-    opacity: 0.18;
-  }
-
-  100% {
-    transform: rotate(8deg) translate3d(5rem, -2rem, 0);
-    opacity: 0.4;
-  }
-}
-
 @keyframes cinematicOrbCitron {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
