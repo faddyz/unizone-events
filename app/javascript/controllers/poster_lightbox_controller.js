@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["dialog"]
+  static targets = ["dialog", "image"]
 
   connect() {
     this.restoreAfterClose = this.restoreAfterClose.bind(this)
@@ -19,6 +19,7 @@ export default class extends Controller {
 
     this.opener = event?.currentTarget
     document.documentElement.classList.add("poster-lightbox-open")
+    this.loadImage()
 
     if (this.dialogTarget.open) return
 
@@ -57,5 +58,14 @@ export default class extends Controller {
   restoreAfterClose() {
     document.documentElement.classList.remove("poster-lightbox-open")
     this.opener?.focus({ preventScroll: true })
+  }
+
+  loadImage() {
+    if (!this.hasImageTarget) return
+
+    const source = this.imageTarget.dataset.posterLightboxSrc
+    if (!source || this.imageTarget.src === source) return
+
+    this.imageTarget.src = source
   }
 }

@@ -18,18 +18,19 @@
 # Global VM Lock (GVL) it has diminishing returns and will degrade the
 # response time (latency) of the application.
 #
-# The default is set to 3 threads as it's deemed a decent compromise between
-# throughput and latency for the average Rails application.
+# The production default is kept lower for small 512 MB instances that can
+# otherwise run several image-processing requests at once.
 #
 # Any libraries that use a connection pool or another resource pool should
 # be configured to provide at least as many connections as the number of
 # threads. This includes Active Record's `pool` parameter in `database.yml`.
-threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
+app_env = ENV.fetch("RAILS_ENV") { ENV.fetch("RACK_ENV", "development") }
+default_threads = app_env == "production" ? 2 : 3
+threads_count = ENV.fetch("RAILS_MAX_THREADS", default_threads)
 threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 # Puma 8 may prefer an IPv6 production bind; keep container/platform behavior on IPv4.
-app_env = ENV.fetch("RAILS_ENV") { ENV.fetch("RACK_ENV", "development") }
 if app_env == "production"
   bind "tcp://0.0.0.0:#{ENV.fetch("PORT", 3000)}"
 else

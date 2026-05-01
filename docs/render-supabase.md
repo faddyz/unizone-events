@@ -34,6 +34,8 @@ RAILS_MASTER_KEY=<config/master.key value>
 SECRET_KEY_BASE=<rails secret output>
 DATABASE_URL=<Supabase Supavisor session mode connection string>
 APP_HOST=<your-render-domain-or-custom-domain>
+RAILS_MAX_THREADS=2
+ACTIVE_JOB_MAX_THREADS=1
 ACTIVE_STORAGE_SERVICE=local
 ```
 
@@ -99,3 +101,5 @@ SUPABASE_S3_SECRET_ACCESS_KEY=<server-side S3 secret>
 Keep S3 access keys only on the server. They should never be exposed in frontend JavaScript.
 
 With this setup, uploaded event images are stored in Supabase Storage while Active Storage metadata stays in Supabase Postgres.
+
+On Render's 512 MB instances, keep `RAILS_MAX_THREADS=2` and `ACTIVE_JOB_MAX_THREADS=1` unless you upgrade the service. Image cleanup jobs then run outside the request path without creating several image-processing or S3 cleanup threads at once.

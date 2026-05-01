@@ -25,6 +25,11 @@ Rails.application.configure do
   # Render free has an ephemeral filesystem, so use ACTIVE_STORAGE_SERVICE=supabase
   # when event images should survive deploys, restarts, and spin-downs.
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
+  config.active_storage.variant_processor = :vips
+
+  # Event images do not need width/height metadata from Active Storage. Avoid
+  # downloading the freshly uploaded S3 object again just to analyze it.
+  config.active_storage.analyzers = []
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
@@ -52,10 +57,21 @@ Rails.application.configure do
   # unless SOLID_CACHE=true is set and the solid cache schema is provisioned.
   config.cache_store = ENV["SOLID_CACHE"] == "true" ? :solid_cache_store : :memory_store
 
-  # Keep jobs inline for the free demo deployment. Use ACTIVE_JOB_ADAPTER=solid_queue
-  # only when a queue database/schema and worker process are intentionally enabled.
-  config.active_job.queue_adapter = ENV.fetch("ACTIVE_JOB_ADAPTER", "inline").to_sym
-  config.solid_queue.connects_to = { database: { writing: :queue } } if config.active_job.queue_adapter == :solid_queue
+  # Keep Active Storage cleanup work out of web requests on small Render
+  # instances. Use ACTIVE_JOB_ADAPTER=solid_queue only when its schema and a
+  # worker/supervisor are intentionally enabled.
+  active_job_adapter = ENV["ACTIVE_JOB_ADAPTER"].presence
+  config.active_job.queue_adapter =
+    if active_job_adapter
+      active_job_adapter.to_sym
+    else
+      ActiveJob::QueueAdapters::AsyncAdapter.new(
+        min_threads: 0,
+        max_threads: ENV.fetch("ACTIVE_JOB_MAX_THREADS", 1).to_i,
+        idletime: 30
+      )
+    end
+  config.solid_queue.connects_to = { database: { writing: :queue } } if active_job_adapter == "solid_queue"
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

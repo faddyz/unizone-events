@@ -48,7 +48,8 @@ module EventsHelper
   }.freeze
 
   EVENT_IMAGE_DIMENSIONS = Event::IMAGE_VARIANT_DIMENSIONS
-  EVENT_IMAGE_PROXY_EXPIRES_IN = 1.year
+  EVENT_IMAGE_PROXY_EXPIRES_IN = nil
+  EVENT_IMAGE_PLACEHOLDER_SRC = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
 
   CATEGORY_ICONS = {
     "general" => "sparkles",
@@ -178,11 +179,15 @@ module EventsHelper
     }.compact
   end
 
-  def event_image_tag(event, variant, alt:, class_name:, loading: "lazy", sizes: nil, fetchpriority: nil, data: nil, aria: nil)
+  def event_image_tag(event, variant, alt:, class_name:, loading: "lazy", sizes: nil, fetchpriority: nil, data: nil, aria: nil, defer_src: false)
     return unless event.image.attached?
 
+    source = event_image_source(event.image, variant)
+    data_options = event_image_data(event.image, data)
+    data_options = event_deferred_image_data(data_options, source) if defer_src
+
     image_tag(
-      event_image_source(event.image, variant),
+      defer_src ? EVENT_IMAGE_PLACEHOLDER_SRC : source,
       event_image_options(
         variant,
         alt: alt,
@@ -190,7 +195,7 @@ module EventsHelper
         loading: loading,
         sizes: sizes,
         fetchpriority: fetchpriority,
-        data: event_image_data(event.image, data),
+        data: data_options,
         aria: aria
       )
     )
@@ -306,18 +311,18 @@ module EventsHelper
   end
 
   def event_image_source(image, variant)
-  return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
+    return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
 
-  representation = image.variant(Event::IMAGE_VARIANTS.fetch(variant))
+    representation = image.variant(Event::IMAGE_VARIANTS.fetch(variant))
 
-  rails_storage_proxy_path(
-    representation,
-    expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
-  )
-rescue StandardError => error
-  Rails.logger.warn("Falling back to original event image after variant URL failure: #{error.class}: #{error.message}")
-  rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
-end
+    rails_storage_proxy_path(
+      representation,
+      expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
+    )
+  rescue StandardError => error
+    Rails.logger.warn("Falling back to original event image after variant URL failure: #{error.class}: #{error.message}")
+    rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
+  end
 
   def event_image_data(image, data)
     merged = (data || {}).dup
@@ -325,5 +330,12 @@ end
     merged[:action] = [ merged[:action], "error->image-fallback#recover" ].compact_blank.join(" ")
     merged[:image_fallback_src_value] = rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
     merged
+  end
+
+  def event_deferred_image_data(data, source)
+    data = data.dup
+    data[:poster_lightbox_target] = [ data[:poster_lightbox_target], "image" ].compact_blank.join(" ")
+    data[:poster_lightbox_src] = source
+    data
   end
 end
