@@ -308,13 +308,13 @@ module EventsHelper
   def event_image_source(image, variant)
     return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
 
-    rails_storage_proxy_path(
-      image.variant(Event::IMAGE_VARIANTS.fetch(variant)),
+    rails_representation_proxy_path(
+      image.variant(Event::IMAGE_VARIANTS.fetch(variant)).processed,
       expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
     )
   rescue StandardError => error
     Rails.logger.warn("Falling back to original event image after variant URL failure: #{error.class}: #{error.message}")
-    url_for(image)
+    rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
   end
 
   def event_image_data(image, data)
