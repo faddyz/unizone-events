@@ -13,11 +13,11 @@ class Event < ApplicationRecord
   }.freeze
   IMAGE_VARIANT_SAVER_OPTIONS = { strip: true }.freeze
   IMAGE_VARIANTS = {
-    card: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:card), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
-    list: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:list), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
-    thumb: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:thumb), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
-    detail: { resize_to_limit: IMAGE_VARIANT_DIMENSIONS.fetch(:detail), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS },
-    lightbox: { resize_to_limit: IMAGE_VARIANT_DIMENSIONS.fetch(:lightbox), format: :webp, saver: IMAGE_VARIANT_SAVER_OPTIONS }
+    card: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:card), format: :jpg, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    list: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:list), format: :jpg, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    thumb: { resize_to_fill: IMAGE_VARIANT_DIMENSIONS.fetch(:thumb), format: :jpg, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    detail: { resize_to_limit: IMAGE_VARIANT_DIMENSIONS.fetch(:detail), format: :jpg, saver: IMAGE_VARIANT_SAVER_OPTIONS },
+    lightbox: { resize_to_limit: IMAGE_VARIANT_DIMENSIONS.fetch(:lightbox), format: :jpg, saver: IMAGE_VARIANT_SAVER_OPTIONS }
   }.freeze
 
   CITY_OPTIONS = [

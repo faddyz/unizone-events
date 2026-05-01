@@ -306,16 +306,18 @@ module EventsHelper
   end
 
   def event_image_source(image, variant)
-    return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
+  return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
 
-    rails_representation_proxy_path(
-      image.variant(Event::IMAGE_VARIANTS.fetch(variant)).processed,
-      expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
-    )
-  rescue StandardError => error
-    Rails.logger.warn("Falling back to original event image after variant URL failure: #{error.class}: #{error.message}")
-    rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
-  end
+  representation = image.variant(Event::IMAGE_VARIANTS.fetch(variant)).processed
+
+  main_app.rails_representation_proxy_path(
+    representation,
+    expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN
+  )
+rescue StandardError => error
+  Rails.logger.warn("Falling back to original event image after variant URL failure: #{error.class}: #{error.message}")
+  rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
+end
 
   def event_image_data(image, data)
     merged = (data || {}).dup
