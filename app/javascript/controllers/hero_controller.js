@@ -24,25 +24,54 @@ export default class extends Controller {
   }
 
   animateIntro() {
-    const animations = this.animatedTargets.map((target, index) => {
-      target.style.willChange = "transform, opacity"
-
-      return target.animate(
-        [
-          { opacity: 0.82, transform: "translate3d(0, 14px, 0)" },
-          { opacity: 1, transform: "translate3d(0, 0, 0)" }
-        ],
-        {
-          duration: 620,
-          delay: index * 75,
-          easing: "cubic-bezier(0.16, 1, 0.3, 1)"
-        }
-      )
-    })
+    const animations = [
+      this.revealSoftly(this.logoTarget, 0, { distance: 12, duration: 520 }),
+      ...this.lineTargets.map((target, index) => this.revealLine(target, 90 + index * 145)),
+      this.revealSoftly(this.subtitleTarget, 620, { distance: 18, duration: 640 }),
+      this.revealSoftly(this.formTarget, 760, { distance: 16, duration: 640 })
+    ].filter(Boolean)
 
     Promise.all(animations.map((animation) => animation.finished.catch(() => {}))).then(() => {
       this.animatedTargets.forEach((target) => target.style.removeProperty("will-change"))
     })
+  }
+
+  revealLine(target, delay) {
+    target.style.willChange = "transform, opacity"
+
+    return target.animate(
+      [
+        { opacity: 0.01, transform: "translate3d(0, 108%, 0) skewY(2deg)" },
+        { opacity: 1, transform: "translate3d(0, 0, 0) skewY(0deg)" }
+      ],
+      {
+        duration: 780,
+        delay,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        fill: "backwards"
+      }
+    )
+  }
+
+  revealSoftly(target, delay, options = {}) {
+    if (!target) return null
+
+    const distance = options.distance || 14
+    const duration = options.duration || 580
+    target.style.willChange = "transform, opacity"
+
+    return target.animate(
+      [
+        { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
+        { opacity: 1, transform: "translate3d(0, 0, 0)" }
+      ],
+      {
+        duration,
+        delay,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        fill: "backwards"
+      }
+    )
   }
 
   shouldSkipIntro() {
@@ -63,6 +92,22 @@ export default class extends Controller {
 
   get animatedTargets() {
     return Array.from(this.element.querySelectorAll("[data-hero-target]"))
+  }
+
+  get lineTargets() {
+    return Array.from(this.element.querySelectorAll('[data-hero-target="line"]'))
+  }
+
+  get logoTarget() {
+    return this.element.querySelector('[data-hero-target="logo"]')
+  }
+
+  get subtitleTarget() {
+    return this.element.querySelector('[data-hero-target="subtitle"]')
+  }
+
+  get formTarget() {
+    return this.element.querySelector('[data-hero-target="form"]')
   }
 
   readStorage(key) {

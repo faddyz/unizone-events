@@ -7,11 +7,23 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="<%= asset_path("unizone/syne-latin.woff2") %>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<%= asset_path("unizone/syne-latin-ext.woff2") %>" as="font" type="font/woff2" crossorigin>
+    <%= render "layouts/font_faces" %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag(
+          "base/tokens",
+          "base/global",
+          "components/brand",
+          "components/navigation",
+          "components/surfaces",
+          "components/forms",
+          "components/buttons",
+          "components/footer",
+          "components/shared",
+          "base/animations",
+          "data-turbo-track": "reload"
+        ) %>
     <%= yield :stylesheets %>
     <%= javascript_importmap_tags %>
   </head>

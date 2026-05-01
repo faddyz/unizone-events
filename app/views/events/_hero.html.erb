@@ -21,9 +21,9 @@
       </div>
 
       <h1 class="font-display text-5xl font-extrabold leading-[0.9] tracking-tight sm:text-7xl lg:text-[88px]">
-       <span class="block" data-hero-target="line">Bu gece</span>
-        <span class="block text-citron" data-hero-target="line">nerede</span>
-         <span class="block" data-hero-target="line">olacağını keşfet.</span>
+        <span class="hero-line-mask block"><span class="hero-line-text block" data-hero-target="line">Bu gece</span></span>
+        <span class="hero-line-mask block"><span class="hero-line-text block text-citron" data-hero-target="line">nerede</span></span>
+        <span class="hero-line-mask block"><span class="hero-line-text block" data-hero-target="line">olacağını keşfet.</span></span>
           
        </h1>
 
@@ -35,17 +35,49 @@
         <span class="text-citron font-medium">katıl.</span>
       </p>
 
-      <%= form_with url: explore_events_path, method: :get, class: "hero-search mt-8 max-w-4xl rounded-[1.15rem] border border-white/12 bg-white/[0.08] p-3 text-white shadow-2xl backdrop-blur-xl", data: { hero_target: "form" } do %>
-        <%= label_tag :query, "Etkinlik ara", class: "sr-only" %>
-        <%= text_field_tag :query, params[:query], class: "hero-search__query electric-field electric-field-dark h-12 min-w-0 px-4 text-sm focus:outline-none", placeholder: "Bu gece ne var? Yaz, bulalım." %>
+      <%= form_with url: explore_events_path, method: :get,
+      class: "hero-search mt-8 max-w-4xl rounded-[1.15rem] border border-white/12 bg-white/[0.08] p-3 text-white shadow-2xl backdrop-blur-xl",
+      data: { hero_target: "form" } do %>
 
-        <%= label_tag :category, "Kategori", class: "sr-only" %>
-        <%= select_tag :category,
-              options_for_select([["Tüm kategoriler", ""]] + @categories, params[:category]),
-              class: "hero-search__category electric-field electric-field-dark h-12 px-4 text-sm focus:outline-none" %>
+  
+  <%= label_tag :query, "Etkinlik ara", class: "sr-only" %>
+  <div class="hero-search__query-wrap">
+    <svg class="hero-search__query-icon" width="16" height="16" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <%= text_field_tag :query, params[:query],
+          class: "hero-search__query electric-field electric-field-dark h-12 min-w-0 pl-9 pr-4 text-sm focus:outline-none",
+          placeholder: "Bu gece ne var? Yaz, bulalım." %>
+  </div>
 
-        <%= submit_tag "Keşfet", class: "hero-search__submit btn-electric h-12 cursor-pointer border-0 px-5 text-sm focus-ring" %>
-      <% end %>
+  
+  <%= label_tag :category, "Kategori", class: "sr-only" %>
+  <div class="hero-search__category-wrap">
+    <%= select_tag :category,
+          options_for_select([["Tüm kategoriler", ""]] + @categories, params[:category]),
+          class: "hero-search__category electric-field electric-field-dark h-12 pl-4 pr-10 text-sm focus:outline-none appearance-none" %>
+    <svg class="hero-search__category-icon" width="14" height="14" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2.5"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </div>
+
+  
+  <button type="submit" class="hero-search__submit h-12 cursor-pointer border-0 px-5 text-sm">
+  <svg class="hero-search__submit-icon" width="15" height="15" viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" stroke-width="2.2"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7"></circle>
+    <line x1="20" y1="20" x2="16.65" y2="16.65"></line>
+  </svg>
+  Keşfet
+</button>
+
+  <% end %>
     </div>
   </div>
 
