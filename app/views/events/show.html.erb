@@ -20,6 +20,7 @@
   show_controllers << "attendance" unless preview_mode
   show_controllers << "share" unless preview_mode
   show_controllers << "poster-lightbox" if @event.image.attached?
+  show_controllers << "event-show-motion"
   preview_back_path = if preview_mode && current_user&.admin?
     admin_event_path(@event)
   elsif preview_mode && current_user == @event.user
@@ -587,7 +588,7 @@
         <%= render "icons/arrow_left", class: "size-5" %>
       <% end %>
     <% elsif ticket_url %>
-      <%= link_to "Kayıt / bilet", ticket_url, target: "_blank", rel: "noopener", class: "event-mobile-primary focus-ring" %>
+      <%= link_to "Kayıt / Bilet", ticket_url, target: "_blank", rel: "noopener", class: "event-mobile-primary focus-ring" %>
       <button type="button"
               class="event-mobile-icon focus-ring"
               aria-label="Etkinliği paylaş"

@@ -1,24 +1,27 @@
 import { Controller } from "@hotwired/stimulus"
+import { gsap } from "gsap"
 
 export default class extends Controller {
   static targets = ["step", "tab", "next", "previous", "progress", "submit", "current", "total", "stepTitle", "stepSummary"]
 
   connect() {
     this.index = 0
-    this.show()
+    this.show({ animate: false })
     this.refresh()
+  }
+
+  disconnect() {
+    gsap.killTweensOf(this.stepTargets)
   }
 
   next(event) {
     event?.preventDefault()
-    this.index = Math.min(this.index + 1, this.stepTargets.length - 1)
-    this.show()
+    this.moveTo(Math.min(this.index + 1, this.stepTargets.length - 1))
   }
 
   previous(event) {
     event?.preventDefault()
-    this.index = Math.max(this.index - 1, 0)
-    this.show()
+    this.moveTo(Math.max(this.index - 1, 0))
   }
 
   go(event) {
@@ -26,8 +29,7 @@ export default class extends Controller {
     const nextIndex = Number(event.currentTarget.dataset.wizardIndex)
     if (Number.isNaN(nextIndex)) return
 
-    this.index = nextIndex
-    this.show()
+    this.moveTo(nextIndex)
   }
 
   keydown(event) {
@@ -36,17 +38,18 @@ export default class extends Controller {
     event.preventDefault()
     const lastIndex = this.tabTargets.length - 1
 
+    let nextIndex
     if (event.key === "Home") {
-      this.index = 0
+      nextIndex = 0
     } else if (event.key === "End") {
-      this.index = lastIndex
+      nextIndex = lastIndex
     } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      this.index = this.index === lastIndex ? 0 : this.index + 1
+      nextIndex = this.index === lastIndex ? 0 : this.index + 1
     } else {
-      this.index = this.index === 0 ? lastIndex : this.index - 1
+      nextIndex = this.index === 0 ? lastIndex : this.index - 1
     }
 
-    this.show()
+    this.moveTo(nextIndex)
     this.tabTargets[this.index]?.focus()
   }
 
@@ -56,7 +59,16 @@ export default class extends Controller {
     })
   }
 
-  show() {
+  moveTo(nextIndex) {
+    const boundedIndex = Math.max(0, Math.min(nextIndex, this.stepTargets.length - 1))
+    if (boundedIndex === this.index) return
+
+    this.previousIndex = this.index
+    this.index = boundedIndex
+    this.show({ animate: true })
+  }
+
+  show({ animate = true } = {}) {
     this.stepTargets.forEach((step, index) => {
       step.hidden = index !== this.index
     })
@@ -100,6 +112,47 @@ export default class extends Controller {
     }
 
     this.refresh()
+
+    if (animate) this.animateActiveStep()
+  }
+
+  animateActiveStep() {
+    if (this.shouldSkipMotion()) return
+
+    const step = this.stepTargets[this.index]
+    if (!step) return
+
+    const direction = this.previousIndex == null || this.index >= this.previousIndex ? 1 : -1
+    const children = Array.from(step.querySelectorAll(".event-form-step-intro, .event-form-grid > *"))
+
+    gsap.killTweensOf([step, ...children])
+    gsap.fromTo(
+      step,
+      { autoAlpha: 0, x: direction * 16 },
+      {
+        autoAlpha: 1,
+        x: 0,
+        duration: 0.28,
+        ease: "power3.out",
+        clearProps: "opacity,visibility,transform"
+      }
+    )
+    gsap.fromTo(
+      children,
+      { autoAlpha: 0, y: 10 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.32,
+        stagger: 0.025,
+        ease: "power3.out",
+        clearProps: "opacity,visibility,transform"
+      }
+    )
+  }
+
+  shouldSkipMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
   }
 
   stepComplete(index) {

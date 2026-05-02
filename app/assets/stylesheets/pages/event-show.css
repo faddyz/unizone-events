@@ -414,22 +414,6 @@ html.poster-lightbox-open body {
   }
 }
 
-.event-poster-lightbox[open] .event-poster-lightbox-panel {
-  animation: posterLightboxIn 180ms var(--ease-out-expressive) both;
-}
-
-@keyframes posterLightboxIn {
-  from {
-    opacity: 0;
-    transform: translateY(0.7rem) scale(0.985);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 .event-cta-primary,
 .event-cta-ghost,
 .event-side-ticket,
@@ -810,9 +794,7 @@ html.poster-lightbox-open body {
   .event-share-panel,
   .event-share-popover.is-open .event-share-panel,
   .event-share-copy:hover,
-  .event-share-option:hover,
-  .event-poster-lightbox[open] .event-poster-lightbox-panel {
-    animation: none;
+  .event-share-option:hover {
     transform: none;
   }
 }

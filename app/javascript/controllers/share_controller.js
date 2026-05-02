@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { gsap } from "gsap"
 
 export default class extends Controller {
   static targets = [
@@ -33,6 +34,7 @@ export default class extends Controller {
 
   disconnect() {
     this.removeGlobalListeners()
+    this.killPopoverTweens()
     clearTimeout(this.feedbackTimeout)
     clearTimeout(this.copyTimeout)
   }
@@ -102,6 +104,7 @@ export default class extends Controller {
     this.setExpandedTrigger(this.activeTrigger)
     this.reposition()
     this.addGlobalListeners()
+    this.animatePopoverIn()
 
     requestAnimationFrame(() => {
       this.focusableElements[0]?.focus({ preventScroll: true })
@@ -109,15 +112,19 @@ export default class extends Controller {
   }
 
   hidePopover(restoreFocus = true) {
-    if (!this.hasPopoverTarget || this.popoverTarget.hidden) return
+    if (!this.hasPopoverTarget || this.popoverTarget.hidden || this.isClosingPopover) return
 
+    this.isClosingPopover = true
     this.popoverTarget.classList.remove("is-open")
     this.popoverTarget.setAttribute("aria-hidden", "true")
-    this.popoverTarget.hidden = true
     this.setExpandedTrigger(null)
     this.removeGlobalListeners()
 
-    if (restoreFocus) this.activeTrigger?.focus({ preventScroll: true })
+    this.animatePopoverOut().then(() => {
+      this.isClosingPopover = false
+      this.popoverTarget.hidden = true
+      if (restoreFocus) this.activeTrigger?.focus({ preventScroll: true })
+    })
   }
 
   updateShareLinks() {
@@ -222,6 +229,65 @@ export default class extends Controller {
     this.copyButtonTarget.classList.remove("is-copied", "is-error")
     this.copyLabelTarget.textContent = this.defaultCopyLabel
     this.statusTarget.textContent = this.defaultStatus
+  }
+
+  animatePopoverIn() {
+    if (this.shouldSkipMotion()) return
+
+    const items = this.panelItems
+    this.killPopoverTweens()
+
+    gsap.set(this.panelTarget, {
+      autoAlpha: 0,
+      y: this.isSheetLayout ? 28 : 12,
+      scale: this.isSheetLayout ? 1 : 0.975,
+      transformOrigin: this.isSheetLayout ? "bottom center" : "top right",
+      willChange: "transform, opacity"
+    })
+    gsap.set(items, { autoAlpha: 0, y: 10 })
+
+    if (this.backdropVisible) {
+      gsap.fromTo(this.backdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2, ease: "power2.out" })
+    }
+
+    gsap.timeline({
+      defaults: { ease: "power3.out" },
+      onComplete: () => gsap.set([this.panelTarget, ...items], { clearProps: "opacity,visibility,transform,willChange" })
+    })
+      .to(this.panelTarget, { autoAlpha: 1, y: 0, scale: 1, duration: 0.28 }, 0)
+      .to(items, { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.035 }, 0.08)
+  }
+
+  animatePopoverOut() {
+    if (this.shouldSkipMotion()) return Promise.resolve()
+
+    this.killPopoverTweens()
+
+    const tweens = [
+      gsap.to(this.panelTarget, {
+        autoAlpha: 0,
+        y: this.isSheetLayout ? 20 : 10,
+        scale: this.isSheetLayout ? 1 : 0.985,
+        duration: 0.16,
+        ease: "power2.in"
+      })
+    ]
+
+    if (this.backdropVisible) {
+      tweens.push(gsap.to(this.backdrop, { autoAlpha: 0, duration: 0.16, ease: "power2.in" }))
+    }
+
+    return Promise.all(tweens.map((tween) => tween.then()))
+  }
+
+  killPopoverTweens() {
+    if (!this.hasPanelTarget) return
+
+    gsap.killTweensOf([this.panelTarget, this.backdrop, ...this.panelItems].filter(Boolean))
+  }
+
+  shouldSkipMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
   }
 
   closeOnDocumentClick(event) {
@@ -348,5 +414,23 @@ export default class extends Controller {
 
   get isSheetLayout() {
     return window.matchMedia("(max-width: 639px), (max-height: 520px)").matches
+  }
+
+  get panelItems() {
+    if (!this.hasPanelTarget) return []
+
+    return Array.from(
+      this.panelTarget.querySelectorAll(
+        ".event-share-header, .event-share-url-card, .event-share-copy, .event-share-option"
+      )
+    )
+  }
+
+  get backdrop() {
+    return this.popoverTarget?.querySelector(".event-share-backdrop")
+  }
+
+  get backdropVisible() {
+    return this.backdrop && window.getComputedStyle(this.backdrop).display !== "none"
   }
 }
