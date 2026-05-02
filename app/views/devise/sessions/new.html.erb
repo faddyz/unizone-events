@@ -25,7 +25,7 @@
 
         <nav class="auth-switcher" aria-label="Hesap işlemleri">
           <span class="auth-switcher-item is-active" aria-current="page">Giriş</span>
-          <%= link_to "Kayıt", new_user_registration_path, class: "auth-switcher-item focus-ring" %>
+          <%= link_to "Kayıt Ol", new_user_registration_path, class: "auth-switcher-item focus-ring" %>
         </nav>
 
         <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "auth-form" }) do |f| %>
@@ -42,7 +42,7 @@
           <div class="auth-field">
             <div class="auth-label-row">
               <%= f.label :password, "Şifre", class: "auth-label" %>
-              <%= link_to "Şifremi unuttum", new_password_path(resource_name), class: "auth-inline-link focus-ring" %>
+              <%= link_to "Şifremi Unuttum", new_password_path(resource_name), class: "auth-inline-link focus-ring" %>
             </div>
             <%= f.password_field :password,
                   autocomplete: "current-password",
@@ -54,7 +54,7 @@
           <% if devise_mapping.rememberable? %>
             <label class="auth-check-row">
               <%= f.check_box :remember_me, class: "auth-checkbox" %>
-              <span>Beni hatırla</span>
+              <span>Beni Hatırla</span>
             </label>
           <% end %>
 
@@ -68,7 +68,7 @@
 
         <div class="auth-card-footer">
           <span>Yeni misin?</span>
-          <%= link_to "Hesap oluştur", new_user_registration_path, class: "focus-ring" %>
+          <%= link_to "Hesap Oluştur!", new_user_registration_path, class: "focus-ring" %>
         </div>
       </section>
     </div>

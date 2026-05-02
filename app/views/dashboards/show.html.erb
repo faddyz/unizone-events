@@ -10,7 +10,7 @@
     <div class="workbench-hero-copy">
       <p class="section-eyebrow text-citron">Planlarım</p>
       <h1>Hoş geldin, <span><%= user_label %></span></h1>
-      <p>Yaklaşan planlarını, RSVP geçmişini ve organizatör tarafındaki etkinliklerini tek ekranda takip et.</p>
+      <p>Katıldığın etkinlikleri, yaklaşan planlarını ve oluşturduğun organizasyonları tek panelden yönet.</p>
 
       <div class="workbench-hero-actions">
         <%= link_to explore_events_path, class: "workbench-primary-action focus-ring" do %>
@@ -27,7 +27,7 @@
     </div>
 
     <aside class="dashboard-next">
-      <p class="section-eyebrow text-white/42">Sıradaki plan</p>
+      <p class="section-eyebrow text-white/42">Sıradaki Plan</p>
       <% if next_event.present? %>
         <div class="dashboard-next-date">
           <span><%= next_event.date.strftime("%b") %></span>
@@ -39,9 +39,9 @@
       <% else %>
         <div class="dashboard-next-empty">
           <span class="dashboard-empty-dot"></span>
-          <h2>Takvim hazır.</h2>
-          <p>İlk planını eklemek için keşfet sayfasından ilgini çeken bir etkinliği seç.</p>
-          <%= link_to "Keşfe git", explore_events_path, class: "btn-electric focus-ring" %>
+          <h2>Takvimin seni bekliyor.</h2>
+          <p>İlk etkinliğini seç, planını oluştur ve Unizone akışına dahil ol.</p>
+          <%= link_to "Etkinlikleri Keşfet", explore_events_path, class: "btn-electric focus-ring" %>
         </div>
       <% end %>
     </aside>
@@ -49,10 +49,10 @@
 
   <div class="workbench-signal-grid">
     <% [
-      [ "Yaklaşan", @upcoming_rsvps.count, "Takvimindeki aktif RSVP" ],
-      [ "Toplam RSVP", @rsvps.count, "İşaretlediğin etkinlikler" ],
-      [ "Etkinliğim", @owned_events.count, "Başlattığın fikirler" ],
-      [ "Yayında", @live_events_count, "Herkese açık etkinlikler" ]
+      [ "Yaklaşan Planların", @upcoming_rsvps.count, "Katılım verdiğin aktif etkinlikler" ],
+      [ "Toplam Katılım", @rsvps.count, "İşaretlediğin etkinlikler" ],
+      [ "Organizasyonların", @owned_events.count, "Oluşturduğun etkinlik taslakları" ],
+      [ "Yayındaki etkinlikler", @live_events_count, "Herkese açık aktif organizasyonlar" ]
     ].each_with_index do |(label, value, hint), index| %>
       <article class="workbench-signal-card is-tone-<%= index + 1 %>">
         <span class="workbench-signal-dot"></span>
@@ -68,9 +68,9 @@
       <div class="workbench-section-head">
         <div>
           <p class="section-eyebrow text-coral">Takvim</p>
-          <h2>Yaklaşan planların</h2>
+          <h2>Yaklaşan Planların</h2>
         </div>
-        <%= link_to "Etkinlik bul", explore_events_path, class: "workbench-link focus-ring" %>
+        <%= link_to "Etkinlik Bul", explore_events_path, class: "workbench-link focus-ring" %>
       </div>
 
       <% if @upcoming_rsvps.any? %>
@@ -96,8 +96,8 @@
       <% else %>
         <div class="workbench-empty-state">
           <span class="dashboard-empty-dot"></span>
-          <h3>Henüz planın yok</h3>
-          <p>Bir etkinlik keşfet ve RSVP vererek takvimine ekle.</p>
+          <h3>Takvimin henüz boş.</h3>
+          <p>Şehirdeki etkinlikleri keşfet, ilgini çekenlere katılım ver ve takvimini doldur.</p>
           <%= link_to "Etkinlik keşfet", explore_events_path, class: "btn-void focus-ring" %>
         </div>
       <% end %>
@@ -108,9 +108,9 @@
         <div class="workbench-section-head">
           <div>
             <p class="section-eyebrow text-coral">Organizatör</p>
-            <h2>Etkinlik özeti</h2>
+            <h2>Etkinlik Yönetimi</h2>
           </div>
-          <%= link_to "Tümünü aç", organizer_events_path, class: "workbench-link focus-ring" %>
+          <%= link_to "Tümünü Aç", organizer_events_path, class: "workbench-link focus-ring" %>
         </div>
 
         <% if @owned_events.any? %>
@@ -140,9 +140,9 @@
           </div>
         <% else %>
           <div class="workbench-empty-state is-compact">
-            <h3>Henüz etkinlik oluşturmadın</h3>
-            <p>Taslakla başla, hazır olduğunda incelemeye gönder.</p>
-            <%= link_to "İlk etkinliğini oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+            <h3>Henüz bir etkinlik oluşturmadın.</h3>
+            <p>Fikrini taslağa dönüştür, detayları ekle ve yayına çıkmak için incelemeye gönder.</p>
+            <%= link_to "İlk Etkinliğini Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
           </div>
         <% end %>
       </section>
@@ -151,7 +151,7 @@
         <div class="workbench-section-head">
           <div>
             <p class="section-eyebrow text-coral">Hareket</p>
-            <h2>Son RSVP’ler</h2>
+            <h2>Son Katılımlar</h2>
           </div>
         </div>
 

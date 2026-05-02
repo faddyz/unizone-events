@@ -53,7 +53,7 @@
           <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
             <path d="M12 5v14M5 12h14"/>
           </svg>
-          <span>Etkinlik oluştur</span>
+          <span>Etkinlik Oluştur</span>
         <% end %>
 
         <details class="nav-account-menu" data-controller="account-menu">
@@ -97,7 +97,7 @@
         </details>
       <% else %>
         <%= link_to "Giriş", new_user_session_path, class: "nav-login-link focus-ring #{auth_active ? "is-active" : ""}" %>
-        <%= link_to "Ücretsiz katıl", new_user_registration_path, class: "nav-join-link focus-ring #{current_page?(new_user_registration_path) ? "is-active" : ""}" %>
+        <%= link_to "Ücretsiz Katıl", new_user_registration_path, class: "nav-join-link focus-ring #{current_page?(new_user_registration_path) ? "is-active" : ""}" %>
       <% end %>
     </div>
 
@@ -105,7 +105,7 @@
       <% if user_signed_in? %>
         <button type="button"
                 class="mobile-account-avatar focus-ring"
-                aria-label="Hesap menüsünü aç"
+                aria-label="Hesap Menüsünü Aç"
                 aria-controls="mobile-account-sheet"
                 aria-expanded="false"
                 data-account-menu-target="mobileTrigger"

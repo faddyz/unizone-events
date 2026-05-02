@@ -9,25 +9,25 @@
     <div class="soft-grid absolute inset-0 opacity-35"></div>
     <div class="workbench-hero-copy">
       <p class="section-eyebrow text-citron">Etkinliklerim</p>
-      <h1>Planlarını taslaktan yayına taşı.</h1>
-      <p>Fikirlerini düzenle, inceleme durumunu takip et ve yayındayken RSVP hareketini net bir iş masasında gör.</p>
+      <h1>Planlarını sahneye çıkar.</h1>
+      <p>Taslak aşamasından yayına kadar tüm süreci düzenli, hızlı ve net bir akışla kontrol et.</p>
 
       <div class="workbench-hero-actions">
         <%= link_to new_organizer_event_path, class: "workbench-primary-action focus-ring" do %>
           <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
             <path d="M12 5v14M5 12h14"/>
           </svg>
-          <span>Etkinlik oluştur</span>
+          <span>Etkinlik Oluştur</span>
         <% end %>
         <%= link_to dashboard_path, class: "workbench-secondary-action focus-ring" do %>
           <%= render "icons/calendar", class: "size-4" %>
-          <span>Planlarıma dön</span>
+          <span>Planlarım'a Dön</span>
         <% end %>
       </div>
     </div>
 
     <aside class="organizer-hero-status">
-      <p class="section-eyebrow text-white/42">Durum nabzı</p>
+      <p class="section-eyebrow text-white/42">Yayın Akışı</p>
       <div class="organizer-hero-status-grid">
         <div>
           <strong><%= @stats[:draft] %></strong>
@@ -42,16 +42,16 @@
           <span>Yayında</span>
         </div>
       </div>
-      <p class="organizer-hero-note">Hazır olmayan fikirleri taslakta tut, hazır olanları tek hamlede incelemeye gönder.</p>
+      <p class="organizer-hero-note">Taslak, inceleme ve yayın aşamalarındaki tüm etkinliklerini tek bakışta kontrol et.</p>
     </aside>
   </header>
 
   <div class="workbench-signal-grid">
     <% [
-      [ "Toplam", @stats[:total], "Tüm etkinliklerin" ],
-      [ "Taslak", @stats[:draft], "Düzenleme bekleyenler" ],
-      [ "İncelemede", @stats[:submitted], "Onay kuyruğunda" ],
-      [ "Yayında", @stats[:published], "Keşifte görünenler" ]
+      [ "Toplam Etkinlik", @stats[:total], "Oluşturduğun tüm etkinlikler" ],
+      [ "Taslaklar", @stats[:draft], "Henüz yayına hazır olmayanlar" ],
+      [ "İncelemede", @stats[:submitted], "Onay sürecindeki etkinlikler" ],
+      [ "Yayında", @stats[:published], "Keşif alanında görünür olanlar" ]
     ].each_with_index do |(label, value, hint), index| %>
       <article class="workbench-signal-card is-tone-<%= index + 1 %>">
         <span class="workbench-signal-dot"></span>
@@ -84,7 +84,7 @@
           <circle cx="11" cy="11" r="7"/>
           <path d="m20 20-3.5-3.5"/>
         </svg>
-        <%= text_field_tag :query, @query, id: "organizer-event-query", placeholder: "Başlık, şehir veya mekan ara", class: "focus-ring" %>
+        <%= text_field_tag :query, @query, id: "organizer-event-query", placeholder: "Etkinlik adı, şehir veya mekan ara", class: "focus-ring" %>
       </div>
       <%= submit_tag "Ara", class: "organizer-search-submit focus-ring" %>
       <% if active_filters %>
@@ -96,11 +96,11 @@
   <section class="organizer-results">
     <div class="workbench-section-head">
       <div>
-        <p class="section-eyebrow text-coral">Workbench</p>
-        <h2><%= @events.size %> etkinlik gösteriliyor</h2>
+        <p class="section-eyebrow text-coral">ETKİNLİK MASASI</p>
+        <h2><%= @events.size %> etkinlik gösteriliyor</h2>  
       </div>
       <span class="organizer-results-meta">
-        <%= @selected_status == "all" ? "Tüm durumlar" : @status_tabs.to_h.fetch(@selected_status) %>
+        <%= @selected_status == "all" ? "Tüm Durumlar" : @status_tabs.to_h.fetch(@selected_status) %>
       </span>
     </div>
 
@@ -180,13 +180,13 @@
     <% else %>
       <div class="workbench-empty-state organizer-empty">
         <span class="dashboard-empty-dot"></span>
-        <h3><%= active_filters ? "Bu filtrelerle etkinlik yok" : "Henüz etkinlik oluşturmadın" %></h3>
+        <h3><%= active_filters ? "Bu filtrelerle etkinlik yok" : "Henüz bir etkinlik oluşturmadın." %></h3>
         <p><%= active_filters ? "Aramayı temizleyerek tüm etkinliklerine dönebilir veya yeni bir fikir başlatabilirsin." : "Bir taslakla başla ve fikrini kendi hızında şekillendir." %></p>
         <div class="workbench-empty-actions">
           <% if active_filters %>
             <%= link_to "Filtreleri temizle", organizer_events_path, class: "btn-outline focus-ring" %>
           <% end %>
-          <%= link_to "Etkinlik oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
+          <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
         </div>
       </div>
     <% end %>

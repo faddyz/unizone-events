@@ -63,7 +63,7 @@
         <div class="explore-filter-field">
           <%= form.label :city, "Şehir", class: "sr-only" %>
           <%= form.select :city,
-                options_for_select([["Tüm şehirler", ""]] + Event::CITY_OPTIONS.map { |city| [city, city] }, params[:city]),
+                options_for_select([["Tüm Şehirler", ""]] + Event::CITY_OPTIONS.map { |city| [city, city] }, params[:city]),
                 {},
                 class: "explore-filter-select" %>
         </div>
@@ -71,7 +71,7 @@
         <div class="explore-filter-field">
           <%= form.label :category, "Kategori", class: "sr-only" %>
           <%= form.select :category,
-                options_for_select([["Tüm kategoriler", ""]] + @categories, Array(params[:category]).first),
+                options_for_select([["Tüm Kategoriler", ""]] + @categories, Array(params[:category]).first),
                 {},
                 class: "explore-filter-select" %>
         </div>
@@ -97,7 +97,7 @@
           <%= form.label :price_filter, "Ücret", class: "sr-only" %>
           <%= form.select :price_filter,
                 options_for_select([
-                  ["Tüm ücretler", ""],
+                  ["Tüm Ücretler", ""],
                   ["Ücretsiz", "free"],
                   ["Ücretli", "paid"]
                 ], params[:price_filter]),
@@ -134,7 +134,7 @@
             <%= form.label :time_filter, "Saat aralığı", class: "explore-filter-label" %>
             <%= form.select :time_filter,
                   options_for_select([
-                    ["Tüm saatler", ""],
+                    ["Tüm Saatler", ""],
                     ["Sabah", "morning"],
                     ["Öğleden sonra", "afternoon"],
                     ["Akşam", "evening"],
@@ -148,7 +148,7 @@
             <%= form.label :availability_filter, "Kontenjan", class: "explore-filter-label" %>
             <%= form.select :availability_filter,
                   options_for_select([
-                    ["Tüm etkinlikler", ""],
+                    ["Tüm Etkinlikler", ""],
                     ["Yer var", "available"],
                     ["Az yer kaldı", "limited"]
                   ], params[:availability_filter]),
@@ -160,9 +160,9 @@
             <%= form.label :registration_filter, "Kayıt tipi", class: "explore-filter-label" %>
             <%= form.select :registration_filter,
                   options_for_select([
-                    ["Tüm kayıt tipleri", ""],
+                    ["Tüm Kayıt Tipleri", ""],
                     ["Unizone RSVP", "unizone"],
-                    ["Dış kayıt", "external"]
+                    ["Dış Kayıt / Bilet", "external"]
                   ], params[:registration_filter]),
                   {},
                   class: "explore-filter-select" %>

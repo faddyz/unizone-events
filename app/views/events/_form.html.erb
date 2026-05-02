@@ -3,18 +3,18 @@
   form_title = local_assigns.fetch(:form_title, mode == :edit ? "Etkinliği düzenle" : "Etkinlik stüdyosu")
   form_description = local_assigns.fetch(:form_description, "Detayları adım adım netleştir.")
   steps = [
-    { label: "Temel", title: "Sahne adı ve kategori", summary: "İnsanların akışta ilk göreceği sinyali netleştir.", icon: "edit" },
-    { label: "Zaman/Yer", title: "Plan yapılabilir detaylar", summary: "Tarih, saat, şehir, mekan ve kontenjan bilgisini temiz gir.", icon: "calendar" },
-    { label: "Hikaye", title: "Katılma sebebi", summary: "Etkinliğin atmosferini ve kayıt akışını görünür yap.", icon: "ticket" },
-    { label: "Afiş", title: "Son kontrol", summary: "Görseli ekle, yayına giden akışı kontrol et ve kaydet.", icon: "check_circle" }
+    { label: "Temel Bilgiler", title: "Başlık ve Kategori", summary: "İnsanların akışta ilk göreceği sinyali netleştir.", icon: "edit" },
+    { label: "Tarih ve Konum", title: "Tarih ve Konum", summary: "Katılımcıların plan yapabilmesi için zaman, mekan ve kontenjan bilgilerini netleştir.", icon: "calendar" },
+    { label: "Etkinlik Hikayesi", title: "Etkinlik hikayesi", summary: "Katılımcıların ne bekleyeceğini açık, kısa ve ikna edici şekilde anlat.", icon: "ticket" },
+    { label: "Afiş Görseli", title: "Afiş ve Son Kontrol", summary: "Görselini ekle, bilgileri kontrol et ve etkinliğini incelemeye gönder.", icon: "check_circle" }
   ]
-  preview_date = model.date.present? ? l(model.date, format: :long) : "Tarih seçilmedi"
+  preview_date = model.date.present? ? l(model.date, format: :long) : "Tarih Seçilmedi"
   preview_month = model.date.present? ? model.date.strftime("%b") : "Ay"
   preview_day = model.date.present? ? model.date.strftime("%-d") : "--"
   preview_price = event_price_text(model)
   preview_capacity = model.capacity.present? ? "#{model.capacity} kişi" : "Kontenjan açık"
-  preview_ticket = model.ticket_url.present? ? "Dış kayıt hazır" : "Unizone RSVP"
-  preview_city = model.city.presence || "Şehir seçilmedi"
+  preview_ticket = model.ticket_url.present? ? "Dış Kayıt / Bilet Buton Önizlemesi" : "Katılım Butonu Önizlemesi"
+  preview_city = model.city.presence || "Şehir Seçilmedi"
   preview_description = model.description.presence || "Etkinliğin atmosferi, akışı ve katılımcıların ne bekleyebileceği burada canlanacak."
 %>
 
@@ -78,10 +78,10 @@
 
       <footer class="event-form-actions">
         <button type="button" class="btn-outline focus-ring" data-wizard-target="previous" data-action="wizard#previous">Geri</button>
-        <button type="button" class="btn-void focus-ring" data-wizard-target="next" data-action="wizard#next">Devam</button>
+        <button type="button" class="btn-void focus-ring" data-wizard-target="next" data-action="wizard#next">Devam Et</button>
         <%= form.submit submit_label, class: "btn-electric cursor-pointer border-0 focus-ring", data: { wizard_target: "submit" } %>
         <% if local_assigns[:cancel_path] %>
-          <%= link_to "Vazgeç", cancel_path, class: "btn-outline focus-ring" %>
+          <%= link_to "İptal", cancel_path, class: "btn-outline focus-ring" %>
         <% end %>
       </footer>
     </section>
@@ -117,7 +117,7 @@
             <span class="event-form-preview-status"><%= model.persisted? ? event_status_label(model) : "İncelemeye gidecek" %></span>
           </div>
 
-          <h3 data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı burada parlayacak" %></h3>
+          <h3 data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı burada parlayacak." %></h3>
           <p data-event-preview-target="previewDescription"><%= truncate(preview_description, length: 130) %></p>
 
           <dl class="event-form-preview-facts">
@@ -152,11 +152,11 @@
       <div class="event-form-checklist">
         <p class="section-eyebrow text-coral">Yayın kontrolü</p>
         <ul>
-          <li data-event-preview-target="checkItem" data-check="title">Başlık ve kategori hazır</li>
-          <li data-event-preview-target="checkItem" data-check="date">Tarih ve saat net</li>
-          <li data-event-preview-target="checkItem" data-check="location">Şehir ve mekan anlaşılır</li>
-          <li data-event-preview-target="checkItem" data-check="story">Hikaye karar verdiriyor</li>
-          <li data-event-preview-target="checkItem" data-check="image">Afiş görseli eklendi</li>
+          <li data-event-preview-target="checkItem" data-check="title">Başlık ve Kategori Tamamlandı.</li>
+          <li data-event-preview-target="checkItem" data-check="date">Tarih ve Saat Netleşti.</li>
+          <li data-event-preview-target="checkItem" data-check="location">Şehir ve Mekan Bilgileri Hazır.</li>
+          <li data-event-preview-target="checkItem" data-check="story">Açıklama yeterince açık.</li>
+          <li data-event-preview-target="checkItem" data-check="image">Afiş görseli eklendi.</li>
         </ul>
       </div>
     </aside>

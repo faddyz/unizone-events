@@ -41,26 +41,26 @@
       <section class="footer-column">
         <h3 class="footer-heading">Keşfet</h3>
         <div class="footer-link-list">
-          <%= link_to "Tüm etkinlikler", explore_events_path, class: "footer-link focus-ring" %>
-          <%= link_to "Yaklaşan planlar", explore_events_path(date_filter: "upcoming"), class: "footer-link focus-ring" %>
-          <%= link_to "Popüler etkinlikler", explore_events_path(sort_by: "popular"), class: "footer-link focus-ring" %>
-          <%= link_to "Kategori rehberi", explore_events_path, class: "footer-link focus-ring" %>
+          <%= link_to "Tüm Etkinlikler", explore_events_path, class: "footer-link focus-ring" %>
+          <%= link_to "Yaklaşan Planlar", explore_events_path(date_filter: "upcoming"), class: "footer-link focus-ring" %>
+          <%= link_to "Popüler Etkinlikler", explore_events_path(sort_by: "popular"), class: "footer-link focus-ring" %>
+          <%= link_to "Kategori Rehberi", explore_events_path, class: "footer-link focus-ring" %>
         </div>
       </section>
 
       <section class="footer-column">
         <h3 class="footer-heading">Organizatör</h3>
         <div class="footer-link-list">
-          <%= link_to "Etkinlik oluştur", new_organizer_event_path, class: "footer-link focus-ring" %>
+          <%= link_to "Etkinlik Oluştur", new_organizer_event_path, class: "footer-link focus-ring" %>
           <% if user_signed_in? %>
             <%= link_to "Etkinliklerim", organizer_events_path, class: "footer-link focus-ring" %>
             <%= link_to "Planlarım", dashboard_path, class: "footer-link focus-ring" %>
             <% if current_user.admin? %>
-              <%= link_to "İnceleme paneli", admin_events_path, class: "footer-link focus-ring" %>
+              <%= link_to "İnceleme Paneli", admin_events_path, class: "footer-link focus-ring" %>
             <% end %>
           <% else %>
             <%= link_to "Giriş yap", new_user_session_path, class: "footer-link focus-ring" %>
-            <%= link_to "Hesap oluştur", new_user_registration_path, class: "footer-link focus-ring" %>
+            <%= link_to "Hesap Oluştur", new_user_registration_path, class: "footer-link focus-ring" %>
           <% end %>
         </div>
       </section>
@@ -70,7 +70,7 @@
         <div class="footer-link-list">
           <%= link_to "SSS", faq_path, class: "footer-link focus-ring" %>
           <%= link_to "Gizlilik", privacy_policy_path, class: "footer-link focus-ring" %>
-          <%= link_to "Topluluk kuralları", faq_path(anchor: "topluluk"), class: "footer-link focus-ring" %>
+          <%= link_to "Topluluk Kuralları", faq_path(anchor: "topluluk"), class: "footer-link focus-ring" %>
           <%= link_to "İletişim", contact_path, class: "footer-link focus-ring" %>
         </div>
       </section>

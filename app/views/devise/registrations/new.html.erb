@@ -33,14 +33,14 @@
 
         <nav class="auth-switcher" aria-label="Hesap işlemleri">
           <%= link_to "Giriş", new_user_session_path, class: "auth-switcher-item focus-ring" %>
-          <span class="auth-switcher-item is-active" aria-current="page">Kayıt</span>
+          <span class="auth-switcher-item is-active" aria-current="page">Kayıt Ol</span>
         </nav>
 
         <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "auth-form" }) do |f| %>
           <%= render "devise/shared/error_messages", resource: resource %>
 
           <div class="auth-field">
-            <%= f.label :name, "Ad", class: "auth-label" %>
+            <%= f.label :name, "Ad Soyad", class: "auth-label" %>
             <%= f.text_field :name,
                   autofocus: true,
                   autocomplete: "name",
