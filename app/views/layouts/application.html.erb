@@ -9,6 +9,8 @@
     <%= yield :head %>
     <link rel="preload" href="<%= asset_path("unizone/syne-latin.woff2") %>" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="<%= asset_path("unizone/syne-latin-ext.woff2") %>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<%= asset_path("unizone/bricolage-latin.woff2") %>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<%= asset_path("unizone/bricolage-latin-ext.woff2") %>" as="font" type="font/woff2" crossorigin>
     <%= render "layouts/font_faces" %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag(

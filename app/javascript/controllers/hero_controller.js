@@ -1,77 +1,111 @@
 import { Controller } from "@hotwired/stimulus"
+import { gsap } from "gsap"
 
 const PREVIEW_URL_KEY = "unizone:hero-preview-url"
 
 export default class extends Controller {
   connect() {
-    this.resetAnimatedTargets()
-    this.element.classList.add("hero-ready")
+    this.gsapContext = gsap.context(() => {
+      this.resetAnimatedTargets()
+      this.element.classList.add("hero-ready")
 
-    if (this.shouldSkipIntro()) return
+      if (this.shouldSkipIntro()) return
 
-    window.requestAnimationFrame(() => this.animateIntro())
+      window.requestAnimationFrame(() => this.animateIntro())
+    }, this.element)
+  }
+
+  disconnect() {
+    this.timeline?.kill()
+    this.clearAnimatedProps()
+    this.gsapContext?.revert()
   }
 
   resetAnimatedTargets() {
-    this.animatedTargets.forEach((target) => {
-      target.style.removeProperty("opacity")
-      target.style.removeProperty("transform")
-      target.style.removeProperty("translate")
-      target.style.removeProperty("rotate")
-      target.style.removeProperty("scale")
-      target.style.removeProperty("will-change")
+    gsap.set(this.animatedTargets, {
+      clearProps: "opacity,visibility,transform,translate,rotate,scale,filter,willChange"
     })
   }
 
   animateIntro() {
-    const animations = [
-      this.revealSoftly(this.logoTarget, 0, { distance: 12, duration: 520 }),
-      ...this.lineTargets.map((target, index) => this.revealLine(target, 90 + index * 145)),
-      this.revealSoftly(this.subtitleTarget, 620, { distance: 18, duration: 640 }),
-      this.revealSoftly(this.formTarget, 760, { distance: 16, duration: 640 })
-    ].filter(Boolean)
+    this.timeline?.kill()
 
-    Promise.all(animations.map((animation) => animation.finished.catch(() => {}))).then(() => {
-      this.animatedTargets.forEach((target) => target.style.removeProperty("will-change"))
+    const lines = this.lineTargets
+    const ambientTargets = Array.from(
+      this.element.querySelectorAll(".hero-orb, .hero-ribbon, .hero-stage-wash, .hero-glow-field")
+    )
+
+    gsap.set(lines, {
+      autoAlpha: 0,
+      yPercent: 118,
+      rotate: 1.8,
+      transformOrigin: "left bottom",
+      willChange: "transform, opacity"
     })
+
+    gsap.set([this.logoTarget, this.formTarget].filter(Boolean), {
+      autoAlpha: 0,
+      y: 18,
+      willChange: "transform, opacity"
+    })
+
+    this.timeline = gsap.timeline({
+      defaults: { ease: "power4.out" },
+      onComplete: () => this.clearAnimatedProps()
+    })
+
+    this.timeline
+      .fromTo(
+        ambientTargets,
+        { autoAlpha: 0.62, scale: 0.98, filter: "saturate(0.92)" },
+        {
+          autoAlpha: 1,
+          scale: 1,
+          filter: "saturate(1)",
+          duration: 1.35,
+          stagger: 0.035,
+          clearProps: "opacity,visibility,transform,filter"
+        },
+        0
+      )
+      .to(
+        this.logoTarget,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.58,
+          ease: "back.out(1.45)"
+        },
+        0.04
+      )
+      .to(
+        lines,
+        {
+          autoAlpha: 1,
+          yPercent: 0,
+          rotate: 0,
+          duration: 0.96,
+          stagger: 0.13,
+          ease: "expo.out"
+        },
+        0.12
+      )
+      .to(
+        this.formTarget,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.76,
+          ease: "power3.out"
+        },
+        0.86
+      )
   }
 
-  revealLine(target, delay) {
-    target.style.willChange = "transform, opacity"
-
-    return target.animate(
-      [
-        { opacity: 0.01, transform: "translate3d(0, 108%, 0) skewY(2deg)" },
-        { opacity: 1, transform: "translate3d(0, 0, 0) skewY(0deg)" }
-      ],
-      {
-        duration: 780,
-        delay,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-        fill: "backwards"
-      }
-    )
-  }
-
-  revealSoftly(target, delay, options = {}) {
-    if (!target) return null
-
-    const distance = options.distance || 14
-    const duration = options.duration || 580
-    target.style.willChange = "transform, opacity"
-
-    return target.animate(
-      [
-        { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
-        { opacity: 1, transform: "translate3d(0, 0, 0)" }
-      ],
-      {
-        duration,
-        delay,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-        fill: "backwards"
-      }
-    )
+  clearAnimatedProps() {
+    gsap.set(this.animatedTargets, {
+      clearProps: "opacity,visibility,transform,translate,rotate,scale,filter,willChange"
+    })
   }
 
   shouldSkipIntro() {
@@ -91,7 +125,9 @@ export default class extends Controller {
   }
 
   get animatedTargets() {
-    return Array.from(this.element.querySelectorAll("[data-hero-target]"))
+    return Array.from(
+      this.element.querySelectorAll('[data-hero-target]:not([data-hero-target="subtitle"])')
+    )
   }
 
   get lineTargets() {

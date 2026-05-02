@@ -221,17 +221,22 @@
 }
 
 .hero-copy {
-  text-shadow: 0 20px 70px rgba(0, 0, 0, 0.42);
+  text-shadow: none;
+}
+
+.hero-copy h1 {
+  filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.34));
 }
 
 .hero-line-mask {
   overflow: hidden;
-  padding-bottom: 0.03em;
-  margin-bottom: -0.03em;
+  padding: 0.045em 0 0.135em;
+  margin: -0.045em 0 -0.135em;
 }
 
 .hero-line-text {
   transform-origin: left bottom;
+  will-change: transform;
 }
 
 .hero-search__query-wrap {
@@ -548,17 +553,22 @@
 }
 
 .hero-copy {
-  text-shadow: 0 20px 70px rgba(0, 0, 0, 0.42);
+  text-shadow: none;
+}
+
+.hero-copy h1 {
+  filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.34));
 }
 
 .hero-line-mask {
   overflow: hidden;
-  padding-bottom: 0.03em;
-  margin-bottom: -0.03em;
+  padding: 0.045em 0 0.135em;
+  margin: -0.045em 0 -0.135em;
 }
 
 .hero-line-text {
   transform-origin: left bottom;
+  will-change: transform;
 }
 
 /* Hero search */
