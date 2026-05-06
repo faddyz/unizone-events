@@ -7,8 +7,9 @@ module ActiveSupport
     # Run tests in parallel with specified workers
     parallelize(workers: Gem.win_platform? ? 1 : :number_of_processors)
 
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-    fixtures :all
+    # Setup all top-level fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+    self.fixture_paths = [ "test/fixtures" ]
+    fixtures(*Dir["test/fixtures/*.yml"].map { |path| File.basename(path, ".yml").to_sym })
 
     # Add more helper methods to be used by all tests here...
   end

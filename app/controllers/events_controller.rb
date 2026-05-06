@@ -2,7 +2,11 @@ class EventsController < ApplicationController
   before_action :set_event, only: :show
 
   def index
-    @events = EventSearch.new(scope: published_scope, params: search_params).results.limit(8).to_a
+    @events = EventSearch.new(scope: published_scope, params: search_params)
+                         .results
+                         .reorder(Arel.sql(home_order_sql))
+                         .limit(8)
+                         .to_a
     @featured_events = EventRanker.rank(published_scope).limit(6).to_a
     @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
     prepare_event_card_data(@events + @featured_events)
@@ -40,6 +44,15 @@ class EventsController < ApplicationController
 
   def published_scope
     Event.published_visible.with_attached_image.includes(:user)
+  end
+
+  def home_order_sql
+    [
+      EventCityPriority.order_sql,
+      "events.date ASC",
+      "events.published_at DESC",
+      "events.id DESC"
+    ].join(", ")
   end
 
   def search_params

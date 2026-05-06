@@ -43,6 +43,18 @@ class EventRankerTest < ActiveSupport::TestCase
     assert_equal active.id, ranked_ids.first
   end
 
+  test "city priority wins before score within featured ranking" do
+    date = 7.days.from_now.change(hour: 20)
+    other_city = create_ranked_event(title: "Other City Ranked Event", city: "Edirne", date: date)
+    metro_city = create_ranked_event(title: "Metro City Ranked Event", city: "Bursa", date: date)
+    top_city = create_ranked_event(title: "Top City Ranked Event", city: "İstanbul", date: date)
+    Attendance.create!(user: users(:three), event: other_city, status: "going")
+
+    ranked_ids = EventRanker.rank(Event.where(id: [ other_city.id, metro_city.id, top_city.id ])).map(&:id)
+
+    assert_equal [ top_city.id, metro_city.id, other_city.id ], ranked_ids
+  end
+
   test "quality external event can be ranked without attendance" do
     imported = create_ranked_event(
       title: "Imported Quality Event",

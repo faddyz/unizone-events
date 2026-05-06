@@ -22,6 +22,7 @@ class EventRanker
         .select("#{auto_score_sql} AS auto_score")
         .select("#{final_score_sql} AS final_score")
         .select("#{manual_override_sql} AS manual_override_present")
+        .select("#{EventCityPriority.score_sql} AS city_priority")
         .reorder(Arel.sql(rank_order_sql))
     end
 
@@ -29,6 +30,7 @@ class EventRanker
 
     def rank_order_sql
       [
+        EventCityPriority.order_sql,
         "final_score DESC",
         "manual_override_present DESC",
         "events.date ASC",
