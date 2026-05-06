@@ -7,7 +7,7 @@
     paginator:     the paginator that renders the pagination tags inside
 -%>
 <%= paginator.render do -%>
-  <nav class="pagination-shell flex items-center justify-center">
+  <nav class="pagination-shell flex items-center justify-center gap-2">
     <ul class="pagination-dock flex items-center gap-1 rounded-full border border-stone-950/10 bg-white/85 p-1 shadow-[0_16px_38px_rgba(15,15,18,0.10)] backdrop-blur-xl">
       <%= prev_page_tag unless current_page.first? %>
       <% each_page do |page| -%>
@@ -19,5 +19,10 @@
       <% end -%>
       <%= next_page_tag unless current_page.last? %>
     </ul>
+    <% if total_pages.to_i > 1 %>
+      <span class="inline-flex h-9 items-center rounded-full border border-stone-950/10 bg-white/80 px-3 font-mono text-xs font-black tracking-[0.08em] text-stone-600">
+        <%= current_page %>/<%= total_pages %>
+      </span>
+    <% end %>
   </nav>
 <% end -%>

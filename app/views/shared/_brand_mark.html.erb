@@ -5,7 +5,7 @@
 <% mark_classes = {
   "sm" => "size-9",
   "md" => "size-11",
-  "nav" => "size-12",
+  "nav" => "size-10",
   "lg" => "size-16",
   "xl" => "size-20",
   "hero" => "size-20 sm:size-24"
@@ -20,7 +20,7 @@
     </svg>
   </span>
   <% if show_wordmark %>
-    <span class="leading-none">
+    <span class="inline-flex flex-col justify-center leading-none">
       <span class="brand-wordmark font-display block <%= wordmark_classes %> font-extrabold tracking-tight">Unizone</span>
       <% if show_tagline %>
         <span class="brand-tagline mt-1 block font-mono text-[0.64rem] font-bold uppercase tracking-[0.18em] opacity-65"><%= tagline %></span>

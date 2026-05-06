@@ -429,12 +429,26 @@
   }
 
   .event-card-meta > div:first-child {
+    align-items: stretch;
     flex-direction: column;
     gap: 0.65rem;
+    position: relative;
+  }
+
+  .event-card-location {
+    width: 100%;
+    min-height: 3.45rem;
+    padding-right: 5rem;
   }
 
   .event-card-price {
-    align-self: flex-start;
+    position: absolute;
+    right: 0.72rem;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: auto;
+    max-width: 4.5rem;
+    text-align: right;
     white-space: normal;
   }
 

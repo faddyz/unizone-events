@@ -2,7 +2,17 @@
 <html lang="<%= I18n.locale %>">
   <head>
     <%= favicon_link_tag "favicon.svg", type: "image/svg+xml" %>
-    <title><%= content_for(:title) || "Unizone | Şehrin Ritmini Keşfet" %></title>
+    <%
+      page_title = content_for?(:title) ? content_for(:title).to_s.strip : nil
+      browser_title = if page_title.blank? || page_title == "Unizone"
+        "Unizone | \u015Eehrindeki Etkinlikleri Ke\u015Ffet"
+      elsif page_title.include?("|")
+        page_title
+      else
+        "#{page_title} | Unizone"
+      end
+    %>
+    <title><%= browser_title %></title>
     <meta name="description" content="Unizone ile şehrindeki konserleri, partileri, atölyeleri ve özel buluşmaları keşfet. Moduna uygun planı bul, arkadaşlarınla katıl ve şehrin akışına dahil ol.">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>

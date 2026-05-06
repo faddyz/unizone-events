@@ -76,7 +76,10 @@
             method: :post,
             class: "admin-candidate-scan-form",
             local: true,
-            data: { controller: "scan-scope" } do %>
+            data: {
+              controller: "scan-scope",
+              action: "turbo:submit-start->scan-scope#scanStarted turbo:submit-end->scan-scope#scanEnded"
+            } do %>
         <div class="admin-scan-preset-bar">
           <button type="button" class="admin-scan-preset is-primary is-active focus-ring" data-scan-preset="default" data-action="scan-scope#defaultScope">
             Varsayılan kapsam
@@ -171,8 +174,17 @@
         </label>
 
         <div class="admin-event-actions">
-          <%= button_tag "Dry-run", type: :submit, name: "dry_run", value: "1", class: "admin-search-submit focus-ring", data: { turbo_confirm: "Dry-run ba?lat?ls?n m?? Kay?t DB'ye yaz?lmaz." } %>
-          <%= button_tag "Adayları Kaydet", type: :submit, name: "dry_run", value: "0", class: "admin-primary-action focus-ring", data: { turbo_confirm: "Tarama sonuclari aday havuzuna kaydedilecek. Devam edilsin mi?" } %>
+          <%= button_tag "Dry-run", type: :submit, name: "dry_run", value: "1", class: "admin-search-submit focus-ring", data: { turbo_confirm: "Dry-run ba?lat?ls?n m?? Kay?t DB'ye yaz?lmaz.", scan_scope_target: "submitButton", scan_action_label: "Dry-run çalışıyor" } %>
+          <%= button_tag "Adayları Kaydet", type: :submit, name: "dry_run", value: "0", class: "admin-primary-action focus-ring", data: { turbo_confirm: "Tarama sonuclari aday havuzuna kaydedilecek. Devam edilsin mi?", scan_scope_target: "submitButton", scan_action_label: "Adaylar kaydediliyor" } %>
+        </div>
+        <div class="admin-scan-progress hidden" role="status" aria-live="polite" data-scan-scope-target="progress">
+          <div>
+            <strong data-scan-scope-target="progressTitle">Tarama çalışıyor</strong>
+            <span data-scan-scope-target="progressStatus">API taranıyor. Sekmeyi açık bırak.</span>
+          </div>
+          <div class="admin-scan-progress-track" aria-hidden="true">
+            <span></span>
+          </div>
         </div>
       <% end %>
     </div>

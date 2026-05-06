@@ -1189,6 +1189,101 @@
   color: white;
 }
 
+.admin-scan-progress {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  align-content: center;
+  width: 100%;
+  place-items: center;
+  background: rgba(15, 15, 18, 0.42);
+  padding: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+.admin-scan-progress > div {
+  width: min(26rem, 100%);
+}
+
+.admin-scan-progress > div:first-child,
+.admin-scan-progress-track {
+  border: 1px solid rgba(47, 107, 255, 0.2);
+}
+
+.admin-scan-progress > div:first-child {
+  display: grid;
+  gap: 0.22rem;
+  border-radius: 1rem 1rem 0 0;
+  border: 1px solid rgba(47, 107, 255, 0.2);
+  border-bottom: 0;
+  background:
+    linear-gradient(135deg, rgba(47, 107, 255, 0.1), rgba(215, 255, 57, 0.18)),
+    rgba(255, 255, 255, 0.96);
+  padding: 0.85rem;
+  box-shadow:
+    0 1px 2px rgba(15, 15, 18, 0.06),
+    0 22px 60px rgba(15, 15, 18, 0.22);
+}
+
+.admin-scan-progress.hidden {
+  display: none;
+}
+
+.admin-scan-progress strong,
+.admin-scan-progress span {
+  display: block;
+}
+
+.admin-scan-progress strong {
+  color: var(--page-text);
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.admin-scan-progress span {
+  margin-top: 0.18rem;
+  color: rgba(15, 15, 18, 0.58);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-scan-progress-track {
+  position: relative;
+  overflow: hidden;
+  height: 0.62rem;
+  border-top: 0;
+  border-radius: 0 0 1rem 1rem;
+  background: rgba(15, 15, 18, 0.1);
+}
+
+.admin-scan-progress-track span {
+  position: absolute;
+  inset-block: 0;
+  left: -42%;
+  width: 42%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--citron), var(--electric), var(--coral));
+  animation: admin-scan-progress 1.15s ease-in-out infinite;
+}
+
+.admin-candidate-scan-form button:disabled,
+.admin-candidate-scan-form button.is-busy {
+  cursor: wait;
+  opacity: 0.68;
+  transform: none;
+}
+
+@keyframes admin-scan-progress {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(340%);
+  }
+}
+
 .admin-collapsible {
   display: block;
   grid-template-columns: none;

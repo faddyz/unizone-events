@@ -890,7 +890,7 @@
   }
 
   .explore-results-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .explore-list-card {
@@ -913,6 +913,7 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
 
 @media (max-width: 767px) {
   .explore-header {

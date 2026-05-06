@@ -1825,6 +1825,22 @@ button.event-side-ticket {
     line-height: 0.88;
   }
 
+  .event-show-title.is-long-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.82rem, 8.2vw, 2.25rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 1.02;
+  }
+
+  .event-show-title.is-very-long-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.55rem, 7.4vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 1.08;
+  }
+
   .event-show-hero .hero-copy > p {
     margin-top: 1rem;
     font-size: 0.96rem;
