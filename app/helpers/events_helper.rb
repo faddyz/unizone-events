@@ -511,6 +511,7 @@ module EventsHelper
       "query",
       "city",
       "category",
+      "date",
       "date_filter",
       "start_date",
       "end_date",
@@ -532,6 +533,17 @@ module EventsHelper
     end
 
     next_params
+  end
+
+  def explore_events_progress_text(events)
+    total_count = events.total_count.to_i
+    shown_count = [ events.current_page.to_i * events.limit_value.to_i, total_count ].min
+
+    if shown_count >= total_count
+      "#{total_count} etkinliğin tamamı gösteriliyor"
+    else
+      "1–#{shown_count} / #{total_count} etkinlik gösteriliyor"
+    end
   end
 
   def explore_filter_remove_params(filter)

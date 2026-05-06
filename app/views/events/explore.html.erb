@@ -2,7 +2,7 @@
 <% content_for :stylesheets, page_stylesheet_tags("components/cards", "components/carousel", "pages/explore") %>
 
 <%
-  view_mode = params[:view] == "list" ? "list" : "grid"
+  view_mode = @view_mode || (params[:view] == "list" ? "list" : "grid")
   selected_categories = Array(params[:category]).flatten.reject(&:blank?)
 %>
 
@@ -64,7 +64,7 @@
     <%= render "filters" %>
 
     <% if @events.any? %>
-      <div class="explore-results explore-results-<%= view_mode %>" data-view-mode="<%= view_mode %>">
+      <div id="explore_events_results" class="explore-results explore-results-<%= view_mode %>" data-view-mode="<%= view_mode %>">
         <% @events.each_with_index do |event, index| %>
           <% if view_mode == "list" %>
             <% going_count = event_attendance_count(event) %>
@@ -127,32 +127,7 @@
         <% end %>
       </div>
 
-      <div class="explore-pagination">
-        <%= paginate @events, theme: "tailwind" %>
-        <% if @events.total_pages.to_i > 1 %>
-          <%= form_with url: explore_events_path, method: :get, local: true, class: "explore-page-jump", data: { turbo: false } do %>
-            <% explore_filter_params_with.each do |key, value| %>
-              <% if value.is_a?(Array) %>
-                <% value.each do |item| %>
-                  <%= hidden_field_tag "#{key}[]", item %>
-                <% end %>
-              <% else %>
-                <%= hidden_field_tag key, value %>
-              <% end %>
-            <% end %>
-            <%= label_tag :page, "Sayfaya git", class: "explore-page-jump-label" %>
-            <%= number_field_tag :page,
-                  @events.current_page,
-                  min: 1,
-                  max: @events.total_pages,
-                  step: 1,
-                  inputmode: "numeric",
-                  class: "explore-page-jump-input focus-ring",
-                  aria: { label: "Gitmek istediğin sayfa numarası" } %>
-            <%= submit_tag "Git", class: "explore-page-jump-submit focus-ring" %>
-          <% end %>
-        <% end %>
-      </div>
+      <%= render "events/explore_load_more", events: @events %>
     <% else %>
       <% action = capture do %>
         <div class="explore-empty-actions">

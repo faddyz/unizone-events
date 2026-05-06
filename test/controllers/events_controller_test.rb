@@ -186,7 +186,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".explore-list-card"
   end
 
-  test "explore renders page jump controls when results span multiple pages" do
+  test "explore renders load more controls when results span multiple pages" do
     13.times do |index|
       Event.create!(
         user: @member,
@@ -200,14 +200,47 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       )
     end
 
-    get explore_events_path(city: "Ankara", view: "list", page: 2)
+    get explore_events_path(city: "Ankara", view: "list", date: Date.current, sort_by: "newest")
 
     assert_response :success
-    assert_select "form.explore-page-jump[action='#{explore_events_path}'][method='get']" do
+    assert_select ".explore-list-card", count: 12
+    assert_select ".pagination-shell", count: 0
+    assert_select ".explore-load-more-progress", text: "1–12 / 13 etkinlik gösteriliyor"
+    assert_select "form.explore-load-more-form[action='#{explore_events_path}'][method='get']" do
       assert_select "input[type='hidden'][name='city'][value='Ankara']"
       assert_select "input[type='hidden'][name='view'][value='list']"
-      assert_select "input[type='number'][name='page'][min='1'][max='2'][value='2']"
-      assert_select "input[type='submit'][value='Git']"
+      assert_select "input[type='hidden'][name='date'][value='#{Date.current}']"
+      assert_select "input[type='hidden'][name='sort_by'][value='newest']"
+      assert_select "input[type='hidden'][name='page'][value='2']"
+      assert_select "button[type='submit']", text: "Daha fazla etkinlik göster"
+    end
+  end
+
+  test "explore turbo stream appends next event batch and replaces progress" do
+    13.times do |index|
+      Event.create!(
+        user: @member,
+        title: "Paged Event #{index}",
+        description: "A public event used to force pagination.",
+        category: "technology",
+        date: (index + 2).days.from_now,
+        city: "Ankara",
+        location: "Pagination Hall",
+        status: "published"
+      )
+    end
+
+    get explore_events_path(city: "Ankara", view: "list", page: 2), as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_select "turbo-stream[action='append'][target='explore_events_results']" do
+      assert_select ".explore-list-card", count: 1
+      assert_select "a", text: "Paged Event 12"
+    end
+    assert_select "turbo-stream[action='replace'][target='explore_load_more']" do
+      assert_select ".explore-load-more-progress", text: "13 etkinliğin tamamı gösteriliyor"
+      assert_select "form.explore-load-more-form", count: 0
     end
   end
 

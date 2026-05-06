@@ -1,0 +1,60 @@
+<% events.each_with_index do |event, index| %>
+  <% if view_mode == "list" %>
+    <% going_count = event_attendance_count(event) %>
+    <% capacity = event.capacity.to_i.positive? ? event.capacity.to_i : nil %>
+    <% spots_left = capacity ? [capacity - going_count, 0].max : nil %>
+
+    <article class="explore-list-card animate-rise-in" style="animation-delay: <%= index * 45 %>ms">
+      <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
+        <div class="poster-art absolute inset-0 opacity-100"></div>
+        <% if event_has_poster?(event) %>
+          <%= event_poster_image_tag event,
+                :list,
+                alt: event_display_title(event),
+                loading: "lazy",
+                sizes: "(min-width: 1024px) 12.5rem, (min-width: 640px) 12rem, 92vw",
+                class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
+        <% end %>
+        <span class="explore-list-date">
+          <small><%= event.date.strftime("%b") %></small>
+          <strong><%= event.date.strftime("%-d") %></strong>
+        </span>
+      <% end %>
+
+      <div class="explore-list-main">
+        <div class="explore-list-tags">
+          <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
+          <span class="explore-list-time"><%= event.date.strftime("%d %b, %H:%M") %></span>
+        </div>
+
+        <h2>
+          <%= link_to event_display_title(event), event_path(event), class: "focus-ring" %>
+        </h2>
+        <p><%= event_description_snippet(event, length: 150) %></p>
+      </div>
+
+      <dl class="explore-list-facts">
+        <div>
+          <dt>Mekan / Şehir</dt>
+          <dd><%= truncate(event_place_text(event), length: 42) %></dd>
+        </div>
+        <div>
+          <dt>Ücret</dt>
+          <dd><%= event_price_text(event) %></dd>
+        </div>
+        <div>
+          <dt><%= capacity ? "Kontenjan" : "Katılım" %></dt>
+          <dd><%= capacity ? "#{spots_left} yer kaldı" : (going_count.positive? ? "#{going_count} gidiyor" : "İlk sen katıl") %></dd>
+        </div>
+      </dl>
+
+      <%= link_to event_path(event), class: "explore-list-action focus-ring", aria: { label: "#{event_display_title(event)} detayları" } do %>
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      <% end %>
+    </article>
+  <% else %>
+    <%= render "events/event_card", event: event, index: index %>
+  <% end %>
+<% end %>

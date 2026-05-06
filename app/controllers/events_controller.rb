@@ -9,10 +9,16 @@ class EventsController < ApplicationController
   end
 
   def explore
+    @view_mode = explore_view_mode
     @events = EventSearch.new(scope: published_scope, params: search_params).results.page(params[:page]).per(12)
     @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
     @active_filters = active_explore_filters
     prepare_event_card_data(@events.to_a)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def show
@@ -137,5 +143,9 @@ class EventsController < ApplicationController
     end
 
     filters
+  end
+
+  def explore_view_mode
+    params[:view] == "list" ? "list" : "grid"
   end
 end

@@ -1,0 +1,27 @@
+<div id="explore_load_more" class="explore-pagination">
+  <p class="explore-load-more-progress" aria-live="polite">
+    <%= explore_events_progress_text(events) %>
+  </p>
+
+  <% if events.next_page.present? %>
+    <%= form_with url: explore_events_path,
+          method: :get,
+          class: "explore-load-more-form",
+          data: { turbo_stream: true } do %>
+      <% explore_filter_params_with(page: events.next_page).each do |key, value| %>
+        <% if value.is_a?(Array) %>
+          <% value.each do |item| %>
+            <%= hidden_field_tag "#{key}[]", item %>
+          <% end %>
+        <% else %>
+          <%= hidden_field_tag key, value %>
+        <% end %>
+      <% end %>
+
+      <%= button_tag "Daha fazla etkinlik göster",
+            type: "submit",
+            class: "explore-load-more-button focus-ring",
+            aria: { controls: "explore_events_results" } %>
+    <% end %>
+  <% end %>
+</div>
