@@ -677,8 +677,53 @@ html.mobile-account-open body {
   overflow: hidden;
 }
 
+.scroll-top-button {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 45;
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid rgba(15, 15, 18, 0.12);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 250, 241, 0.92);
+  color: var(--page-text);
+  box-shadow:
+    0 10px 24px rgba(15, 15, 18, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.4rem);
+  backdrop-filter: blur(16px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.scroll-top-button.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.scroll-top-button:hover {
+  background: var(--page-text);
+  color: var(--citron);
+}
+
 @media (max-width: 1023px) {
   #main-content {
     padding-bottom: calc(var(--mobile-bottom-nav-height) + 2rem);
+  }
+
+  .scroll-top-button {
+    right: 0.9rem;
+    bottom: calc(var(--mobile-bottom-nav-height) + 0.85rem);
+    width: 2.25rem;
+    height: 2.25rem;
   }
 }

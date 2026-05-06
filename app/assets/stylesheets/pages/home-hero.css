@@ -453,14 +453,16 @@
 
   .electric-hero .hero-copy h1 {
     max-width: 100%;
-    font-family: var(--font-body);
-    font-size: clamp(2.6rem, 11.2vw, 3.45rem);
-    line-height: 1;
-    letter-spacing: -0.028em;
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 13.2vw, 4.45rem);
+    line-height: 0.9;
+    letter-spacing: 0;
   }
 
+  .hero-title,
+  .hero-title-accent,
   .hero-title-final {
-    letter-spacing: -0.028em;
+    letter-spacing: 0;
   }
 
   .electric-hero .hero-copy > .mb-7 {
@@ -499,7 +501,7 @@
   }
 
   .electric-hero .hero-copy h1 {
-    font-size: clamp(2.35rem, 10.8vw, 3rem);
+    font-size: clamp(2.45rem, 12.4vw, 3.45rem);
   }
 }
 

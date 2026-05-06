@@ -241,6 +241,10 @@
     padding 220ms var(--ease-out-expressive);
 }
 
+.explore-mobile-filter-toggle {
+  display: none;
+}
+
 .explore-controls:hover,
 .explore-controls:focus-within {
   border-color: rgba(15, 15, 18, 0.14);
@@ -890,7 +894,7 @@
     top: 5.15rem;
     left: 50%;
     width: min(100% - 3rem, 80rem);
-    z-index: 80;
+    z-index: 45;
     transform: translateX(-50%) translateY(-0.25rem);
     padding: 0.5rem;
     box-shadow:
@@ -988,6 +992,67 @@
   .explore-view-button {
     flex: 1 1 0;
     justify-content: center;
+  }
+}
+
+@media (max-width: 1023px) {
+  .explore-mobile-filter-toggle {
+    min-height: 2.35rem;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    border-radius: var(--radius-pill);
+    color: var(--page-text);
+    font-size: 0.74rem;
+    font-weight: 950;
+    line-height: 1;
+    touch-action: pan-y;
+  }
+
+  .explore-mobile-filter-toggle svg {
+    transition: transform var(--transition-fast);
+  }
+
+  .explore-controls.is-mobile-sticky {
+    position: fixed;
+    top: 4.72rem;
+    left: 50%;
+    width: min(100% - 2rem, 80rem);
+    z-index: 45;
+    gap: 0;
+    border-radius: var(--radius-pill);
+    padding: 0.18rem 0.62rem;
+    transform: translateX(-50%);
+    box-shadow:
+      0 12px 28px rgba(15, 15, 18, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.74);
+  }
+
+  .explore-controls.is-mobile-sticky .explore-mobile-filter-toggle {
+    display: inline-flex;
+  }
+
+  .explore-controls.is-mobile-sticky:not(.is-mobile-expanded) .explore-controls-bar,
+  .explore-controls.is-mobile-sticky:not(.is-mobile-expanded) .explore-filter-form,
+  .explore-controls.is-mobile-sticky:not(.is-mobile-expanded) .explore-filter-footer {
+    display: none;
+  }
+
+  .explore-controls.is-mobile-sticky.is-mobile-expanded {
+    gap: 0.55rem;
+    border-radius: 1rem;
+    padding: 0.56rem;
+  }
+
+  .explore-controls.is-mobile-sticky.is-mobile-expanded .explore-mobile-filter-toggle {
+    border-bottom: 1px solid rgba(15, 15, 18, 0.07);
+    border-radius: 0;
+    padding-bottom: 0.52rem;
+  }
+
+  .explore-controls.is-mobile-sticky.is-mobile-expanded .explore-mobile-filter-toggle svg {
+    transform: rotate(180deg);
   }
 }
 

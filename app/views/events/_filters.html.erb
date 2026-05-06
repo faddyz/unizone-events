@@ -4,6 +4,17 @@
   <span class="explore-sticky-sentinel" data-explore-filters-target="sentinel" aria-hidden="true"></span>
 
   <div class="explore-controls" data-explore-filters-target="panel">
+    <button type="button"
+            class="explore-mobile-filter-toggle focus-ring"
+            aria-expanded="false"
+            data-explore-filters-target="mobileToggle"
+            data-action="click->explore-filters#toggleMobile pointerdown->explore-filters#startMobileToggleDrag pointerup->explore-filters#finishMobileToggleDrag pointercancel->explore-filters#cancelMobileToggleDrag">
+      <span>Kategori / Filtreleme</span>
+      <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+
     <div class="explore-controls-bar">
       <div class="explore-controls-title">
         <span class="explore-controls-icon"><%= render "icons/sparkles", class: "size-4" %></span>

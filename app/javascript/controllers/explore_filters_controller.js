@@ -1,14 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["form", "panel", "sentinel", "submit"]
+  static targets = ["form", "mobileToggle", "panel", "sentinel", "submit"]
 
   connect() {
     this.floatQuery = window.matchMedia("(min-width: 1024px)")
+    this.mobileQuery = window.matchMedia("(max-width: 1023px)")
     this.handleFloatMediaChange = this.handleFloatMediaChange.bind(this)
     this.updateFloatingSpace = this.updateFloatingSpace.bind(this)
 
     this.floatQuery.addEventListener("change", this.handleFloatMediaChange)
+    this.mobileQuery.addEventListener("change", this.handleFloatMediaChange)
     window.addEventListener("resize", this.updateFloatingSpace)
 
     if (!this.hasPanelTarget || !this.hasSentinelTarget) return
@@ -25,6 +27,7 @@ export default class extends Controller {
   disconnect() {
     this.observer?.disconnect()
     this.floatQuery?.removeEventListener("change", this.handleFloatMediaChange)
+    this.mobileQuery?.removeEventListener("change", this.handleFloatMediaChange)
     window.removeEventListener("resize", this.updateFloatingSpace)
     window.clearTimeout(this.submitTimeout)
     this.clearFloatingSpace()
@@ -58,10 +61,19 @@ export default class extends Controller {
   }
 
   setFloating(shouldFloat) {
-    const enabled = shouldFloat && this.floatQuery.matches
-    this.panelTarget.classList.toggle("is-floating", enabled)
+    const desktopEnabled = shouldFloat && this.floatQuery.matches
+    const mobileEnabled = shouldFloat && this.mobileQuery.matches
+    this.panelTarget.classList.toggle("is-floating", desktopEnabled)
+    this.panelTarget.classList.toggle("is-mobile-sticky", mobileEnabled)
+    this.element.classList.toggle("is-mobile-sticky", mobileEnabled)
 
-    if (enabled) {
+    if (!mobileEnabled) {
+      this.panelTarget.classList.remove("is-mobile-expanded")
+    }
+
+    this.syncMobileToggle()
+
+    if (desktopEnabled || mobileEnabled) {
       this.updateFloatingSpace()
     } else {
       this.clearFloatingSpace()
@@ -69,7 +81,13 @@ export default class extends Controller {
   }
 
   updateFloatingSpace() {
-    if (!this.hasPanelTarget || !this.panelTarget.classList.contains("is-floating")) return
+    if (
+      !this.hasPanelTarget ||
+      (!this.panelTarget.classList.contains("is-floating") &&
+        !this.panelTarget.classList.contains("is-mobile-sticky"))
+    ) {
+      return
+    }
 
     this.element.style.minHeight = `${this.panelTarget.offsetHeight}px`
   }
@@ -85,5 +103,55 @@ export default class extends Controller {
       }
       this.clearFloatingSpace()
     }
+
+    if (!this.mobileQuery.matches && this.hasPanelTarget) {
+      this.panelTarget.classList.remove("is-mobile-sticky", "is-mobile-expanded")
+      this.element.classList.remove("is-mobile-sticky")
+    }
+
+    this.syncMobileToggle()
+  }
+
+  toggleMobile(event) {
+    if (this.mobileToggleDragged) {
+      event.preventDefault()
+      this.mobileToggleDragged = false
+      return
+    }
+
+    if (!this.panelTarget.classList.contains("is-mobile-sticky")) return
+    this.panelTarget.classList.toggle("is-mobile-expanded")
+    this.syncMobileToggle()
+    this.updateFloatingSpace()
+  }
+
+  startMobileToggleDrag(event) {
+    this.mobileToggleStartY = event.clientY
+    this.mobileToggleDragged = false
+  }
+
+  finishMobileToggleDrag(event) {
+    if (this.mobileToggleStartY == null || !this.panelTarget.classList.contains("is-mobile-sticky")) return
+
+    const deltaY = event.clientY - this.mobileToggleStartY
+    this.mobileToggleStartY = null
+
+    if (Math.abs(deltaY) < 24) return
+
+    this.mobileToggleDragged = true
+    this.panelTarget.classList.toggle("is-mobile-expanded", deltaY > 0)
+    this.syncMobileToggle()
+    this.updateFloatingSpace()
+  }
+
+  cancelMobileToggleDrag() {
+    this.mobileToggleStartY = null
+  }
+
+  syncMobileToggle() {
+    if (!this.hasMobileToggleTarget || !this.hasPanelTarget) return
+
+    const expanded = this.panelTarget.classList.contains("is-mobile-expanded")
+    this.mobileToggleTarget.setAttribute("aria-expanded", expanded ? "true" : "false")
   }
 }
