@@ -79,6 +79,8 @@ root "events#index"                         # Ana sayfa
 
 ## 📄 Lisans
 
-Bu proje portfolyo amacıyla herkese açık olarak görüntülenebilir. Kaynak kodu incelemeye açıktır; ancak proje sahibinden önceden yazılı izin alınmadan kullanılamaz, kopyalanamaz, değiştirilemez, dağıtılamaz, yeniden yayınlanamaz, deploy edilemez veya türev çalışmalara dönüştürülemez.
+Bu proje portfolyo, demo ve kod inceleme amacıyla herkese açık olarak görüntülenebilir. Kaynak kodu yalnızca inceleme ve değerlendirme amacıyla erişime açıktır.
 
-Tüm hakları saklıdır.
+Proje sahibinden önceden yazılı izin alınmadan kullanılamaz, kopyalanamaz, değiştirilemez, dağıtılamaz, yeniden yayınlanamaz, deploy edilemez, barındırılamaz veya türev çalışmalara dönüştürülemez.
+
+Detaylar için `LICENSE` dosyasına bakınız.
