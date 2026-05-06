@@ -54,7 +54,8 @@ class Admin::ExternalEventCandidatesControllerTest < ActionDispatch::Integration
           ends_at: 5.days.from_now.change(hour: 18).iso8601,
           ticket_url: @candidate.ticket_url,
           external_url: @candidate.external_url,
-          external_is_free: "false"
+          external_is_free: "false",
+          editor_score: "42"
         }
       }
     end
@@ -64,6 +65,7 @@ class Admin::ExternalEventCandidatesControllerTest < ActionDispatch::Integration
     assert_equal "approved", @candidate.status
     assert event.published?
     assert_equal "Approved API Event", event.title
+    assert_equal 42, event.editor_score
   end
 
   test "admin can approve from list without approval params" do
@@ -91,10 +93,10 @@ class Admin::ExternalEventCandidatesControllerTest < ActionDispatch::Integration
       }
     end
 
-    assert_redirected_to admin_external_event_candidates_path(preset: "complete")
+    assert_redirected_to admin_external_event_candidates_path(preset: "complete", per_page: 20)
     assert_equal "pending", @candidate.reload.status
     assert_equal "pending", invalid.reload.status
-    assert_match "Yayına alınamayan adaylar", flash[:alert]
+    assert_match "Yayina alinamayan adaylar", flash[:alert]
   end
 
   test "admin can reset import pool while preserving approved skipped rejected" do
@@ -105,11 +107,12 @@ class Admin::ExternalEventCandidatesControllerTest < ActionDispatch::Integration
     hidden = create_candidate(external_id: "hidden", status: "hidden")
     pending = create_candidate(external_id: "pending", status: "pending")
 
-    assert_difference "ExternalEventCandidate.count", -2 do
+    assert_difference "ExternalEventCandidate.count", -3 do
       delete reset_import_pool_admin_external_event_candidates_path
     end
 
     assert_redirected_to admin_external_event_candidates_path
+    assert_not ExternalEventCandidate.exists?(@candidate.id)
     assert ExternalEventCandidate.exists?(approved.id)
     assert ExternalEventCandidate.exists?(skipped.id)
     assert ExternalEventCandidate.exists?(rejected.id)

@@ -44,7 +44,8 @@ class EtkinlikIo::CandidatePublisherTest < ActiveSupport::TestCase
       "location" => "Edited Hall",
       "category" => "conference",
       "ticket_url" => "https://tickets.example.test/demo",
-      "external_is_free" => "false"
+      "external_is_free" => "false",
+      "editor_score" => "0"
     }).call
 
     assert_equal "Edited Title", event.title
@@ -52,6 +53,7 @@ class EtkinlikIo::CandidatePublisherTest < ActiveSupport::TestCase
     assert_equal "Edited Hall", event.location
     assert_equal "conference", event.category
     assert_equal "https://tickets.example.test/demo", event.ticket_url
+    assert_equal 0, event.editor_score
     assert_not event.free?
   end
 

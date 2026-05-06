@@ -144,9 +144,7 @@ class EventSearch
     when "date_desc"
       relation.order(date: :desc)
     when "popular"
-      relation.left_joins(:attendances)
-              .group("events.id")
-              .order(Arel.sql("COUNT(CASE WHEN attendances.status = 'going' THEN 1 ELSE NULL END) DESC"))
+      EventRanker.rank(relation)
     when "newest"
       relation.order(created_at: :desc)
     else

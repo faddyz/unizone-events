@@ -3,13 +3,7 @@ class EventsController < ApplicationController
 
   def index
     @events = EventSearch.new(scope: published_scope, params: search_params).results.limit(8).to_a
-    @featured_events = published_scope
-                       .left_joins(:attendances)
-                       .select("events.*, COALESCE(SUM(CASE WHEN attendances.status = 'going' THEN 1 ELSE 0 END), 0) AS going_score")
-                       .group("events.id")
-                       .order(Arel.sql("going_score DESC"), date: :asc)
-                       .limit(6)
-                       .to_a
+    @featured_events = EventRanker.rank(published_scope).limit(6).to_a
     @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
     prepare_event_card_data(@events + @featured_events)
   end

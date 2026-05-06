@@ -15,6 +15,11 @@
     </div>
 
     <div>
+      <%= form.label :editor_score, "Editoryal oncelik", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.number_field :editor_score, min: 0, max: 100, step: 1, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Bos birak: otomatik skor" %>
+    </div>
+
+    <div>
       <%= form.label :review_note, "Etkinlik sahibine not", class: "mb-2 block section-eyebrow text-stone-500" %>
       <%= form.text_area :review_note, rows: 4, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Yalnızca etkinliği oluşturan kullanıcı görür." %>
     </div>

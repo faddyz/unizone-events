@@ -32,6 +32,25 @@ class EventTest < ActiveSupport::TestCase
     assert event.valid?
   end
 
+  test "editor score is optional but must stay between zero and one hundred" do
+    event = events(:published_event)
+
+    event.editor_score = nil
+    assert event.valid?
+
+    event.editor_score = 0
+    assert event.valid?
+
+    event.editor_score = 100
+    assert event.valid?
+
+    event.editor_score = -1
+    assert_not event.valid?
+
+    event.editor_score = 101
+    assert_not event.valid?
+  end
+
   test "classifies etkinlik ticket redirects as ticket links" do
     assert_equal "redirect_ticket", Event.classify_ticket_url("https://etkinlik.io/redirect-ticket-url/demo")
     assert_equal "redirect_ticket", Event.classify_ticket_url("https://etkinlik.io/api/v2/events/282895/ticket-url?publisher_code=CBejonrdsX")

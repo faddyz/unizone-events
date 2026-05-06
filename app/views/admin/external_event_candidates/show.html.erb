@@ -94,6 +94,10 @@
               <span>Kaynak URL</span>
               <%= form.url_field :external_url, value: @approval[:external_url], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
             </label>
+            <label>
+              <span>Editoryal oncelik</span>
+              <%= form.number_field :editor_score, value: @approval[:editor_score], min: 0, max: 100, step: 1, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Bos birak: otomatik skor" %>
+            </label>
           </div>
 
           <label>

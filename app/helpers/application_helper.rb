@@ -6,12 +6,7 @@ module ApplicationHelper
   end
 
   def auth_featured_events(limit: 3)
-    Event.published_visible
-         .with_attached_image
-         .left_joins(:attendances)
-         .select("events.*, COALESCE(SUM(CASE WHEN attendances.status = 'going' THEN 1 ELSE 0 END), 0) AS going_score")
-         .group("events.id")
-         .order(Arel.sql("going_score DESC"), date: :asc)
-         .limit(limit)
+    EventRanker.rank(Event.published_visible.with_attached_image)
+               .limit(limit)
   end
 end
