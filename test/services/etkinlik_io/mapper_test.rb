@@ -119,6 +119,27 @@ class EtkinlikIo::MapperTest < ActiveSupport::TestCase
     assert_equal "Rock & Jazz", mapped[:mapped_data]["description"]
   end
 
+  test "normalizes non-breaking spaces in descriptions" do
+    payload = sample_payload.merge(
+      "content" => "<p>Karaoke,&nbsp;JJ ve Ebru Kaval,&nbsp;IF</p>"
+    )
+
+    mapped = EtkinlikIo::Mapper.new(payload).call
+
+    assert_equal "Karaoke, JJ ve Ebru Kaval, IF", mapped[:mapped_data]["description"]
+  end
+
+  test "treats EtkinlikIO default poster urls as missing poster" do
+    payload = sample_payload.merge(
+      "poster_url" => "https://ifyazilim.nyc3.digitaloceanspaces.com/EtkIO/PublicSite/VarsayilanAfisler/2.jpg"
+    )
+
+    mapped = EtkinlikIo::Mapper.new(payload).call
+
+    assert_nil mapped[:poster_url]
+    assert_includes mapped[:review_reasons], "missing_poster"
+  end
+
   test "classifies etkinlik api ticket-url endpoint as ticket redirect" do
     payload = sample_payload.merge(
       "ticket_url" => "https://etkinlik.io/api/v2/events/282895/ticket-url?publisher_code=CBejonrdsX"

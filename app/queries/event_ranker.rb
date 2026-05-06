@@ -3,7 +3,6 @@ class EventRanker
     music
     festival
     technology
-    workshop
     conference
     networking
   ].freeze

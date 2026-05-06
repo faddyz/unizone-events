@@ -1,5 +1,6 @@
 module EtkinlikIo
   class Mapper
+    DEFAULT_POSTER_URL_PATTERN = %r{\Ahttps?://[^/]*ifyazilim\.nyc3\.digitaloceanspaces\.com/.*/VarsayilanAfisler/\d+\.(?:jpe?g|png|webp)\z}i
     MUSIC_CATEGORY_SLUGS = %w[
       alternatif-muzik caz-muzik dunya-muzik klasik-muzik ozgun-muzik parti-canli-muzik pop-muzik
       rock-muzik soul-muzik turk-sanat-halk-muzigi
@@ -47,7 +48,7 @@ module EtkinlikIo
         ends_at: ends_at,
         category: category,
         format: payload.dig("format", "slug").presence || payload.dig("format", "name"),
-        poster_url: valid_url(payload["poster_url"]),
+        poster_url: poster_url,
         ticket_url: ticket_url,
         external_url: external_url,
         ticket_url_kind: ticket_url_kind(ticket_url, external_url),
@@ -159,7 +160,7 @@ module EtkinlikIo
       reasons << "missing_city" if city.blank?
       reasons << "missing_location" if location.blank? && payload["venue_type"] != "ONLINE"
       reasons << "missing_category" if category.blank?
-      reasons << "missing_poster" if valid_url(payload["poster_url"]).blank?
+      reasons << "missing_poster" if poster_url.blank?
       reasons << "missing_source" if valid_url(payload["url"]).blank? && valid_url(payload["ticket_url"]).blank?
       reasons
     end
@@ -199,6 +200,18 @@ module EtkinlikIo
       return unless value.match?(Event::VALID_REMOTE_URL)
 
       value
+    end
+
+    def poster_url
+      value = valid_url(payload["poster_url"])
+      return if value.blank?
+      return if default_poster_url?(value)
+
+      value
+    end
+
+    def default_poster_url?(value)
+      value.to_s.match?(DEFAULT_POSTER_URL_PATTERN)
     end
 
     def parsed_time(value)

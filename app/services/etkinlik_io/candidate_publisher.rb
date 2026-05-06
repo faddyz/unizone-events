@@ -3,6 +3,7 @@ require "securerandom"
 module EtkinlikIo
   class CandidatePublisher
     DEFAULT_IMPORTER_EMAIL = "importer@unizone.local"
+    DEFAULT_POSTER_URL_PATTERN = EtkinlikIo::Mapper::DEFAULT_POSTER_URL_PATTERN
 
     attr_reader :candidate, :attributes
 
@@ -53,7 +54,7 @@ module EtkinlikIo
         price: external_free? ? 0 : nil,
         ticket_url: ticket_url,
         external_url: external_url,
-        remote_poster_url: valid_url(candidate.poster_url),
+        remote_poster_url: poster_url,
         external_is_free: external_free?,
         ticket_url_kind: Event.classify_ticket_url(ticket_url, external_url),
         external_source: candidate.source,
@@ -106,6 +107,14 @@ module EtkinlikIo
       value = value.to_s.strip
       return if value.blank?
       return unless value.match?(Event::VALID_REMOTE_URL)
+
+      value
+    end
+
+    def poster_url
+      value = valid_url(candidate.poster_url)
+      return if value.blank?
+      return if value.match?(DEFAULT_POSTER_URL_PATTERN)
 
       value
     end

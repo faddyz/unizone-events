@@ -8,6 +8,7 @@ module EtkinlikIo
 
     def plain_text(value, preserve_paragraphs: false)
       text = CGI.unescapeHTML(value.to_s)
+      text = text.tr("\u00A0", " ")
       text = text.gsub(%r{<script\b[^>]*>.*?</script>}im, "")
       text = text.gsub(%r{<style\b[^>]*>.*?</style>}im, "")
 
