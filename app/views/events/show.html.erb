@@ -5,7 +5,7 @@
 <%
   preview_mode = @preview_mode
   display_title = event_display_title(@event)
-  display_description = event_description_text(@event)
+  display_description = event_description_text(@event, preserve_paragraphs: true)
   organizer_name = @event.imported? ? nil : (@event.user.name.presence || @event.user.email)
   source_name = @event.imported? ? "Etkinlik.io" : nil
   going_count = event_attendance_count(@event)
@@ -45,6 +45,14 @@
     "Giriş yap"
   else
     "Katıl!"
+  end
+  title_length = display_title.length
+  title_size_class = if title_length >= 100
+    "text-3xl sm:text-4xl lg:text-5xl"
+  elsif title_length >= 75
+    "text-4xl sm:text-5xl lg:text-6xl"
+  else
+    "text-5xl sm:text-7xl lg:text-[84px]"
   end
   rsvp_options = [
     { status: "going", label: "Katıl!", active_label: "Yerini aldın!", note: "Katılımını netleştir ve etkinlikteki yerini ayır." },
@@ -108,7 +116,7 @@
           <span class="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.12em] text-white/70"><%= @event.date.strftime("%H:%M") %></span>
         </div>
 
-        <h1 class="event-show-title mt-5 max-w-5xl text-pretty font-display text-5xl font-extrabold leading-[0.9] tracking-tight sm:text-7xl lg:text-[84px]">
+        <h1 class="event-show-title mt-5 max-w-5xl text-pretty font-display font-extrabold leading-[0.9] tracking-tight <%= title_size_class %>">
           <%= display_title %>
         </h1>
         <p class="mt-6 max-w-3xl text-base font-medium leading-7 text-white/74 sm:text-xl sm:leading-8">

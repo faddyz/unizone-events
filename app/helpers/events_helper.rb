@@ -257,8 +257,8 @@ module EventsHelper
     plain_display_text(event.title)
   end
 
-  def event_description_text(event)
-    plain_display_text(event.description)
+  def event_description_text(event, preserve_paragraphs: false)
+    EtkinlikIo::TextCleaner.plain_text(event.description, preserve_paragraphs: preserve_paragraphs)
   end
 
   def event_description_snippet(event, length: 150)
