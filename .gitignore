@@ -39,3 +39,6 @@ api.env
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Keep internal documentation local (not pushed to GitHub).
+/docs/
