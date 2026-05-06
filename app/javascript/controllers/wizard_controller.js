@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = ["step", "tab", "next", "previous", "progress", "submit", "current", "total", "stepTitle", "stepSummary"]
 
   connect() {
-    this.index = 0
+    this.index = this.initialIndex()
     this.show({ animate: false })
     this.refresh()
   }
@@ -56,6 +56,7 @@ export default class extends Controller {
   refresh() {
     this.tabTargets.forEach((tab, index) => {
       tab.classList.toggle("is-complete", this.stepComplete(index))
+      tab.classList.toggle("has-error", this.stepHasError(index))
     })
   }
 
@@ -166,5 +167,20 @@ export default class extends Controller {
       if (field.type === "checkbox" || field.type === "radio") return field.checked
       return field.value.trim().length > 0
     })
+  }
+
+  stepHasError(index) {
+    const step = this.stepTargets[index]
+    if (!step) return false
+
+    return Boolean(step.querySelector("[aria-invalid='true'], .is-invalid"))
+  }
+
+  initialIndex() {
+    for (const [index] of this.stepTargets.entries()) {
+      if (this.stepHasError(index)) return index
+    }
+
+    return 0
   }
 }

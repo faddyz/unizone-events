@@ -186,6 +186,31 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".explore-list-card"
   end
 
+  test "explore renders page jump controls when results span multiple pages" do
+    13.times do |index|
+      Event.create!(
+        user: @member,
+        title: "Paged Event #{index}",
+        description: "A public event used to force pagination.",
+        category: "technology",
+        date: (index + 2).days.from_now,
+        city: "Ankara",
+        location: "Pagination Hall",
+        status: "published"
+      )
+    end
+
+    get explore_events_path(city: "Ankara", view: "list", page: 2)
+
+    assert_response :success
+    assert_select "form.explore-page-jump[action='#{explore_events_path}'][method='get']" do
+      assert_select "input[type='hidden'][name='city'][value='Ankara']"
+      assert_select "input[type='hidden'][name='view'][value='list']"
+      assert_select "input[type='number'][name='page'][min='1'][max='2'][value='2']"
+      assert_select "input[type='submit'][value='Git']"
+    end
+  end
+
   test "public event cards render proxied optimized image variants" do
     attach_test_image(@published_event)
 
@@ -386,8 +411,39 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_includes response.body, "Missing Date Poster Event"
+    assert_select ".event-form-error", text: /Form kaydedilemedi/
+    assert_select "#event-date-error", text: /Tarih ve saati seç/
+    assert_select "input[name='event[date]'][aria-invalid='true']"
   ensure
     file&.close!
+  end
+
+  test "organizer create surfaces field level validation errors" do
+    sign_in @member
+
+    assert_no_difference "Event.count" do
+      post organizer_events_path, params: {
+        event: {
+          title: "",
+          description: "Short but valid event description for validation coverage.",
+          category: "music",
+          date: 2.weeks.from_now,
+          city: "Ankara",
+          location: "Test Hall",
+          price: "-1",
+          capacity: "0",
+          ticket_url: "not-a-url"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select ".event-form-error", text: /İşaretli alanları kontrol et|işaretli alanları kontrol et/
+    assert_select "#event-title-error", text: /Etkinlik adını yaz/
+    assert_select "#event-price-error", text: /0 veya daha yüksek/
+    assert_select "#event-capacity-error", text: /en az 1/
+    assert_select "#event-ticket-url-error", text: /geçerli bir bağlantı/
+    assert_select "input[name='event[title]'][aria-invalid='true']"
   end
 
   test "admin can publish submitted event" do

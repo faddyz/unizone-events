@@ -1042,10 +1042,17 @@
   font-weight: 950;
 }
 
-.admin-form-error span {
+.admin-form-error p,
+.admin-form-error li {
   font-size: 0.9rem;
   font-weight: 700;
   line-height: 1.5;
+}
+
+.admin-form-error ul {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.1rem;
 }
 
 .admin-panel .admin-secondary-action {

@@ -46,6 +46,7 @@ class Admin::EventsController < ApplicationController
       @event.image.purge_later if remove_existing_image && @event.image.attached?
       redirect_to admin_event_path(@event), notice: t("flash.event_details_updated")
     else
+      flash.now[:alert] = t("flash.event_admin_update_failed")
       render :edit, status: :unprocessable_entity
     end
   end

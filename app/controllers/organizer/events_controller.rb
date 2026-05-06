@@ -48,6 +48,7 @@ class Organizer::EventsController < ApplicationController
     if @event.save
       redirect_to organizer_event_path(@event), notice: t("flash.event_submitted")
     else
+      flash.now[:alert] = t("flash.event_create_failed")
       render :new, status: :unprocessable_entity
     end
   end
@@ -65,6 +66,7 @@ class Organizer::EventsController < ApplicationController
       @event.submit_for_review! if @event.published?
       redirect_to organizer_event_path(@event), notice: t("flash.event_saved")
     else
+      flash.now[:alert] = t("flash.event_update_failed")
       render :edit, status: :unprocessable_entity
     end
   end

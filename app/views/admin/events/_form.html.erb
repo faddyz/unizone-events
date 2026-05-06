@@ -1,8 +1,13 @@
 <%= form_with model: [:admin, event], class: "admin-edit-form" do |form| %>
   <% if event.errors.any? %>
-    <div class="admin-form-error">
+    <div class="admin-form-error" role="alert">
       <strong>Düzenleme kaydedilemedi</strong>
-      <span><%= event.errors.full_messages.to_sentence %></span>
+      <p>Devam etmeden önce işaretli alanları kontrol et.</p>
+      <ul>
+        <% event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 
@@ -11,17 +16,40 @@
   <div class="admin-edit-grid">
     <div>
       <%= form.label :status, "Durum", class: "mb-2 block section-eyebrow text-stone-500" %>
-      <%= form.select :status, Event.statuses.keys.map { |status| [event_status_label(Event.new(status: status)), status] }, {}, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      <%= form.select :status,
+            Event.statuses.keys.map { |status| [event_status_label(Event.new(status: status)), status] },
+            {},
+            class: event_form_control_classes(event, :status, base: "electric-field w-full px-4 py-3 focus:outline-none"),
+            aria: event_form_aria(event, :status) %>
+      <% if event_form_field_error?(event, :status) %>
+        <p id="<%= event_form_field_error_id(:status) %>" class="event-form-field-error"><%= event_form_field_error_message(event, :status) %></p>
+      <% end %>
     </div>
 
     <div>
-      <%= form.label :editor_score, "Editoryal oncelik", class: "mb-2 block section-eyebrow text-stone-500" %>
-      <%= form.number_field :editor_score, min: 0, max: 100, step: 1, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Bos birak: otomatik skor" %>
+      <%= form.label :editor_score, "Editoryal öncelik", class: "mb-2 block section-eyebrow text-stone-500" %>
+      <%= form.number_field :editor_score,
+            min: 0,
+            max: 100,
+            step: 1,
+            class: event_form_control_classes(event, :editor_score, base: "electric-field w-full px-4 py-3 focus:outline-none"),
+            placeholder: "Boş bırak: otomatik skor",
+            aria: event_form_aria(event, :editor_score) %>
+      <% if event_form_field_error?(event, :editor_score) %>
+        <p id="<%= event_form_field_error_id(:editor_score) %>" class="event-form-field-error"><%= event_form_field_error_message(event, :editor_score) %></p>
+      <% end %>
     </div>
 
     <div>
       <%= form.label :review_note, "Etkinlik sahibine not", class: "mb-2 block section-eyebrow text-stone-500" %>
-      <%= form.text_area :review_note, rows: 4, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Yalnızca etkinliği oluşturan kullanıcı görür." %>
+      <%= form.text_area :review_note,
+            rows: 4,
+            class: event_form_control_classes(event, :review_note, base: "electric-field w-full px-4 py-3 focus:outline-none"),
+            placeholder: "Yalnızca etkinliği oluşturan kullanıcı görür.",
+            aria: event_form_aria(event, :review_note) %>
+      <% if event_form_field_error?(event, :review_note) %>
+        <p id="<%= event_form_field_error_id(:review_note) %>" class="event-form-field-error"><%= event_form_field_error_message(event, :review_note) %></p>
+      <% end %>
     </div>
   </div>
 

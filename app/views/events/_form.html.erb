@@ -26,9 +26,14 @@
         action: "input->event-preview#refresh change->event-preview#refresh input->wizard#refresh change->wizard#refresh"
       } do |form| %>
   <% if model.errors.any? %>
-    <div class="event-form-error" role="alert">
-      <strong>Bir iki alan daha ilgi istiyor.</strong>
-      <span><%= model.errors.full_messages.to_sentence %></span>
+    <div id="event-form-errors" class="event-form-error" role="alert" tabindex="-1">
+      <strong>Form kaydedilemedi.</strong>
+      <p>Devam etmeden önce işaretli alanları kontrol et.</p>
+      <ul>
+        <% model.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 

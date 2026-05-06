@@ -9,10 +9,14 @@
     <div class="event-form-field md:col-span-2">
       <%= form.label :title, "Etkinlik adı", class: "event-form-label" %>
       <%= form.text_field :title,
-            class: "event-form-control",
+            class: event_form_control_classes(model, :title),
             placeholder: "Gece yarısı çatı konseri",
+            aria: event_form_aria(model, :title, describedby: "event-title-hint"),
             data: { event_preview_target: "title", wizard_required: "true" } %>
-      <p class="event-form-hint">Başlık, etkinliğinin ilk dikkat çeken alanıdır; sade ve güçlü olsun.</p>
+      <p id="event-title-hint" class="event-form-hint">Başlık, etkinliğinin ilk dikkat çeken alanıdır; sade ve güçlü olsun.</p>
+      <% if event_form_field_error?(model, :title) %>
+        <p id="<%= event_form_field_error_id(:title) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :title) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-field">
@@ -20,8 +24,12 @@
       <%= form.select :category,
             Event.categories.keys.map { |category| [event_category_title(category), category] },
             {},
-            class: "event-form-control",
+            class: event_form_control_classes(model, :category),
+            aria: event_form_aria(model, :category),
             data: { event_preview_target: "category", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :category) %>
+        <p id="<%= event_form_field_error_id(:category) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :category) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-note">
@@ -42,8 +50,12 @@
     <div class="event-form-field">
       <%= form.label :date, "Tarih ve saat", class: "event-form-label" %>
       <%= form.datetime_local_field :date,
-            class: "event-form-control",
+            class: event_form_control_classes(model, :date),
+            aria: event_form_aria(model, :date),
             data: { event_preview_target: "date", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :date) %>
+        <p id="<%= event_form_field_error_id(:date) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :date) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-field">
@@ -51,16 +63,24 @@
       <%= form.select :city,
             Event::CITY_OPTIONS,
             {},
-            class: "event-form-control",
+            class: event_form_control_classes(model, :city),
+            aria: event_form_aria(model, :city),
             data: { event_preview_target: "city", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :city) %>
+        <p id="<%= event_form_field_error_id(:city) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :city) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-field">
       <%= form.label :location, "Mekan", class: "event-form-label" %>
       <%= form.text_field :location,
-            class: "event-form-control",
+            class: event_form_control_classes(model, :location),
             placeholder: "Salon, kampüs, semt veya çevrim içi bağlantı",
+            aria: event_form_aria(model, :location),
             data: { event_preview_target: "location", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :location) %>
+        <p id="<%= event_form_field_error_id(:location) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :location) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-field">
@@ -68,10 +88,14 @@
       <%= form.number_field :capacity,
             min: 1,
             step: 1,
-            class: "event-form-control",
+            class: event_form_control_classes(model, :capacity),
             placeholder: "120",
+            aria: event_form_aria(model, :capacity, describedby: "event-capacity-hint"),
             data: { event_preview_target: "capacity" } %>
-      <p class="event-form-hint">Boş bırakırsan etkinlik sayfasında kontenjan gösterilmez.</p>
+      <p id="event-capacity-hint" class="event-form-hint">Boş bırakırsan etkinlik sayfasında kontenjan gösterilmez.</p>
+      <% if event_form_field_error?(model, :capacity) %>
+        <p id="<%= event_form_field_error_id(:capacity) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :capacity) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-note is-blue">
@@ -93,9 +117,13 @@
       <%= form.label :description, "Açıklama", class: "event-form-label" %>
       <%= form.text_area :description,
             rows: 8,
-            class: "event-form-control event-form-textarea",
+            class: event_form_control_classes(model, :description, base: "event-form-control event-form-textarea"),
             placeholder: "Atmosferi, akışı ve katılımcıların neler bekleyebileceğini anlat.",
+            aria: event_form_aria(model, :description),
             data: { event_preview_target: "description", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :description) %>
+        <p id="<%= event_form_field_error_id(:description) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :description) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-field">
@@ -103,19 +131,27 @@
       <%= form.number_field :price,
             step: "0.01",
             min: 0,
-            class: "event-form-control",
+            class: event_form_control_classes(model, :price),
             placeholder: "0",
+            aria: event_form_aria(model, :price, describedby: "event-price-hint"),
             data: { event_preview_target: "price" } %>
-      <p class="event-form-hint">Ücretsiz etkinlik için 0 yaz veya boş bırak.</p>
+      <p id="event-price-hint" class="event-form-hint">Ücretsiz etkinlik için 0 yaz veya boş bırak.</p>
+      <% if event_form_field_error?(model, :price) %>
+        <p id="<%= event_form_field_error_id(:price) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :price) %></p>
+      <% end %>
     </div>
 
     <div class="event-form-field">
       <%= form.label :ticket_url, "Bilet / kayıt bağlantısı", class: "event-form-label" %>
       <%= form.url_field :ticket_url,
-            class: "event-form-control",
+            class: event_form_control_classes(model, :ticket_url),
             placeholder: "https://...",
+            aria: event_form_aria(model, :ticket_url, describedby: "event-ticket-url-hint"),
             data: { event_preview_target: "ticketUrl" } %>
-      <p class="event-form-hint">Varsa ana aksiyon bu bağlantıya yönlendirilir.</p>
+      <p id="event-ticket-url-hint" class="event-form-hint">Varsa ana aksiyon bu bağlantıya yönlendirilir.</p>
+      <% if event_form_field_error?(model, :ticket_url) %>
+        <p id="<%= event_form_field_error_id(:ticket_url) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :ticket_url) %></p>
+      <% end %>
     </div>
   </div>
 </section>
@@ -130,13 +166,17 @@
   <div class="event-form-grid">
     <div class="event-form-field md:col-span-2">
       <%= form.label :image, "Afiş görseli", class: "event-form-label" %>
-      <div class="event-form-upload">
+      <div class="event-form-upload <%= "is-invalid" if event_form_field_error?(model, :image) %>">
         <%= form.file_field :image,
               accept: "image/png,image/jpeg,image/jpg,image/webp",
-              class: "event-form-file",
+              class: event_form_control_classes(model, :image, base: "event-form-file"),
+              aria: event_form_aria(model, :image, describedby: "event-image-hint"),
               data: { event_preview_target: "imageInput", existing: (model.image.attached? && model.image.attachment&.persisted?) ? "true" : "false" } %>
-        <p>PNG, JPG veya WebP, en fazla 5 MB.</p>
+        <p id="event-image-hint">PNG, JPG veya WebP, en fazla 5 MB.</p>
       </div>
+      <% if event_form_field_error?(model, :image) %>
+        <p id="<%= event_form_field_error_id(:image) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :image) %></p>
+      <% end %>
       <% if model.persisted? && model.image.attached? && model.image.attachment&.persisted? %>
         <label class="event-form-remove-image">
           <%= form.check_box :remove_image, { class: "event-form-remove-image-checkbox" }, "1", "0" %>

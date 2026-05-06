@@ -29,7 +29,7 @@ tr:
         category: "Kategori"
         date: "Tarih ve saat"
         city: "Şehir"
-        location: "Konum"
+        location: "Mekan"
         price: "Ücret"
         ticket_url: "Bilet / kayıt bağlantısı"
         capacity: "Kontenjan"
@@ -37,6 +37,7 @@ tr:
         image: "Afiş görseli"
         status: "Durum"
         review_note: "İnceleme notu"
+        editor_score: "Editoryal öncelik"
       user:
         name: "Ad"
         email: "E-posta"
@@ -44,6 +45,40 @@ tr:
         password_confirmation: "Şifre tekrarı"
         current_password: "Mevcut şifre"
     errors:
+      models:
+        event:
+          attributes:
+            title:
+              blank: "eksik. Etkinlik adını yaz."
+            description:
+              blank: "eksik. Katılımcıların ne bekleyeceğini anlat."
+            date:
+              blank: "eksik. Tarih ve saati seç."
+            location:
+              blank: "eksik. Mekanı veya online buluşma bilgisini yaz."
+            city:
+              blank: "eksik. Şehir seç."
+              inclusion: "listeden geçerli bir şehir seç."
+            category:
+              blank: "eksik. Kategori seç."
+            price:
+              not_a_number: "sayı olarak girilmeli."
+              greater_than_or_equal_to: "0 veya daha yüksek olmalı."
+            capacity:
+              not_a_number: "sayı olarak girilmeli."
+              not_an_integer: "tam sayı olmalı."
+              greater_than: "en az 1 olmalı."
+            ticket_url:
+              invalid: "https:// ile başlayan geçerli bir bağlantı olmalı."
+            external_url:
+              invalid: "https:// ile başlayan geçerli bir bağlantı olmalı."
+            remote_poster_url:
+              invalid: "https:// ile başlayan geçerli bir görsel bağlantısı olmalı."
+            editor_score:
+              not_a_number: "sayı olarak girilmeli."
+              not_an_integer: "tam sayı olmalı."
+              greater_than_or_equal_to: "0 ile 100 arasında olmalı."
+              less_than_or_equal_to: "0 ile 100 arasında olmalı."
       messages:
         blank: "boş bırakılamaz"
         taken: "zaten kullanılıyor"
@@ -101,6 +136,9 @@ tr:
     event_sent_back: "Etkinlik geri bildirimle düzenlemeye gönderildi."
     event_cancelled: "Etkinlik iptal edildi."
     event_deleted: "Etkinlik silindi."
+    event_create_failed: "Etkinlik gönderilemedi. İşaretli alanları kontrol et."
+    event_update_failed: "Etkinlik kaydedilemedi. İşaretli alanları kontrol et."
+    event_admin_update_failed: "Etkinlik güncellenemedi. İşaretli alanları kontrol et."
     draft_saved: "Taslak kaydedildi. Hazır olduğunda incelemeye gönderebilirsin."
     event_saved: "Etkinlik kaydedildi."
     event_submitted: "Etkinlik incelemeye gönderildi."
