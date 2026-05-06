@@ -6,9 +6,14 @@ module EtkinlikIo
       rock-muzik soul-muzik turk-sanat-halk-muzigi
     ].freeze
     LOW_PRIORITY_SLUGS = %w[tiyatro-ve-gosteriler cocuk-tiyatrosu cocuk-gelisimi diger].freeze
+    LOW_PRIORITY_TAG_SLUGS = %w[sanat].freeze
+    LOW_PRIORITY_FORMAT_SLUGS = %w[egitim].freeze
     BROAD_EDUCATION_KEYWORDS = %w[
       yapay zeka ai yazilim software kodlama teknoloji girisim startup finans pazarlama
       yonetim liderlik kariyer is networking satis e-ticaret ecommerce veri data
+    ].freeze
+    TECHNOLOGY_EDUCATION_KEYWORDS = %w[
+      yapay zeka ai artificial intelligence prompt yazilim software kodlama teknoloji veri data
     ].freeze
 
     attr_reader :payload, :include_low_priority
@@ -86,6 +91,8 @@ module EtkinlikIo
       format_slug = payload.dig("format", "slug").to_s
       category_slug = payload.dig("category", "slug").to_s
 
+      return "technology" if low_priority_format_slug?(format_slug) && technology_education_topic?
+      return "community" if low_priority_format_slug?(format_slug) || low_priority_tag_slug?
       return "music" if format_slug == "konser" || MUSIC_CATEGORY_SLUGS.include?(category_slug)
       return "festival" if format_slug == "festival"
       return "art_exhibition" if format_slug == "sergi" || category_slug == "sanat"
@@ -124,13 +131,40 @@ module EtkinlikIo
       category = category_for
       return false if category.in?(%w[music festival])
 
-      LOW_PRIORITY_SLUGS.include?(payload.dig("category", "slug").to_s) &&
+      low_priority_taxonomy? &&
         category.in?(%w[theater family community workshop])
+    end
+
+    def low_priority_taxonomy?
+      LOW_PRIORITY_SLUGS.include?(payload.dig("category", "slug").to_s) ||
+        low_priority_format_slug?(payload.dig("format", "slug").to_s) ||
+        low_priority_tag_slug?
+    end
+
+    def low_priority_format_slug?(slug)
+      LOW_PRIORITY_FORMAT_SLUGS.include?(slug.to_s)
+    end
+
+    def low_priority_tag_slug?
+      tag_slugs.any? { |slug| LOW_PRIORITY_TAG_SLUGS.include?(slug) }
+    end
+
+    def tag_slugs
+      Array(payload["tags"]).filter_map do |tag|
+        next unless tag.respond_to?(:[])
+
+        tag["slug"].to_s.presence
+      end
     end
 
     def niche_education_topic?
       text = [ payload["name"], payload["content"] ].join(" ").downcase
       BROAD_EDUCATION_KEYWORDS.none? { |keyword| text.include?(keyword) }
+    end
+
+    def technology_education_topic?
+      text = [ payload["name"], payload["content"] ].join(" ").downcase
+      TECHNOLOGY_EDUCATION_KEYWORDS.any? { |keyword| text.include?(keyword) }
     end
 
     def priority_for(category)

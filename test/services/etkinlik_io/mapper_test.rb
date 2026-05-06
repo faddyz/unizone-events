@@ -92,19 +92,39 @@ class EtkinlikIo::MapperTest < ActiveSupport::TestCase
     assert_equal "low_priority_category", mapped[:hidden_reason]
   end
 
-  test "broad education under diger stays prioritized" do
+  test "technology education under other tag is imported as technology" do
     payload = sample_payload.merge(
       "id" => 129,
-      "name" => "Yapay Zeka ve Veri Analizi Egitimi",
+      "name" => "AI Destekli Prompt ve Veri Analizi Egitimi",
       "format" => { "slug" => "egitim", "name" => "Egitim" },
-      "category" => { "slug" => "diger", "name" => "Diger" }
+      "category" => { "slug" => "diger", "name" => "Diger" },
+      "tags" => [
+        { "id" => 3820, "name" => "Diger", "slug" => "diger" }
+      ]
     )
 
     mapped = EtkinlikIo::Mapper.new(payload).call
 
-    assert_equal "workshop", mapped[:category]
+    assert_equal "technology", mapped[:category]
     assert_equal "pending", mapped[:status]
     assert_nil mapped[:hidden_reason]
+  end
+
+  test "sanat tag is low priority" do
+    payload = sample_payload.merge(
+      "id" => 130,
+      "format" => { "slug" => "konferans", "name" => "Konferans" },
+      "category" => { "slug" => "bilim-teknoloji", "name" => "Bilim Teknoloji" },
+      "tags" => [
+        { "id" => 75, "name" => "Sanat", "slug" => "sanat" }
+      ]
+    )
+
+    mapped = EtkinlikIo::Mapper.new(payload).call
+
+    assert_equal "community", mapped[:category]
+    assert_equal "hidden", mapped[:status]
+    assert_equal "low_priority_category", mapped[:hidden_reason]
   end
 
   test "classifies redirect ticket urls and cleans html entities" do

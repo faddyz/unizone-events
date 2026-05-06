@@ -71,13 +71,13 @@ class Admin::ExternalEventCandidatesController < ApplicationController
     if action == "approve_filtered"
       candidates = filtered_candidates_scope(params[:preset].to_s, params[:query].to_s.strip).pending
       if candidates.blank?
-        redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), alert: "Onaylanacak aday yok.", status: :see_other
+        redirect_to candidate_index_location, alert: "Onaylanacak aday yok.", status: :see_other
         return
       end
 
       errors = bulk_approval_errors(candidates)
       if errors.present?
-        redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
+        redirect_to candidate_index_location, alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
         return
       end
 
@@ -87,7 +87,7 @@ class Admin::ExternalEventCandidatesController < ApplicationController
         count += 1
       end
 
-      redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), notice: "#{count} aday yayinlandi.", status: :see_other
+      redirect_to candidate_index_location, notice: "#{count} aday yayinlandi.", status: :see_other
       return
     end
 
@@ -95,14 +95,14 @@ class Admin::ExternalEventCandidatesController < ApplicationController
     count = 0
 
     if candidates.blank?
-      redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), alert: "Once aday sec.", status: :see_other
+      redirect_to candidate_index_location, alert: "Once aday sec.", status: :see_other
       return
     end
 
     if action == "approve"
       errors = bulk_approval_errors(candidates)
       if errors.present?
-        redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
+        redirect_to candidate_index_location, alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
         return
       end
     end
@@ -121,9 +121,9 @@ class Admin::ExternalEventCandidatesController < ApplicationController
       count += 1
     end
 
-    redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), notice: "#{count} aday guncellendi.", status: :see_other
+    redirect_to candidate_index_location, notice: "#{count} aday guncellendi.", status: :see_other
   rescue ActiveRecord::RecordInvalid => error
-    redirect_to admin_external_event_candidates_path(preset: params[:preset], query: params[:query], per_page: per_page_param), alert: "Toplu islem durdu: #{error.record.errors.full_messages.to_sentence}", status: :see_other
+    redirect_to candidate_index_location, alert: "Toplu islem durdu: #{error.record.errors.full_messages.to_sentence}", status: :see_other
   end
 
   def cleanup
@@ -225,6 +225,15 @@ class Admin::ExternalEventCandidatesController < ApplicationController
   def per_page_param
     value = params[:per_page].to_i
     [ 20, 50, 100 ].include?(value) ? value : 20
+  end
+
+  def candidate_index_location
+    admin_external_event_candidates_path(
+      preset: params[:preset],
+      query: params[:query],
+      per_page: per_page_param,
+      page: params[:page].presence
+    )
   end
 
   def bulk_approval_errors(candidates)

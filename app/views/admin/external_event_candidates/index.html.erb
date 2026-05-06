@@ -237,6 +237,7 @@
   </section>
 
   <section class="admin-review-results">
+    <%= turbo_frame_tag "admin_candidate_results" do %>
     <div class="admin-section-head">
       <div>
         <p class="section-eyebrow text-coral">Aday listesi</p>
@@ -249,10 +250,21 @@
       <%= hidden_field_tag :preset, @preset %>
       <%= hidden_field_tag :query, @query %>
       <%= hidden_field_tag :per_page, @per_page %>
+      <%= hidden_field_tag :page, params[:page] %>
 
       <div class="admin-bulk-global">
         <%= button_tag "Filtredeki Tum Pendingleri Yayina Al", type: :submit, name: "bulk_action", value: "approve_filtered", class: "admin-primary-action focus-ring", data: { turbo_confirm: "Bu filtredeki tum pending adaylar tek seferde yayinlanacak. Devam edilsin mi?" } %>
       </div>
+
+      <% if @candidates.any? || (turbo_frame_request? && flash.any?) %>
+      <div class="admin-bulk-toolbar">
+        <% if turbo_frame_request? %>
+          <% flash.each do |key, value| %>
+            <div role="<%= key.to_s == "alert" ? "alert" : "status" %>" class="admin-candidate-flash is-<%= key.to_s == "alert" ? "alert" : "notice" %>">
+              <%= value %>
+            </div>
+          <% end %>
+        <% end %>
 
       <% if @candidates.any? %>
         <div class="admin-select-all-strip">
@@ -274,6 +286,9 @@
           <button type="button" class="admin-clear-link focus-ring" data-action="candidate-bulk#clear">Seçimi Temizle</button>
         </div>
       </div>
+
+      </div>
+      <% end %>
 
       <% if @candidates.any? %>
         <div class="admin-candidate-list">
@@ -302,11 +317,11 @@
                       <span class="<%= event_category_badge_classes(candidate.category.presence || "community") %>"><%= event_category_title(candidate.category.presence || "community") %></span>
                       <span class="candidate-status"><%= candidate_price_label(candidate) %></span>
                     </div>
-                    <h3><%= link_to candidate_display_title(candidate), admin_external_event_candidate_path(candidate), class: "focus-ring" %></h3>
+                    <h3><%= link_to candidate_display_title(candidate), admin_external_event_candidate_path(candidate), class: "focus-ring", data: { turbo_frame: "_top" } %></h3>
                   </div>
 
                   <div class="admin-candidate-row-actions">
-                    <%= link_to "Önizle", admin_external_event_candidate_path(candidate), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+                    <%= link_to "Önizle", admin_external_event_candidate_path(candidate), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring", data: { turbo_frame: "_top" } %>
                     <% unless candidate.approved? %>
                       <%= link_to "Yayına Al", approve_admin_external_event_candidate_path(candidate), data: { turbo_method: :patch }, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
                     <% end %>
@@ -337,7 +352,7 @@
           <% end %>
         </div>
 
-        <div class="admin-pagination">
+        <div class="admin-pagination" data-turbo-frame="_top">
           <%= paginate @candidates, theme: "tailwind" %>
         </div>
       <% else %>
@@ -347,6 +362,7 @@
           <p>Başka preset seç veya yeni bir dry-run/kayıtlı tarama başlat.</p>
         </div>
       <% end %>
+    <% end %>
     <% end %>
   </section>
 </section>

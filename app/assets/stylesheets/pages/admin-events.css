@@ -1457,16 +1457,56 @@
   margin-bottom: 0.85rem;
 }
 
+.admin-bulk-toolbar {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(env(safe-area-inset-bottom) + 1rem);
+  left: 1rem;
+  z-index: 80;
+  display: grid;
+  gap: 0.55rem;
+  width: min(58rem, calc(100vw - 2rem));
+  margin-inline: auto;
+  pointer-events: none;
+}
+
+.admin-review-results:has(.admin-bulk-toolbar) {
+  padding-bottom: 9rem;
+}
+
+.admin-bulk-toolbar > * {
+  pointer-events: auto;
+}
+
+.admin-candidate-flash {
+  border: 1px solid rgba(15, 15, 18, 0.1);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.68rem 0.78rem;
+  font-size: 0.82rem;
+  font-weight: 900;
+  box-shadow: 0 14px 34px rgba(15, 15, 18, 0.1);
+  backdrop-filter: blur(18px);
+}
+
+.admin-candidate-flash.is-notice {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(236, 253, 245, 0.96);
+  color: #047857;
+}
+
+.admin-candidate-flash.is-alert {
+  border-color: rgba(244, 63, 94, 0.2);
+  background: rgba(255, 241, 242, 0.96);
+  color: #be123c;
+}
+
 .admin-bulk-bar {
-  position: sticky;
-  top: 5.25rem;
-  z-index: 15;
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.9rem;
   border: 1px solid rgba(15, 15, 18, 0.1);
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.96);
@@ -1485,7 +1525,6 @@
   gap: 0.5rem 0.8rem;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
   border: 1px solid rgba(15, 15, 18, 0.08);
   border-radius: 0.95rem;
   background: rgba(255, 255, 255, 0.9);
@@ -1995,6 +2034,14 @@
 
   .admin-user-facts {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-bulk-toolbar {
+    bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+  }
+
+  .admin-review-results:has(.admin-bulk-toolbar) {
+    padding-bottom: 13rem;
   }
 }
 
