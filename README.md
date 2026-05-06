@@ -9,6 +9,10 @@ Unizone, kullanıcıların etkinlikleri keşfedebildiği, kendi etkinliklerini o
 
 Proje aynı zamanda admin paneli üzerinden Etkinlik.io API kaynaklı etkinlik adaylarını tarama, inceleme, filtreleme ve yayına alma akışını destekler.
 
+## 🌐 Canlı Demo
+
+https://unizone.onrender.com
+
 ## 🚀 Öne Çıkan Özellikler
 
 - 🗓️ Yayındaki etkinlikleri listeleme ve detay sayfasında görüntüleme
@@ -48,9 +52,7 @@ Unizone, Etkinlik.io API üzerinden etkinlik verilerini admin kontrollü bir imp
 - Solid Queue, Solid Cache ve Solid Cable
 - Docker / Docker Compose
 
-## 🌐 Canlı Demo
 
-https://unizone.onrender.com
 
 ## 🗂️ Önemli Rotalar
 
