@@ -294,6 +294,17 @@
   box-shadow: 0 10px 24px rgba(15, 15, 18, 0.08);
 }
 
+.nav-admin-menu[open] .nav-admin-trigger {
+  border-color: rgba(215, 255, 57, 0.55);
+  background: rgba(215, 255, 57, 0.14);
+  color: var(--page-text);
+  box-shadow: 0 10px 24px rgba(15, 15, 18, 0.08);
+}
+
+.nav-admin-panel {
+  width: 13.5rem;
+}
+
 .uz-nav[data-transparent="true"][data-scrolled="false"] .nav-review-link:hover,
 .uz-nav[data-transparent="true"][data-scrolled="false"] .nav-review-link.is-active {
   color: var(--citron);

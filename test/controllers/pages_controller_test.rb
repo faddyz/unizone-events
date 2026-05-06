@@ -29,8 +29,8 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Unizone destek kanalı"
-    assert_includes response.body, "support@unizone.app"
-    assert_select "a[href^='mailto:support@unizone.app']"
+    assert_includes response.body, "thefaddyz@gmail.com"
+    assert_select "a[href^='mailto:thefaddyz@gmail.com']"
   end
 
   test "auth pages show most attended published events" do

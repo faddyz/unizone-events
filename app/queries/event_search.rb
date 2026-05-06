@@ -107,9 +107,9 @@ class EventSearch
   def filter_by_price(relation)
     case params[:price_filter].to_s
     when "free"
-      relation.where("price = 0 OR price IS NULL")
+      relation.where("(external_source IS NOT NULL AND external_is_free = TRUE) OR (external_source IS NULL AND (price = 0 OR price IS NULL))")
     when "paid"
-      relation.where("price > 0")
+      relation.where("price > 0 OR (external_source IS NOT NULL AND external_is_free = FALSE)")
     else
       relation
     end
@@ -131,9 +131,9 @@ class EventSearch
   def filter_by_registration(relation)
     case params[:registration_filter].to_s
     when "unizone"
-      relation.where(ticket_url: [ nil, "" ])
+      relation.where(ticket_url: [ nil, "" ]).or(relation.where(ticket_url_kind: %w[etkinlik_detail source detail unknown]))
     when "external"
-      relation.where.not(ticket_url: [ nil, "" ])
+      relation.where.not(ticket_url: [ nil, "" ]).where(ticket_url_kind: [ nil, "", "external_ticket", "ticket", "redirect_ticket" ])
     else
       relation
     end

@@ -2,12 +2,7 @@
 
 PASSWORD = "password123"
 RESET_PASSWORDS = ENV["DEMO_SEED_RESET_PASSWORDS"].to_s == "1"
-
-ADMIN_USER = {
-  email: "admin@example.com",
-  name: "Unizone Demo Admin",
-  admin: true
-}.freeze
+SEED_DEMO_EVENTS = ENV["DEMO_SEED_EVENTS"].to_s == "1"
 
 ORGANIZER_USERS = [
   { email: "mina@example.com", name: "Kadıköy Stage Collective" },
@@ -47,7 +42,7 @@ MEMBER_USERS = [
   { email: "cem.demo@example.com", name: "Cem Doğan" }
 ].freeze
 
-DEMO_USERS = [ ADMIN_USER, *ORGANIZER_USERS, *MEMBER_USERS ].freeze
+DEMO_USERS = [ *ORGANIZER_USERS, *MEMBER_USERS ].freeze
 
 def demo_time(days_from_now, hour:, min: 0)
   days_from_now.days.from_now.change(hour: hour, min: min, sec: 0)
@@ -62,7 +57,7 @@ EVENTS = [
     location: "Kadıköy Sahne",
     city: "İstanbul",
     date: demo_time(3, hour: 20, min: 30),
-    category: "concert",
+    category: "music",
     price: 450,
     capacity: 220,
     ticket_url: "https://tickets.unizone.test/kadikoy-indie-sahne",
@@ -91,7 +86,7 @@ EVENTS = [
     location: "Moda Sahil Atölyeleri",
     city: "İstanbul",
     date: demo_time(6, hour: 12),
-    category: "art",
+    category: "art_exhibition",
     price: 0,
     status: "published",
     rsvps: { going: 23, interested: 5 }
@@ -104,7 +99,7 @@ EVENTS = [
     location: "Bomonti Avlu",
     city: "İstanbul",
     date: demo_time(8, hour: 21),
-    category: "party",
+    category: "nightlife",
     price: 320,
     capacity: 180,
     status: "published",
@@ -133,7 +128,7 @@ EVENTS = [
     location: "Galata Studio Rooms",
     city: "İstanbul",
     date: demo_time(12, hour: 17, min: 30),
-    category: "exhibition",
+    category: "art_exhibition",
     price: 250,
     capacity: 90,
     status: "published",
@@ -160,7 +155,7 @@ EVENTS = [
     location: "Beşiktaş Kampüs Avlusu",
     city: "İstanbul",
     date: demo_time(15, hour: 19),
-    category: "general",
+    category: "community",
     price: 0,
     capacity: 140,
     status: "published",
@@ -213,7 +208,7 @@ EVENTS = [
     location: "Kordon İskele Sahnesi",
     city: "İzmir",
     date: demo_time(22, hour: 19, min: 30),
-    category: "concert",
+    category: "music",
     price: 550,
     capacity: 120,
     ticket_url: "https://tickets.unizone.test/kordon-caz",
@@ -227,7 +222,7 @@ EVENTS = [
     location: "Hanlar Bölgesi",
     city: "Bursa",
     date: demo_time(24, hour: 11),
-    category: "art",
+    category: "art_exhibition",
     price: 200,
     capacity: 35,
     status: "published",
@@ -240,7 +235,7 @@ EVENTS = [
     location: "Konyaaltı Sahil Sahnesi",
     city: "Antalya",
     date: demo_time(27, hour: 21, min: 30),
-    category: "party",
+    category: "nightlife",
     price: 700,
     capacity: 200,
     status: "published",
@@ -254,7 +249,7 @@ EVENTS = [
     location: "Anadolu Üniversitesi Öğrenci Merkezi",
     city: "Eskişehir",
     date: demo_time(29, hour: 18, min: 30),
-    category: "general",
+    category: "community",
     price: 0,
     capacity: 90,
     status: "published",
@@ -295,7 +290,7 @@ EVENTS = [
     location: "Mersin Marina Çim Alan",
     city: "Mersin",
     date: demo_time(38, hour: 8, min: 30),
-    category: "sports",
+    category: "sports_wellness",
     price: 180,
     capacity: 40,
     status: "published",
@@ -321,7 +316,7 @@ EVENTS = [
     location: "Yeldeğirmeni Ortak Mutfak",
     city: "İstanbul",
     date: demo_time(45, hour: 19),
-    category: "general",
+    category: "community",
     price: 0,
     capacity: 50,
     status: "published",
@@ -335,7 +330,7 @@ EVENTS = [
     location: "Beyoğlu Grafik Odası",
     city: "İstanbul",
     date: demo_time(49, hour: 17, min: 30),
-    category: "art",
+    category: "art_exhibition",
     price: 200,
     capacity: 28,
     status: "submitted"
@@ -373,7 +368,7 @@ EVENTS = [
     location: "Mekan netleşecek",
     city: "İstanbul",
     date: demo_time(62, hour: 13),
-    category: "general",
+    category: "community",
     price: 0,
     status: "draft"
   },
@@ -385,7 +380,7 @@ EVENTS = [
     location: "Doğrulanmamış mekan",
     city: "İstanbul",
     date: demo_time(66, hour: 23),
-    category: "party",
+    category: "nightlife",
     price: 900,
     status: "rejected",
     review_note: "Mekan adı, giriş koşulları, yaş politikası ve güvenlik planı netleşmeden yayına alınamaz."
@@ -471,19 +466,23 @@ def reconcile_demo_attendances(event, desired_statuses, demo_users)
 end
 
 users_by_email = DEMO_USERS.to_h { |attrs| [ attrs.fetch(:email), demo_user(**attrs) ] }
-events = EVENTS.map { |attrs| demo_event(users_by_email, attrs) }
-demo_users = users_by_email.values
+events = []
 
-events.each_with_index do |event, index|
-  rsvp_counts = EVENTS.fetch(index).fetch(:rsvps, {})
-  desired_statuses = event.published? ? desired_rsvps_for(event, demo_users, rsvp_counts, index * 5) : {}
-  reconcile_demo_attendances(event, desired_statuses, demo_users)
+if SEED_DEMO_EVENTS
+  events = EVENTS.map { |attrs| demo_event(users_by_email, attrs) }
+  demo_users = users_by_email.values
+
+  events.each_with_index do |event, index|
+    rsvp_counts = EVENTS.fetch(index).fetch(:rsvps, {})
+    desired_statuses = event.published? ? desired_rsvps_for(event, demo_users, rsvp_counts, index * 5) : {}
+    reconcile_demo_attendances(event, desired_statuses, demo_users)
+  end
 end
 
 puts "Seeded Unizone demo data."
 puts "Users: #{DEMO_USERS.size} demo accounts"
 puts "Events: #{events.size} demo events"
-puts "Admin: admin@example.com / #{PASSWORD}"
 puts "Sample user: member@example.com / #{PASSWORD}"
 puts "Sample organizer: mina@example.com / #{PASSWORD}"
+puts "Set DEMO_SEED_EVENTS=1 to seed demo events and RSVP data."
 puts "Set DEMO_SEED_RESET_PASSWORDS=1 to reset existing demo account passwords."

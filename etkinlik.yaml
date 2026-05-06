@@ -1,0 +1,1057 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+
+info:
+  title: Etkinlik.io V2 API
+  description: |
+    Tüm etkinlikleri toplamayı, kategorize etmeyi ve ilgili
+    kişilere duyurmayı amaç edinmiş bir projedir. Bu API
+    dokümantasyonu ile bir çok kaynaktan ve organizatörden
+    beslenerek bir araya getirdiğimiz etkinlik içeriğine
+    entegre olarak uygulamalar geliştirebilirsiniz.
+  version: "2.0.2"
+
+# the domain of the service
+host: etkinlik.io
+
+# array of all schemes that your API supports
+schemes:
+  - https
+
+# will be prefixed to all paths
+basePath: /api/v2
+
+consumes:
+  - application/json
+
+produces:
+  - application/json
+
+tags:
+  - name: Etkinlik Servisi
+    description: |
+      Sistemde yer alan etkinlikler ile ilgili işlemler yapmak
+      için kullanılan yöntemler burada bulunmaktadır. Sistemdeki
+      etkinliklerin listesi alınabilir, bir etkinliğin detayına
+      burada verilen yöntemler ile erişilebilir.
+  - name: Mekan Servisi
+    description: |
+      Sistemde yer alan mekanlar ile ilgili işlemler yapmak
+      için kullanılan yöntemler burada bulunmaktadır. Sistemdeki
+      mekanların listesi alınabilir, bir mekanın detayına
+      burada verilen yöntemler ile erişilebilir.
+  - name: Tür Servisi
+    description: Etkinlik türleri ile ilgili tüm işlemler.
+  - name: Kategori Servisi
+    description: |
+      Sistemde yer alan etkinlik kategorileri ile ilgili işlemler
+      yapılabilir. Kategoriler liste olarak alınabilir.
+  - name: Şehir Servisi
+    description: |
+      Sistemde yer alan şehirler ile ilgili işlemler yapılabilir.
+      Şehirler liste olarak alınabilir.
+  - name: İlçe Servisi
+    description: |
+      Sistemde yer alan ilçeler ile ilgili işlemler yapılabilir.
+      Bir şehre ait ilçeler liste olarak alınabilir.
+  - name: Semt Servisi
+    description: |
+      Sistemde yer alan semtler ile ilgili işlemler yapılabilir.
+      Bir ilçeye ait semtler liste olarak alınabilir.
+
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    name: X-Etkinlik-Token
+    in: header
+    description: |
+      Api'nin düzgün cevap vermesi için tüm isteklerde header
+      içinde gönderilmelidir.
+
+security:
+  - apiKey: []
+
+paths:
+
+  /events:
+    x-summary: Liste
+    x-description: |
+      Etkinliklerin listesini almak için kullanılır.
+      Bu endpoint yalnızca onaylı (Approved) ve henüz başlamamış
+      (OnlyNotStarted) etkinlikleri döndürür.
+    get:
+      tags:
+        - Etkinlik Servisi
+      summary: Etkinlik Listesi
+      parameters:
+        - $ref: '#/parameters/format_ids'
+        - $ref: '#/parameters/category_ids'
+        - $ref: '#/parameters/venue_ids'
+        - $ref: '#/parameters/city_ids'
+        - $ref: '#/parameters/start_gte'
+        - $ref: '#/parameters/end_lte'
+        - $ref: '#/parameters/skip'
+        - $ref: '#/parameters/take'
+      responses:
+        200:
+          $ref: '#/responses/EventsResponse'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+
+  /events/{id}:
+    x-summary: Detay
+    x-description: Bir etkinliğe ait detayı verir.
+    get:
+      tags:
+        - Etkinlik Servisi
+      summary: Etkinlik Detay
+      parameters:
+        - name: id
+          in: path
+          description: Etkinlik id bilgisi.
+          required: true
+          type: integer
+          format: int
+      responses:
+        200:
+          $ref: '#/responses/EventShowResponse'
+        301:
+          $ref: '#/responses/MukerrerKayitHatasi'
+        400:
+          $ref: '#/responses/GenelHata'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+        404:
+          $ref: '#/responses/BulunamadiHatasi'
+        410:
+          $ref: '#/responses/SilindiHatasi'
+
+  /events/{id}/impressions:
+    x-summary: Gösterim kaydı
+    x-description: |
+      Yayıncı entegrasyonunda bir etkinliğin listesinde veya benzeri bir
+      yerde gösterildiğinde (impression) tek seferlik kayıt oluşturmak için
+      kullanılır. Yayıncı, X-Etkinlik-Token ile ilişkili üyenin
+      publisher_code değeri ile kaydedilir.
+    post:
+      tags:
+        - Etkinlik Servisi
+      summary: Etkinlik gösterim kaydı
+      parameters:
+        - name: id
+          in: path
+          description: Etkinlik id bilgisi.
+          required: true
+          type: integer
+          format: int32
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/EventImpressionRequest'
+      responses:
+        200:
+          $ref: '#/responses/EventImpressionRecordResponse'
+        400:
+          $ref: '#/responses/GenelHata'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+        404:
+          $ref: '#/responses/BulunamadiHatasi'
+
+  /venues:
+    x-summary: Liste
+    x-description: Mekanların listesini almak için kullanılabilir.
+    get:
+      tags:
+        - Mekan Servisi
+      summary: Mekan Listesi
+      parameters:
+        - $ref: '#/parameters/city_ids'
+        - $ref: '#/parameters/district_ids'
+        - $ref: '#/parameters/neighborhood_ids'
+        - $ref: '#/parameters/status_ids'
+        - $ref: '#/parameters/skip'
+        - $ref: '#/parameters/take'
+      responses:
+        200:
+          $ref: '#/responses/MekanListeResponse'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+
+  /venues/{id}:
+    x-summary: Detay
+    x-description: Bir mekana ait detayı verir.
+    get:
+      tags:
+        - Mekan Servisi
+      summary: Mekan Detay
+      parameters:
+        - name: id
+          in: path
+          description: Mekan id bilgisi.
+          required: true
+          type: integer
+          format: int
+      responses:
+        200:
+          $ref: '#/responses/MekanDetayResponse'
+        400:
+          $ref: '#/responses/GenelHata'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+        404:
+          $ref: '#/responses/BulunamadiHatasi'
+
+  /formats:
+    x-summary: Liste
+    x-description: Sistemdeki türlerin listesini almak için kullanılır.
+    get:
+      tags:
+        - Tür Servisi
+      summary: Tür Listesi
+      responses:
+        200:
+          description: Türleri dizi olarak verir.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Format'
+          examples:
+            application/json:
+              - id: 15
+                name: Çalıştay
+                slug: calistay
+              - id: 5
+                name: Eğitim
+                slug: egitim
+              - id: 21
+                name: Festival
+                slug: festival
+
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+
+  /categories:
+    x-summary: Liste
+    x-description: Sistemdeki kategorilerinin listesini almak için kullanılır.
+    get:
+      tags:
+        - Kategori Servisi
+      summary: Kategori Listesi
+      responses:
+        200:
+          description:
+            Kategorileri dizi olarak verir.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Category'
+          examples:
+            application/json:
+              - id: 1423
+                name: Alternatif Müzik
+                slug: alternatif-muzik
+              - id: 456
+                name: Bilişim
+                slug: bilisim
+              - id: 59
+                name: Çocuk Gelişimi
+                slug: cocuk-gelisimi
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+
+  /cities:
+    x-summary: Şehirler
+    x-description: Sistemdeki şehirlerin listesini almak için kullanılır.
+    get:
+      tags:
+        - Şehir Servisi
+      summary: Şehir Listesi
+      responses:
+        200:
+          description: Şehirleri dizi olarak verir.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+          examples:
+            application/json:
+              - id: 1
+                name: Adana
+                slug: adana
+              - id: 2
+                name: Adıyaman
+                slug: adiyaman
+              - id: 42
+                name: Kahramanmaraş
+                slug: kahramanmras
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+
+  /cities/{id}/districts:
+    x-summary: Şehir İlçeleri
+    x-description: Bir şehirdeki ilçelerin listesini almak için kullanılır.
+    get:
+      tags:
+        - İlçe Servisi
+      summary: Bir Şehre ait İlçe Listesi
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          format: int32
+          description: |
+            Hangi şehrin ilçeleri alınmak isteniyorsa o şehrin
+            id bilgisi gönderilmelidir.
+          required: true
+      responses:
+        200:
+          description:
+            İlçeleri dizi olarak verir.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/District'
+          examples:
+            application/json:
+              - id: 510
+                name: Afşin
+                slug: afsin
+              - id: 515
+                name: Göksun
+                slug: goksun
+              - id: 519
+                name: Türkoğlu
+                slug: turkoglu
+        400:
+          $ref: '#/responses/GenelHata'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+        404:
+          $ref: '#/responses/BulunamadiHatasi'
+
+  /districts/{id}/neighborhoods:
+    x-summary: İlçe Semtleri
+    x-description: |
+      Bir şehirdeki bir ilçenin semtlerinin listesini almak
+      için kullanılır.
+    get:
+      tags:
+        - Semt Servisi
+      summary: Bir İlçeye ait Semt Listesi
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          format: int32
+          description: |
+            Hangi ilçenin semtleri alınmak isteniyorsa o ilçenin
+            id bilgisi gönderilmelidir.
+          required: true
+      responses:
+        200:
+          description: Semtleri dizi olarak verir.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Neighborhood'
+          examples:
+            application/json:
+              - id: 2525
+                name: BEYOĞLU
+                slug: beyoglu
+              - id: 2526
+                name: KILILI
+                slug: kilili
+              - id: 2528
+                name: ŞEKEROBA
+                slug: sekeroba
+        400:
+          $ref: '#/responses/GenelHata'
+        401:
+          $ref: '#/responses/YetkilendirmeHatasi'
+        404:
+          $ref: '#/responses/BulunamadiHatasi'
+
+definitions:
+
+  Event:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Etkinlik id bilgisi.
+      name:
+        type: string
+        description: Etkinliğin adı bilgisi.
+      slug:
+        type: string
+        description: Etkinliğin radı (slug) bilgisi.
+      url:
+        type: string
+        description: Etkinliğin url bilgisi.
+      content:
+        type: string
+        description: |
+          Etkinliğin içerik bilgisi. Etkinlik hakkında detalı
+          bilgi içeren kısım.
+      start:
+        type: string
+        format: date-time
+        description: Etkinliğin başlangıç zamanı. ISO8601 formatındadır.
+      end:
+        type: string
+        format: date-time
+        description: Etkinliğin bitiş zamanı. ISO8601 formatındadır.
+      is_free:
+        type: boolean
+        description: |
+          Etkinlik ücretsiz ise ```true```, değilse ```false```
+      poster_url:
+        type: string
+        description: Etkinlik afiş url adresi.
+      ticket_url:
+        type: string
+        description: |
+          Etkinlik için bilet url varsa oraya yönlendirilir.
+          Yoksa etkinlik detaya yönlendirilir.
+      phone:
+        type: string
+        description: Etkinlik için tanımlanmış telefon bilgisi.
+      email:
+        type: string
+        description: Etkinlik için tanımlanmış mail bilgisi.,
+      facebook_url:
+        type: string
+        description: Etkinlik için tanımlanmış facebook bilgisi.
+      twitter_url:
+        type: string
+        description: Etkinlik için tanımlanmış twitter bilgisi.
+      hashtag:
+        type: string
+        description: Etkinlik için tanımlanmış hashtag bilgisi.
+      web_url:
+        type: string
+        description: Etkinlik için tanımlanmış websitesi url bilgisi.
+      live_url:
+        type: string
+        description: Etkinlik için tanımlanmış canlı yayın url bilgisi.
+      android_url:
+        type: string
+        description: Etkinlik için tanımlanmış android url bilgisi.
+      ios_url:
+        type: string
+        description: Etkinlik için tanımlanmış ios url bilgisi.
+      format:
+        $ref: '#/definitions/Format'
+      category:
+        $ref: '#/definitions/Category'
+      venue_type:
+        type: string
+        enum:
+          - VENUE
+          - ONLINE
+          - MANUEL
+        description: |
+          Mekan tipi bilgisi.
+          - VENUE: Sistemde kayıtlı mekan bilgisi (venue_data Venue objesi içerir)
+          - ONLINE: Online etkinlik (venue_data boş olur)
+          - MANUEL: Manuel girilmiş mekan bilgisi (venue_data VenueManuel objesi içerir)
+      venue_data:
+        type: object
+        description: |
+          venue_type'a göre farklı veri yapıları içerir.
+          - VENUE için: Venue definition objesi ($ref: '#/definitions/Venue')
+          - ONLINE için: null
+          - MANUEL için: VenueManuel definition objesi ($ref: '#/definitions/VenueManuel')
+      tags:
+        type: array
+        description: Etkinlik için etiketler.
+        items:
+          $ref: '#/definitions/Tag'
+
+  Format:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Tür id bilgisi.
+      name:
+        type: string
+        description: Tür adı bilgisi.
+      slug:
+        type: string
+        description: Tür slug bilgisi.
+
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Kategori id bilgisi.
+      name:
+        type: string
+        description: Kategori adı bilgisi.
+      slug:
+        type: string
+        description: Kategori slug bilgisi.
+
+  Tag:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Etiket id bilgisi.
+      name:
+        type: string
+        description: Etiket adı bilgisi.
+      slug:
+        type: string
+        description: Etiket slug bilgisi.
+
+  City:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Şehir id bilgisi.
+      name:
+        type: string
+        description: Şehir adı bilgisi.
+      slug:
+        type: string
+        description: Şehir slug bilgisi.
+  District:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: İlçe id bilgisi.
+      name:
+        type: string
+        description: İlçe adı bilgisi.
+      slug:
+        type: string
+        description: İlçe slug bilgisi.
+
+  Neighborhood:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Semt id bilgisi.
+      name:
+        type: string
+        description: Semt adı bilgisi.
+      slug:
+        type: string
+        description: Semt slug bilgisi.
+
+  Venue:
+    type: object
+    description: Bu bilgi artık kullanılmamalı. Geçici olarak burada durmaya devam ediyor. venue_type ve venue_data bilgileri kullanılmalıdır.
+    properties:
+      id:
+        type: integer
+        format: int32
+        description: Mekan id bilgisi.
+      name:
+        type: string
+        description: Mekan adı bilgisi.
+      slug:
+        type: string
+        description: Mekan slug bilgisi.
+      about:
+        type: string
+        description: Mekan hakkında bilgisi.
+      lat:
+        type: string
+        description: Mekanın konum bilgisindeki latitude kısmıdır.
+      lng:
+        type: string
+        description: Mekanın konum bilgisindeki longitude kısmıdır
+      status:
+        type: integer
+        format: int32
+        description: |
+          0: onay bekliyor, kontrol edilecek
+          1: kontrol edilmiş ve onaylanmış
+      phone:
+        type: string
+        description: Mekanın telefon numarası.
+      web_url:
+        type: string
+        description: Mekanın websitesi adresi.
+      facebook_url:
+        type: string
+        description: Mekanın facebook adresi.
+      twitter_url:
+        type: string
+        description: Mekanın twitter adresi.
+      city:
+        $ref: '#/definitions/City'
+      district:
+        $ref: '#/definitions/District'
+      neighborhood:
+        $ref: '#/definitions/Neighborhood'
+      address:
+        type: string
+        description: Mekan adres bilgisi.
+
+  VenueManuel:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Mekan adı bilgisi.
+      neighborhood_name:
+        type: string
+        description: Mekan semt bilgisi.
+      district_name:
+        type: string
+        description: Mekan ilçe bilgisi.
+      city_name:
+        type: string
+        description: Mekan şehir bilgisi.
+      address:
+        type: string
+        description: Mekan adres bilgisi.
+
+  Meta:
+    type: object
+    properties:
+      total_count:
+        type: integer
+        format: int32
+
+  YetkilendirmeHatasi:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+  GenelHata:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+  EskiKayitHatasi:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+      new_id:
+        type: integer
+        format: int32
+      new_name:
+        type: string
+      new_hash:
+        type: string
+  BulunamadiHatasi:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+  SilindiHatasi:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+
+  EventImpressionRequest:
+    type: object
+    properties:
+      user_agent:
+        type: string
+        description: |
+          İsteğe bağlı. Gönderilirse gösterim kaydında bu değer kullanılır.
+
+  EventImpressionRecordOk:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: İşlem başarılı ise true.
+
+parameters:
+  format_ids:
+    name: format_ids
+    in: query
+    description: Etkinlikleri türlere göre filtrelemek için. Birden fazla tür için "," kullanabilirsiniz.
+    required: false
+    type: string
+  category_ids:
+    name: category_ids
+    in: query
+    description: Etkinlikleri kategorilere göre filtrelemek için. Birden fazla kategori için "," kullanabilirsiniz.
+    required: false
+    type: string
+  venue_ids:
+    name: venue_ids
+    in: query
+    description: Etkinlikleri mekana göre filtrelemek için. Birden fazla mekan için "," kullanabilirsiniz.
+    required: false
+    type: string
+  city_ids:
+    name: city_ids
+    in: query
+    description: Kayıtları şehre göre filtrelemek için. Birden fazla şehir için "," kullanabilirsiniz.
+    required: false
+    type: string
+  start_gte:
+    name: start_gte
+    in: query
+    description: Etkinlikleri başlangıç zamanına göre filtrelemek için. Geçerli datetime değeri alır (örn. YYYY-MM-DD HH:mm:ss).
+    required: false
+    type: string
+  end_lte:
+    name: end_lte
+    in: query
+    description: Etkinlikleri bitiş zamanına göre filtrelemek için. Geçerli datetime değeri alır (örn. YYYY-MM-DD HH:mm:ss).
+    required: false
+    type: string
+  district_ids:
+    name: district_ids
+    in: query
+    description: Kayıtları ilçeye göre filtrelemek için. Birden fazla ilçe için "," kullanabilirsiniz.
+    required: false
+    type: string
+  neighborhood_ids:
+    name: neighborhood_ids
+    in: query
+    description: Kayıtları semte göre filtrelemek için. Birden fazla semt için "," kullanabilirsiniz.
+    required: false
+    type: string
+  status_ids:
+    name: status_ids
+    in: query
+    description: |
+      Onaylı olanlar için 1, onay bekleyenler için 0 girilebilir.
+      Varsayılan olarak tüm kayıtlar gelir.
+    required: false
+    type: string
+  skip:
+    name: skip
+    in: query
+    description: Sonuçlar için offset bilgisi.
+    required: false
+    type: integer
+    format: int32
+    default: 0
+    minimum: 0
+  take:
+    name: take
+    in: query
+    description: Kaç adet sonuç geleceğini belirtmek için.
+    required: false
+    type: integer
+    format: int32
+    default: 50
+    minimum: 1
+
+responses:
+
+  EventImpressionRecordResponse:
+    description: Gösterim kaydı oluşturuldu.
+    schema:
+      $ref: '#/definitions/EventImpressionRecordOk'
+    examples:
+      application/json:
+        success: true
+
+  EventsResponse:
+    description: Etkinlikleri dizi olarak verir.
+    schema:
+      type: object
+      properties:
+        meta:
+          $ref: '#/definitions/Meta'
+        items:
+          type: array
+          items:
+            $ref: '#/definitions/Event'
+    examples:
+      application/json:
+        meta:
+          total_count: 70
+        items:
+          - id: 24988
+            name: Amatör Ekmekçilik
+            slug: amator-ekmekcilik
+            url: https://etkinlik.io/etkinlik/24988/amator-ekmekcilik
+            content: "<p>Etkinlik içeriği html formatındadır.</p>"
+            start: 2016-02-08T18:30:00+0200
+            end: 2016-02-08T20:30:00+0200
+            is_free: false
+            phone: +90 212 212 2122
+            email: deneme@deneme.com
+            facebook_url: Etkinlikio-1565101957082313
+            twitter_url: etkinlikio
+            hashtag: PHPCONF2016
+            web_url: www.phpconf.org
+            live_url: www.canliyayindenemesitesi.com/izle
+            android_url: www.androiduygulamaadresideneme.com
+            ios_url: www.iosuygulamaadresideneme.com
+            format:
+              id: 5
+              name: Eğitim
+              slug: egitim
+            category:
+              id: 4015
+              name: Aşçılık ve Mutfak
+              slug: ascilik-ve-mutfak
+            venue:
+              id: 2818
+              name: İTÜ Maçka İşletme Fakültesi Konf. Sal.
+              slug: itu-macka-isletme-fak-konf-sa
+              about: Mekan hakkında bilgi.
+              lat: 34.567854
+              lng: 43.345678
+              phone: +90 212 212 2122
+              web_url: www.mekanadideneme.com
+              facebook_url: Etkinlikio-1565101957082313
+              twitter_url: etkinlikio
+              city:
+                id: 40
+                name: İstanbul
+                slug: istanbul
+              district:
+                id: 450
+                name: Beşiktaş
+                slug: besiktas
+              neighborhood:
+                id: 2256
+                name: Maslak
+                slug: maslak
+              address: İTÜ İşletme Fakültesi
+            venue_type: MANUEL
+            venue_data: 
+              name: İTÜ Maçka İşletme Fakültesi Konf. Sal.
+              neighborhood_name: Maslak
+              district_name: Beşiktaş
+              city_name: İstanbul
+              address: İTÜ İşletme Fakültesi
+            tags:
+              - id: 4015
+                name: Aşçılık ve Mutfak
+                slug: ascilik-ve-mutfak
+              - id: 3805
+                name: Dil ve Edebiyat
+                slug: dil-ve-edebiyat
+
+  EventShowResponse:
+    description: Etkinlik detayını verir.
+    schema:
+      $ref: '#/definitions/Event'
+    examples:
+      application/json:
+        - id: 24988
+          name: Amatör Ekmekçilik
+          slug: amator-ekmekcilik
+          url: https://etkinlik.io/etkinlik/24988/amator-ekmekcilik
+          content: "<p>Etkinlik içeriği html formatındadır.</p>"
+          start: 2016-02-08T18:30:00+0200
+          end: 2016-02-08T20:30:00+0200
+          is_free: false
+          phone: +90 212 212 2122
+          email: deneme@deneme.com
+          facebook_url: Etkinlikio-1565101957082313
+          twitter_url: etkinlikio
+          hashtag: PHPCONF2016
+          web_url: www.phpconf.org
+          live_url: www.canliyayindenemesitesi.com/izle
+          android_url: www.androiduygulamaadresideneme.com
+          ios_url: www.iosuygulamaadresideneme.com
+          format:
+            id: 5
+            name: Eğitim
+            slug: egitim
+          category:
+            id: 4015
+            name: Aşçılık ve Mutfak
+            slug: ascilik-ve-mutfak
+          venue:
+            id: 2818
+            name: İTÜ Maçka İşletme Fakültesi Konf. Sal.
+            slug: itu-macka-isletme-fak-konf-sa
+            about: Mekan hakkında bilgi.
+            lat: 34.567854
+            lng: 43.345678
+            phone: +90 212 212 2122
+            web_url: www.mekanadideneme.com
+            facebook_url: Etkinlikio-1565101957082313
+            twitter_url: etkinlikio
+            city:
+              id: 40
+              name: İstanbul
+              slug: istanbul
+            district:
+              id: 450
+              name: Beşiktaş
+              slug: besiktas
+            neighborhood:
+              id: 2256
+              name: Maslak
+              slug: maslak
+            address: İTÜ İşletme Fakültesi
+          tags:
+            - id: 4015
+              name: Aşçılık ve Mutfak
+              slug: ascilik-ve-mutfak
+            - id: 3805
+              name: Dil ve Edebiyat
+              slug: dil-ve-edebiyat
+
+  MekanListeResponse:
+    description: Mekanları dizi olarak verir.
+    schema:
+      type: object
+      properties:
+        meta:
+          $ref: '#/definitions/Meta'
+        items:
+          type: array
+          items:
+            $ref: '#/definitions/Venue'
+    examples:
+      application/json:
+        meta:
+          total_count: 95
+        items:
+          - id: 2818
+            name: İTÜ Maçka İşletme Fakültesi Konf. Sal.
+            slug: itu-macka-isletme-fak-konf-sa
+            about: Hakkında genel bilgi.
+            lat: 34.567854
+            lng: 43.345678
+            phone: +90 212 212 2122
+            web_url: www.mekanadideneme.com
+            facebook_url: Etkinlikio-1565101957082313
+            twitter_url: etkinlikio
+            city:
+              id: 40
+              name: İstanbul
+              slug: istanbul
+            district:
+              id: 450
+              name: Beşiktaş
+              slug: besiktas
+            semt:
+              id: 2256
+              name: Maslak
+              slug: maslak
+            address: İTÜ İşletme Fakültesi
+
+  MekanDetayResponse:
+    description: Mekan detayını verir.
+    schema:
+      $ref: '#/definitions/Venue'
+    examples:
+      application/json:
+        id: 2818
+        name: İTÜ Maçka İşletme Fakültesi Konf. Sal.
+        slug: itu-macka-isletme-fak-konf-sa
+        about: Hakkında genel bilgi.
+        lat: 34.567854
+        lng: 43.345678
+        phone: +90 212 212 2122
+        web_url: www.mekanadideneme.com
+        facebook_url: Etkinlikio-1565101957082313
+        twitter_url: etkinlikio
+        city:
+          id: 40
+          name: İstanbul
+          slug: istanbul
+        district:
+          id: 450
+          name: Beşiktaş
+          slug: besiktas
+        semt:
+          id: 2256
+          name: Maslak
+          slug: maslak
+        address: İTÜ İşletme Fakültesi
+
+  YetkilendirmeHatasi:
+    description: |
+      Yetkilendirme hatası meydana geldiğinde bu hata ile
+      karşılaşırsınız. Yetkilendirme için X-Etkinlik-Token
+      bilgisi istek (request) başlığında (header) gönderilmelidir.
+    schema:
+      $ref: '#/definitions/YetkilendirmeHatasi'
+    examples:
+      application/json:
+        success: false
+        message: X-Etkinlik-Token bilgisi geçerli değil. İstek yaparken header içinde doğru olarak gönderdiğinizden emin olunuz.
+  GenelHata:
+    description: |
+      Genel bir hata meydana geldiğinde bu sonuç ile karşılaşırsınız.
+    schema:
+      $ref: '#/definitions/GenelHata'
+    examples:
+      application/json:
+        success: false
+        message: Id bilgisi boş geçilemez.
+  MukerrerKayitHatasi:
+    description: |
+      Genelde bir kayıt sorgulanırken sorgulanan kayda ait bilgi
+      sistem tarafında mükerrer olarak işaretlenmiş ise bu cevap
+      (response) meydana gelir. Örneğin bir etkinlik sisteme
+      birden fazla eklenebilmektedir. Daha sonra farkedildiğinde
+      bir tanesi asıl kayıt olacak şekilde diğerleri mükerrer
+      olarak işaretlenir. İşaretlenen mükerrer kayıtlar da asıl
+      kayda yönlendirilir. 301 kodu ile karşılaştığınızda
+      new_id bilgisini kullanarak aynı sorgu servisi üzerinden
+      200 kodu ile doğru cevap (response) alabilirsiniz.
+    schema:
+      $ref: '#/definitions/GenelHata'
+    examples:
+      application/json:
+        success: false
+        message: 123 numaralı etkinlik mükerrer olarak işaretlenmiş.
+        new_id: 456
+        new_name: Deneme Etkinlik Adı
+        new_slug: deneme-etkinlik-adi
+
+  BulunamadiHatasi:
+    description: |
+      Bir talepte sonuç elde edilmezse bulunamadı hatası meydana gelir.
+      Bu hata boş bir sonuç anlamında değildir. Örneğin bir 5 numaralı
+      etkinlik detay sorgulandığında ve bu hata alındığında 5 numaralı
+      etkinliğin sistemde yer almadığı anlamındadır.
+    schema:
+      $ref: '#/definitions/BulunamadiHatasi'
+    examples:
+      application/json:
+        success: false
+        message: 123 numaralı etkinlik bulunamadı.
+
+  SilindiHatasi:
+    description: |
+      Bir kayıt sistemden silinmiş olabilir. Bu durumda 410 kodu
+      dönecektir. Bu gibi durumlarda artık kayıt içeriğinin geçersiz
+      olduğu anlaşılmalıdır.
+    schema:
+      $ref: '#/definitions/SilindiHatasi'
+    examples:
+      application/json:
+        success: false
+        message: 123 numaralı etkinlik silinmiş.

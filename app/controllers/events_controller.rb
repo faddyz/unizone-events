@@ -26,7 +26,7 @@ class EventsController < ApplicationController
 
     @preview_mode = !@event.published?
     @similar_events = @event.similar_events.to_a
-    @organizer_other_events = @event.organizer_other_events.to_a
+    @organizer_other_events = @event.imported? ? [] : @event.organizer_other_events.to_a
     @attendance = current_user&.attendances&.find_by(event: @event)
     prepare_event_card_data([ @event ] + @similar_events + @organizer_other_events, preview_limit: 5)
     @attendee_preview = @event_attendee_previews.fetch(@event.id, [])
@@ -39,7 +39,7 @@ class EventsController < ApplicationController
   end
 
   def published_scope
-    Event.published.with_attached_image.includes(:user)
+    Event.published_visible.with_attached_image.includes(:user)
   end
 
   def search_params

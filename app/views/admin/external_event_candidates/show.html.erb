@@ -1,0 +1,156 @@
+<% content_for :title, candidate_display_title(@candidate) %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/admin-events") %>
+
+<section class="admin-review-page admin-show-page page-shell">
+  <header class="admin-review-hero admin-show-hero admin-compact-hero">
+    <div class="admin-review-hero-copy">
+      <div class="admin-event-tags">
+        <span class="candidate-status candidate-status-<%= @candidate.status %>"><%= @candidate.status %></span>
+        <span class="<%= event_category_badge_classes(@candidate.category.presence || "community") %>"><%= event_category_title(@candidate.category.presence || "community") %></span>
+        <span class="candidate-status"><%= @candidate.venue_type.presence || "VENUE" %></span>
+      </div>
+      <h1><%= candidate_display_title(@candidate) %></h1>
+      <p><%= candidate_city_label(@candidate) %> · <%= @candidate.starts_at ? l(@candidate.starts_at, format: :long) : "Tarih eksik" %> · <%= candidate_short_location(@candidate) %></p>
+      <div class="admin-review-hero-actions">
+        <%= link_to "Adaylara dön", admin_external_event_candidates_path, class: "admin-secondary-action focus-ring" %>
+        <%= link_to candidate_source_action_label(@candidate), candidate_source_action_url(@candidate), target: "_blank", rel: "noopener", class: "admin-secondary-action focus-ring" if candidate_source_action_url(@candidate).present? %>
+        <%= link_to "Public event", event_path(@candidate.resolved_event), class: "admin-secondary-action focus-ring" if @candidate.resolved_event.present? %>
+      </div>
+    </div>
+
+    <aside class="admin-next-review">
+      <p class="section-eyebrow">Karar</p>
+      <% unless @candidate.approved? %>
+        <%= button_to "Yayına Al", approve_admin_external_event_candidate_path(@candidate), method: :patch, class: "admin-decision-primary focus-ring" %>
+      <% end %>
+      <%= button_to "Geç", skip_admin_external_event_candidate_path(@candidate), method: :patch, class: "admin-decision-secondary focus-ring" unless @candidate.skipped? %>
+      <%= button_to "Reddet", reject_admin_external_event_candidate_path(@candidate), method: :patch, class: "admin-danger-submit focus-ring" unless @candidate.rejected? %>
+      <p class="admin-decision-hint">Aşağıdaki alanları düzenleyerek onaylarsan public Event hemen published olur.</p>
+    </aside>
+  </header>
+
+  <div class="admin-show-layout">
+    <article class="admin-show-main">
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Poster</p>
+            <h2>Uzaktan görsel</h2>
+          </div>
+        </div>
+        <div class="admin-uploaded-media <%= event_poster_background_classes(@candidate.category.presence || "community") %>">
+          <% if @candidate.poster_url.present? %>
+            <%= image_tag @candidate.poster_url, alt: candidate_display_title(@candidate), loading: "lazy", class: "admin-uploaded-image" %>
+          <% else %>
+            <div class="poster-noise absolute inset-0"></div>
+            <div class="admin-uploaded-empty">
+              <span class="admin-live-dot"></span>
+              <strong>Poster yok</strong>
+              <p>Public sayfada kategori fallback görseli kullanılır.</p>
+            </div>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Onay öncesi düzenleme</p>
+            <h2>Public Event alanları</h2>
+          </div>
+        </div>
+
+        <%= form_with url: approve_admin_external_event_candidate_path(@candidate), method: :patch, scope: :approval, class: "admin-edit-form", local: true do |form| %>
+          <div class="admin-candidate-control-grid">
+            <label>
+              <span>Başlık</span>
+              <%= form.text_field :title, value: @approval[:title], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Kategori</span>
+              <%= form.select :category, Event.categories.keys.map { |category| [event_category_title(category), category] }, { selected: @approval[:category] }, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Şehir</span>
+              <%= form.select :city, Event::CITY_OPTIONS, { selected: @approval[:city] }, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Kısa mekan</span>
+              <%= form.text_field :location, value: @approval[:location], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Başlangıç</span>
+              <%= form.datetime_local_field :starts_at, value: @approval[:starts_at]&.strftime("%Y-%m-%dT%H:%M"), class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Bitiş</span>
+              <%= form.datetime_local_field :ends_at, value: @approval[:ends_at]&.strftime("%Y-%m-%dT%H:%M"), class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Bilet URL</span>
+              <%= form.url_field :ticket_url, value: @approval[:ticket_url], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+            <label>
+              <span>Kaynak URL</span>
+              <%= form.url_field :external_url, value: @approval[:external_url], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+            </label>
+          </div>
+
+          <label>
+            <span class="section-eyebrow text-stone-500">Açıklama</span>
+            <%= form.text_area :description, value: @approval[:description], rows: 8, class: "admin-textarea focus-ring" %>
+          </label>
+
+          <label class="admin-candidate-check">
+            <%= form.check_box :external_is_free, { checked: ActiveModel::Type::Boolean.new.cast(@approval[:external_is_free]) }, "1", "0" %>
+            <span>Ücretsiz</span>
+          </label>
+
+          <div class="admin-edit-actions">
+            <%= link_to "Vazgeç", admin_external_event_candidates_path, class: "btn-outline focus-ring" %>
+            <%= form.submit "Düzenleyip Yayına Al", class: "btn-void cursor-pointer border-0 focus-ring" %>
+          </div>
+        <% end %>
+      </section>
+    </article>
+
+    <aside class="admin-show-side">
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">API sinyalleri</p>
+            <h2>Kalite</h2>
+          </div>
+        </div>
+        <dl class="admin-detail-grid">
+          <div><dt>External ID</dt><dd><%= @candidate.external_id %></dd></div>
+          <div><dt>Öncelik</dt><dd><%= @candidate.priority %></dd></div>
+          <div><dt>Format</dt><dd><%= @candidate.format.presence || "-" %></dd></div>
+          <div><dt>Ticket kind</dt><dd><%= candidate_ticket_kind_label(@candidate) %></dd></div>
+          <div><dt>İlk görüldü</dt><dd><%= @candidate.first_seen_at ? l(@candidate.first_seen_at, format: :short) : "-" %></dd></div>
+          <div><dt>Son görüldü</dt><dd><%= @candidate.last_seen_at ? l(@candidate.last_seen_at, format: :short) : "-" %></dd></div>
+        </dl>
+
+        <% if @candidate.hidden_reason.present? || @candidate.review_reasons.present? || @candidate.priority_reasons.present? || @candidate.duplicate_warning.present? %>
+          <div class="admin-review-note is-large mt-4">
+            <span>Notlar</span>
+            <p><%= ([@candidate.hidden_reason, @candidate.duplicate_warning] + Array(@candidate.review_reasons) + Array(@candidate.priority_reasons)).compact_blank.join(", ") %></p>
+          </div>
+        <% end %>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <div>
+            <p class="section-eyebrow text-coral">Raw data</p>
+            <h2>Admin-only</h2>
+          </div>
+        </div>
+        <details class="admin-candidate-details">
+          <summary class="focus-ring">Raw JSON göster</summary>
+          <pre class="admin-candidate-raw"><%= JSON.pretty_generate(@candidate.raw_data) %></pre>
+        </details>
+      </section>
+    </aside>
+  </div>
+</section>

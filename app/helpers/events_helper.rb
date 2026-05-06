@@ -1,36 +1,42 @@
+require "cgi"
+
 module EventsHelper
   CATEGORY_BADGE_COLORS = {
-    "general" => "bg-stone-900 text-white",
-    "technology" => "bg-[#1a3a6b] text-[#c8e6ff]",
     "music" => "bg-fuchsia-700 text-fuchsia-100",
-    "art" => "bg-[#3d1060] text-[#b06eff]",
-    "sports" => "bg-lime-500 text-stone-950",
-    "education" => "bg-cyan-600 text-white",
-    "concert" => "bg-indigo-700 text-indigo-100",
     "festival" => "bg-orange-500 text-white",
-    "workshop" => "bg-teal-500 text-stone-950",
-    "party" => "bg-pink-600 text-white",
-    "theater" => "bg-rose-700 text-rose-100",
-    "exhibition" => "bg-violet-700 text-violet-100",
+    "art_exhibition" => "bg-violet-700 text-violet-100",
     "conference" => "bg-blue-700 text-blue-100",
-    "networking" => "bg-emerald-600 text-white"
+    "workshop" => "bg-teal-500 text-stone-950",
+    "networking" => "bg-emerald-600 text-white",
+    "technology" => "bg-[#1a3a6b] text-[#c8e6ff]",
+    "education" => "bg-cyan-600 text-white",
+    "business" => "bg-slate-900 text-white",
+    "career" => "bg-amber-600 text-white",
+    "food_lifestyle" => "bg-lime-600 text-white",
+    "nightlife" => "bg-pink-600 text-white",
+    "sports_wellness" => "bg-lime-500 text-stone-950",
+    "theater" => "bg-rose-700 text-rose-100",
+    "family" => "bg-sky-600 text-white",
+    "community" => "bg-stone-900 text-white"
   }.freeze
 
   CATEGORY_POSTER_BACKGROUNDS = {
-    "general" => "from-stone-950 via-stone-800 to-citron",
-    "technology" => "from-[#1a3a6b] via-cyan-600 to-[#c8e6ff]",
     "music" => "from-fuchsia-800 via-pink-600 to-ember",
-    "art" => "from-[#3d1060] via-violet-700 to-[#b06eff]",
-    "sports" => "from-lime-500 via-emerald-500 to-stone-950",
-    "education" => "from-cyan-700 via-blue-700 to-stone-950",
-    "concert" => "from-indigo-900 via-indigo-700 to-rose-500",
     "festival" => "from-orange-600 via-pink-600 to-citron",
-    "workshop" => "from-teal-600 via-cyan-500 to-stone-950",
-    "party" => "from-pink-700 via-rose-600 to-orange-400",
-    "theater" => "from-rose-900 via-stone-950 to-ember",
-    "exhibition" => "from-violet-900 via-[#2b174d] to-[#d8c0ff]",
+    "art_exhibition" => "from-violet-900 via-[#2b174d] to-[#d8c0ff]",
     "conference" => "from-blue-900 via-blue-700 to-[#c8e6ff]",
-    "networking" => "from-emerald-700 via-teal-500 to-stone-950"
+    "workshop" => "from-teal-600 via-cyan-500 to-stone-950",
+    "networking" => "from-emerald-700 via-teal-500 to-stone-950",
+    "technology" => "from-[#1a3a6b] via-cyan-600 to-[#c8e6ff]",
+    "education" => "from-cyan-700 via-blue-700 to-stone-950",
+    "business" => "from-stone-950 via-slate-700 to-citron",
+    "career" => "from-amber-700 via-orange-500 to-stone-950",
+    "food_lifestyle" => "from-lime-700 via-emerald-500 to-stone-950",
+    "nightlife" => "from-pink-700 via-rose-600 to-orange-400",
+    "sports_wellness" => "from-lime-500 via-emerald-500 to-stone-950",
+    "theater" => "from-rose-900 via-stone-950 to-ember",
+    "family" => "from-sky-700 via-cyan-500 to-citron",
+    "community" => "from-stone-950 via-stone-800 to-citron"
   }.freeze
 
   STATUS_BADGE_COLORS = {
@@ -52,23 +58,33 @@ module EventsHelper
   EVENT_IMAGE_PLACEHOLDER_SRC = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
 
   CATEGORY_ICONS = {
-    "general" => "sparkles",
-    "technology" => "cpu",
     "music" => "music",
-    "art" => "palette",
-    "sports" => "dumbbell",
-    "education" => "book_open",
-    "concert" => "mic",
     "festival" => "sparkles",
-    "workshop" => "edit",
-    "party" => "ticket",
-    "theater" => "theater",
-    "exhibition" => "image",
+    "art_exhibition" => "image",
     "conference" => "calendar",
-    "networking" => "users"
+    "workshop" => "edit",
+    "networking" => "users",
+    "technology" => "cpu",
+    "education" => "book_open",
+    "business" => "users",
+    "career" => "check_circle",
+    "food_lifestyle" => "ticket",
+    "nightlife" => "mic",
+    "sports_wellness" => "dumbbell",
+    "theater" => "theater",
+    "family" => "sparkles",
+    "community" => "sparkles"
   }.freeze
 
   CATEGORY_SIGNAL_COPY = {
+    "art_exhibition" => "Görsel kültür, üretim ve ilham odağı yüksek; keşfetmek için sakin ama güçlü bir seçenek.",
+    "business" => "İş, girişim ve sektör bağlantıları için net bir profesyonel buluşma alanı.",
+    "career" => "Kariyer rotanı netleştirmek ve yeni fırsatlarla temas etmek için pratik bir durak.",
+    "food_lifestyle" => "Yemek, üretim ve yaşam tarzı çevresinde sosyal ve hafif bir keşif planı.",
+    "nightlife" => "Sosyalleşmek, müzikle açılmak ve geceyi hareketlendirmek isteyenlere yakın duruyor.",
+    "sports_wellness" => "Hareket, sağlık ve ekip enerjisi arayanlar için temposu yüksek bir plan.",
+    "family" => "Aile ve çocuk odaklı daha yumuşak, birlikte zaman geçirmeye açık bir plan.",
+    "community" => "Rahat bir buluşma alanı; yeni insanlarla tanışmak ve şehrin gündemine karışmak için uygun.",
     "general" => "Rahat bir buluşma alanı; yeni insanlarla tanışmak ve şehrin gündemine karışmak için uygun.",
     "technology" => "Ürün, yazılım ve girişim ekosistemine yakınsan gündem yakalamak için güçlü bir durak.",
     "music" => "Canlı atmosfer, sahne enerjisi ve birlikte dinleme hissi arayanlar için öne çıkıyor.",
@@ -87,12 +103,12 @@ module EventsHelper
 
   def event_category_badge_classes(event_or_category, *_args, **_kwargs)
     key = event_category_key(event_or_category)
-    "inline-flex items-center rounded-full px-3 py-1 font-body text-[0.65rem] font-black uppercase tracking-[0.08em] #{CATEGORY_BADGE_COLORS.fetch(key, CATEGORY_BADGE_COLORS["general"])}"
+    "inline-flex items-center rounded-full px-3 py-1 font-body text-[0.65rem] font-black uppercase tracking-[0.08em] #{CATEGORY_BADGE_COLORS.fetch(key, CATEGORY_BADGE_COLORS["community"])}"
   end
 
   def event_poster_background_classes(event_or_category)
     key = event_category_key(event_or_category)
-    "bg-gradient-to-br #{CATEGORY_POSTER_BACKGROUNDS.fetch(key, CATEGORY_POSTER_BACKGROUNDS["general"])}"
+    "bg-gradient-to-br #{CATEGORY_POSTER_BACKGROUNDS.fetch(key, CATEGORY_POSTER_BACKGROUNDS["community"])}"
   end
 
   def event_category_title(event_or_category)
@@ -102,7 +118,7 @@ module EventsHelper
 
   def event_category_icon(event_or_category)
     key = event_category_key(event_or_category)
-    CATEGORY_ICONS.fetch(key, CATEGORY_ICONS["general"])
+    CATEGORY_ICONS.fetch(key, CATEGORY_ICONS["community"])
   end
 
   def event_category_signal_copy(event_or_category)
@@ -123,17 +139,196 @@ module EventsHelper
   end
 
   def event_price_badge_classes(event)
-    event.free? ? "text-emerald-700" : "text-stone-950"
+    return "is-free" if event.free?
+    return "is-ticketed" if event.imported? && event_real_ticket_link?(event)
+
+    "is-standard"
+  end
+
+  def event_card_price_text(event)
+    return event_price_text(event) if event.free?
+    return "Biletli" if event.imported? && event_real_ticket_link?(event)
+    return event_price_text(event) unless event.imported?
+
+    nil
   end
 
   def event_price_text(event, precision: 0, free_label: I18n.t("ui.free"))
     return free_label if event.free?
+    return "Biletli Etkinlik" if event.imported? && event_real_ticket_link?(event)
+    return "Bilet bilgisi kaynakta" if event.imported? && event_source_link_url(event).present?
+    return "Bilet bilgisi dış kaynakta" if event.imported?
 
     number_to_currency(event.price, unit: "₺", precision: precision)
   end
 
   def event_place_text(event)
-    [event.location.presence, event.city.presence].compact.join(", ")
+    short_location_text(event.location, event.city)
+  end
+
+  def event_card_venue_text(event)
+    location = plain_display_text(event.location)
+    return event_place_text(event) if location.blank?
+    return "Çevrimiçi" if location.casecmp("online").zero? || location.casecmp("çevrimiçi").zero?
+
+    parts = location.split(",").map(&:squish).reject(&:blank?)
+    [ parts.first || location, parts.second ].compact_blank.uniq.join(", ")
+  end
+
+  def event_card_month_label(date)
+    l(date, format: "%b")
+  end
+
+  def event_card_datetime_label(date)
+    l(date, format: "%d %b, %H:%M")
+  end
+
+  def event_crowd_signal_title(event, going_count)
+    return "Katılım bilgisi kaynakta" if event.imported? && going_count.to_i.zero?
+
+    "#{going_count} kişi katılıyor!"
+  end
+
+  def event_crowd_signal_copy(event, going_count)
+    return "Dış kaynak katılım sayısı paylaşmadığı için burada yalnızca Unizone içindeki etkileşim görünür." if event.imported? && going_count.to_i.zero?
+    return "Bu etkinlik şimdiden ilgi görmeye başladı." if going_count.to_i.positive?
+
+    "İlk katılanlardan biri olup akışı başlat."
+  end
+
+  def event_decision_crowd_signal_label(event, going_count)
+    event.imported? && going_count.to_i.zero? ? "Kaynak sinyali" : "Kalabalık"
+  end
+
+  def event_decision_crowd_signal_title(event, going_count)
+    return "Kaynakta öne çıkan plan" if event.imported? && going_count.to_i.zero?
+
+    "#{going_count} kişi katılıyor!"
+  end
+
+  def event_decision_crowd_signal_copy(event, going_count)
+    return "Katılım sayısı paylaşılmıyor; mekan, tarih ve kayıt akışı net olduğu için hızlıca değerlendirebilirsin." if event.imported? && going_count.to_i.zero?
+    return "Bu etkinlik şimdiden ilgi görmeye başladı." if going_count.to_i.positive?
+
+    "İlk katılanlardan biri olup akışı başlat."
+  end
+
+  def event_decision_price_signal_title(event)
+    return event_price_text(event) if event.free? || !event.imported?
+    return "Biletli" if event_real_ticket_link?(event)
+    return "Kaynakta kontrol et" if event_source_link_url(event).present?
+
+    "Bilgi kaynakta"
+  end
+
+  def event_decision_price_signal_copy(event)
+    return "Ücretsiz katılım; karar vermesi kolay ve erişim bariyeri düşük." if event.free?
+    return "Bilet veya kayıt akışı dış kaynakta tamamlanıyor; fiyat ve uygunluk orada netleşir." if event.imported? && event_real_ticket_link?(event)
+    return "Güncel fiyat ve katılım koşulları kaynak sayfada değişebilir; gitmeden önce kontrol etmek iyi olur." if event.imported?
+
+    "Katılım ücreti net olarak belirtilmiş; planını buna göre yapabilirsin."
+  end
+
+  def event_decision_registration_signal_copy(event, ticket_url)
+    return "Kararını verdiğinde bilet veya kayıt adımına doğrudan kaynak sayfadan devam edebilirsin." if event.imported? && ticket_url.present?
+    return "Detay ve kayıt bilgileri kaynak sayfada güncellenebilir; son kontrolü oradan yapabilirsin." if event.imported?
+    return event_ticket_help_text(event) if ticket_url.present?
+
+    "Katılımını buradan bildirebilir, fikrin değişirse seçimini dilediğin an güncelleyebilirsin."
+  end
+
+  def short_location_text(location, city)
+    city = plain_display_text(city)
+    location = plain_display_text(location)
+    return "Çevrimiçi" if city == "Online" || location.casecmp("online").zero? || location.casecmp("çevrimiçi").zero?
+    return city if location.blank?
+
+    parts = location.split(",").map(&:squish).reject(&:blank?)
+    if parts.size >= 2
+      district = parts.second
+      city_suffix = city.present? && district.exclude?(city) ? ", #{city}" : ""
+      return "#{parts.first} · #{district}#{city_suffix}"
+    end
+
+    [ parts.first || location, city ].compact_blank.uniq.join(", ")
+  end
+
+  def event_display_title(event)
+    plain_display_text(event.title)
+  end
+
+  def event_description_text(event)
+    plain_display_text(event.description)
+  end
+
+  def event_description_snippet(event, length: 150)
+    truncate(event_description_text(event), length: length)
+  end
+
+  def event_story_segments(event)
+    text = event_description_text(event).to_s
+    return [] if text.blank?
+
+    normalized = text.gsub(/\r\n?/, "\n").gsub("\u00A0", " ").strip
+    lines = normalized.split("\n").map(&:strip).reject(&:blank?)
+    line_facts = extract_line_facts(lines)
+
+    if line_facts.size >= 3
+      [ { type: :facts, items: line_facts } ]
+    else
+      normalized.split(/\n{2,}/).map(&:strip).reject(&:blank?).map { |paragraph| { type: :paragraph, text: paragraph } }
+    end
+  end
+
+  def plain_display_text(value)
+    EtkinlikIo::TextCleaner.plain_text(value)
+  end
+
+  def event_has_poster?(event)
+    event.remote_poster_url.present? || event.image.attached?
+  end
+
+  def event_real_ticket_link?(event)
+    event.ticket_url.present? && Event.ticket_kind_linkable?(event_ticket_url_kind(event))
+  end
+
+  def event_source_link_url(event)
+    return event.external_url if event.external_url.present?
+    return event.ticket_url if %w[etkinlik_detail source detail].include?(event_ticket_url_kind(event))
+
+    nil
+  end
+
+  def event_external_action_url(event)
+    return event.ticket_url if event_real_ticket_link?(event)
+
+    event_source_link_url(event)
+  end
+
+  def event_external_action_label(event)
+    event_real_ticket_link?(event) ? "Bilet Al" : "Etkinlik Detayı"
+  end
+
+  def event_registration_label(event)
+    return "Bilet Al" if event_real_ticket_link?(event)
+    return "Etkinlik Detayı" if event_source_link_url(event).present?
+    return "Bilet bilgisi dış kaynakta" if event.imported?
+
+    "Kaynak bağlantısı yok"
+  end
+
+  def event_ticket_help_text(event)
+    return "Ücretsiz katılım." if event.free?
+    return "Bilet satışı dış kaynak üzerinden yapılır." if event_real_ticket_link?(event)
+    return "Bilet ve detay bilgileri kaynak sayfada güncellenebilir." if event_source_link_url(event).present?
+
+    "Bilet bilgisi dış kaynakta."
+  end
+
+  def event_source_attribution_text(event)
+    return "Etkinlik.io üzerinden sağlandı" if event.external_source == ExternalEventCandidate::SOURCE_ETKINLIK_IO
+
+    "Dış kaynak üzerinden sağlandı"
   end
 
   def attendance_status_badge_classes(status)
@@ -198,6 +393,36 @@ module EventsHelper
         data: data_options,
         aria: aria
       )
+    )
+  end
+
+  def event_poster_image_tag(event, variant, alt:, class_name:, loading: "lazy", sizes: nil, fetchpriority: nil, data: nil, aria: nil, defer_src: false)
+    if event.remote_poster_url.present?
+      options = event_image_options(
+        variant,
+        alt: alt,
+        class_name: class_name,
+        loading: loading,
+        sizes: sizes,
+        fetchpriority: fetchpriority,
+        data: defer_src ? event_deferred_image_data(data || {}, event.remote_poster_url) : data,
+        aria: aria
+      )
+
+      return image_tag(defer_src ? EVENT_IMAGE_PLACEHOLDER_SRC : event.remote_poster_url, options)
+    end
+
+    event_image_tag(
+      event,
+      variant,
+      alt: alt,
+      class_name: class_name,
+      loading: loading,
+      sizes: sizes,
+      fetchpriority: fetchpriority,
+      data: data,
+      aria: aria,
+      defer_src: defer_src
     )
   end
 
@@ -302,6 +527,14 @@ module EventsHelper
     event_or_category.respond_to?(:category) ? event_or_category.category.to_s : event_or_category.to_s
   end
 
+  def event_ticket_url_kind(event)
+    kind = event.ticket_url_kind.to_s
+    return kind if kind.present?
+    return Event.classify_ticket_url(event.ticket_url, event.external_url) if event.ticket_url.present?
+
+    "unknown"
+  end
+
   def prepared_event_attendance_counts
     @event_attendance_counts || {}
   end
@@ -337,5 +570,16 @@ module EventsHelper
     data[:poster_lightbox_target] = [ data[:poster_lightbox_target], "image" ].compact_blank.join(" ")
     data[:poster_lightbox_src] = source
     data
+  end
+
+  def extract_line_facts(lines)
+    lines.filter_map do |line|
+      match = line.match(/\A([A-ZÇĞİÖŞÜ][A-Za-zÇĞİÖŞÜçğıöşü0-9'’().,\- ]{1,32}):\s+(.+)\z/)
+      next unless match
+
+      label, value = match.captures
+      next if value.split.size < 2
+      [ label.strip, value.strip ]
+    end
   end
 end

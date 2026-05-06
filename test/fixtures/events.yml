@@ -27,7 +27,7 @@ submitted_event:
 
 owner_draft_event:
   title: Owner Draft Event
-  category: art
+  category: art_exhibition
   date: <%= 4.weeks.from_now %>
   city: İzmir
   location: Workshop Room

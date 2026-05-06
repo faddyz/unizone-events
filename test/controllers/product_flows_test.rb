@@ -34,7 +34,7 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @published_event.title
     assert_includes response.body, "İlgileniyorum"
     assert_includes response.body, "Etkinlik bul"
-    assert_includes response.body, "Son RSVP"
+    assert_includes response.body, "Son Katılımlar"
   end
 
   test "organizer workbench filters searches and surfaces key actions" do

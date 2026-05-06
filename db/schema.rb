@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_01_120100) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_05_230200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -72,12 +72,61 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_01_120100) do
     t.string "ticket_url"
     t.integer "capacity"
     t.string "city", default: "İstanbul", null: false
+    t.string "external_source"
+    t.string "external_id"
+    t.string "external_url"
+    t.string "remote_poster_url"
+    t.boolean "external_is_free"
+    t.string "ticket_url_kind"
+    t.datetime "imported_at"
+    t.datetime "end_date"
     t.index ["approved"], name: "index_events_on_approved"
     t.index ["city"], name: "index_events_on_city"
+    t.index ["end_date"], name: "index_events_on_end_date"
+    t.index ["external_source", "external_id"], name: "index_events_on_external_source_and_external_id", unique: true, where: "((external_source IS NOT NULL) AND (external_id IS NOT NULL))"
+    t.index ["imported_at"], name: "index_events_on_imported_at"
     t.index ["slug"], name: "index_events_on_slug", unique: true
     t.index ["status", "date"], name: "index_events_on_status_and_date"
     t.index ["status"], name: "index_events_on_status"
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "external_event_candidates", force: :cascade do |t|
+    t.string "source", null: false
+    t.string "external_id", null: false
+    t.string "status", default: "pending", null: false
+    t.integer "priority", default: 0, null: false
+    t.string "title"
+    t.string "city"
+    t.string "venue"
+    t.string "venue_type"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.string "category"
+    t.string "format"
+    t.string "poster_url"
+    t.string "ticket_url"
+    t.string "external_url"
+    t.string "ticket_url_kind"
+    t.jsonb "raw_data", default: {}, null: false
+    t.jsonb "mapped_data", default: {}, null: false
+    t.jsonb "review_reasons", default: [], null: false
+    t.jsonb "priority_reasons", default: [], null: false
+    t.string "duplicate_warning"
+    t.string "hidden_reason"
+    t.datetime "first_seen_at"
+    t.datetime "last_seen_at"
+    t.bigint "resolved_event_id"
+    t.datetime "resolved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["city"], name: "index_external_event_candidates_on_city"
+    t.index ["priority"], name: "index_external_event_candidates_on_priority"
+    t.index ["resolved_event_id"], name: "index_external_event_candidates_on_resolved_event_id"
+    t.index ["source", "external_id"], name: "index_external_event_candidates_on_source_and_external_id", unique: true
+    t.index ["starts_at"], name: "index_external_event_candidates_on_starts_at"
+    t.index ["status"], name: "index_external_event_candidates_on_status"
+    t.index ["venue_type"], name: "index_external_event_candidates_on_venue_type"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -89,6 +138,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_01_120100) do
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
+
+  create_table "import_runs", force: :cascade do |t|
+    t.string "source", null: false
+    t.string "status", default: "running", null: false
+    t.boolean "dry_run", default: true, null: false
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer "fetched_count", default: 0, null: false
+    t.integer "new_candidate_count", default: 0, null: false
+    t.integer "duplicate_count", default: 0, null: false
+    t.integer "skipped_count", default: 0, null: false
+    t.integer "hidden_count", default: 0, null: false
+    t.integer "failed_count", default: 0, null: false
+    t.jsonb "parameters", default: {}, null: false
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source"], name: "index_import_runs_on_source"
+    t.index ["started_at"], name: "index_import_runs_on_started_at"
+    t.index ["status"], name: "index_import_runs_on_status"
   end
 
   create_table "users", force: :cascade do |t|
@@ -110,4 +180,5 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_01_120100) do
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "users"
   add_foreign_key "events", "users"
+  add_foreign_key "external_event_candidates", "events", column: "resolved_event_id"
 end

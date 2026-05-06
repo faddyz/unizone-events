@@ -4,7 +4,7 @@ class EventPolicy < ApplicationPolicy
   end
 
   def show?
-    record.published? || owner? || user&.admin?
+    record.publicly_visible? || owner? || user&.admin?
   end
 
   def create?
@@ -46,9 +46,9 @@ class EventPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if user&.admin?
-      return scope.published.or(scope.where(user: user)) if user.present?
+      return scope.published_visible.or(scope.where(user: user)) if user.present?
 
-      scope.published
+      scope.published_visible
     end
   end
 

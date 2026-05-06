@@ -25,6 +25,23 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
+    resources :users, path: "kullanicilar", only: [ :index, :update ]
+
+    resources :external_event_candidates, path: "api-adaylari", only: [ :index, :show ] do
+      collection do
+        post :scan
+        patch :bulk
+        post :cleanup
+        delete :reset_import_pool
+      end
+
+      member do
+        patch :approve
+        patch :reject
+        patch :skip
+      end
+    end
+
     resources :events, except: [ :new, :create ] do
       member do
         patch :publish

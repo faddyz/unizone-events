@@ -2,6 +2,9 @@
 <% dashboard_active = controller_path == "dashboards" %>
 <% organizer_active = controller_path.start_with?("organizer/") %>
 <% admin_active = controller_path.start_with?("admin/") %>
+<% admin_events_active = controller_path == "admin/events" %>
+<% admin_candidates_active = controller_path == "admin/external_event_candidates" %>
+<% admin_users_active = controller_path == "admin/users" %>
 <% account_active = controller_path.start_with?("account/") %>
 <% auth_active = controller_path.start_with?("devise/") %>
 
@@ -41,12 +44,33 @@
     <div class="ml-auto hidden items-center gap-2.5 lg:flex">
       <% if user_signed_in? %>
         <% if current_user.admin? %>
-          <%= link_to admin_events_path,
-                class: "nav-review-link focus-ring #{admin_active ? "is-active" : ""}",
-                aria: (admin_active ? { current: "page" } : {}) do %>
-            <span class="nav-review-dot"></span>
-            <span>İnceleme</span>
-          <% end %>
+          <details class="nav-account-menu nav-admin-menu" data-controller="details-dropdown">
+            <summary class="nav-review-link nav-admin-trigger focus-ring <%= admin_active ? "is-active" : "" %>">
+              <span class="nav-review-dot"></span>
+              <span>Admin</span>
+              <svg class="nav-account-chevron size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <div class="nav-account-panel nav-admin-panel">
+              <%= link_to admin_events_path,
+                    class: "nav-account-item focus-ring #{admin_events_active ? "is-active" : ""}",
+                    aria: (admin_events_active ? { current: "page" } : {}) do %>
+                <span class="nav-review-dot"></span>
+                <span>&#304;nceleme</span>
+              <% end %>
+              <%= link_to admin_external_event_candidates_path,
+                    class: "nav-account-item focus-ring #{admin_candidates_active ? "is-active" : ""}",
+                    aria: (admin_candidates_active ? { current: "page" } : {}) do %>
+                <%= render "icons/sparkles", class: "size-4" %>
+                <span>API Adaylari</span>
+              <% end %>
+              <%= link_to admin_users_path,
+                    class: "nav-account-item focus-ring #{admin_users_active ? "is-active" : ""}",
+                    aria: (admin_users_active ? { current: "page" } : {}) do %>
+                <%= render "icons/users", class: "size-4" %>
+                <span>Kullanicilar</span>
+              <% end %>
+            </div>
+          </details>
         <% end %>
 
         <%= link_to new_organizer_event_path, class: "nav-create-link focus-ring #{current_page?(new_organizer_event_path) ? "is-active" : ""}" do %>
@@ -85,6 +109,22 @@
             <%= link_to organizer_events_path, class: "nav-account-item focus-ring #{organizer_active ? "is-active" : ""}" do %>
               <%= render "icons/ticket", class: "size-4" %>
               <span>Etkinliklerim</span>
+            <% end %>
+            <% if current_user.admin? %>
+              <%= link_to admin_events_path, class: "nav-account-item focus-ring #{admin_events_active ? "is-active" : ""}" do %>
+                <span class="nav-review-dot"></span>
+                <span>Inceleme</span>
+              <% end %>
+              <%= link_to admin_external_event_candidates_path, class: "nav-account-item focus-ring #{admin_candidates_active ? "is-active" : ""}" do %>
+                <%= render "icons/sparkles", class: "size-4" %>
+                <span>API Adayları</span>
+              <% end %>
+            <% end %>
+            <% if current_user.admin? %>
+              <%= link_to admin_users_path, class: "nav-account-item focus-ring #{admin_users_active ? "is-active" : ""}" do %>
+                <%= render "icons/users", class: "size-4" %>
+                <span>Kullanicilar</span>
+              <% end %>
             <% end %>
             <%= button_to destroy_user_session_path, method: :delete, class: "nav-account-item nav-account-danger w-full text-left focus-ring" do %>
               <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">

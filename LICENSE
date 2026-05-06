@@ -1,21 +1,37 @@
-MIT License
+Portfolio Source-Available License
 
-Copyright (c) 2025 Samet Yılmaz
+Copyright (c) 2026 Samet Yılmaz
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    
-copies of the Software, and to permit persons to whom the Software is         
-furnished to do so, subject to the following conditions:                      
+English version is provided below. Turkish version follows.
 
-The above copyright notice and this permission notice shall be included in    
-all copies or substantial portions of the Software.                           
+---
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING       
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS  
-IN THE SOFTWARE.
+ENGLISH
+
+This project is made publicly available for portfolio, demonstration, and review purposes only. The source code is accessible solely for inspection and evaluation.
+
+Without prior written permission from the project owner, this software, in whole or in part, may not be used, copied, modified, merged, distributed, republished, sublicensed, sold, deployed, hosted, or transformed into derivative works.
+
+This permission does not grant any right to use the software for commercial, personal, educational, open-source, productization, production, or any other operational purpose.
+
+The project name, branding, user interface, visual design, content structure, seed data, and related assets are also protected and may not be used, copied, modified, distributed, or reused without prior written permission from the project owner.
+
+Public availability of this repository does not imply an open-source license. All rights are reserved by the project owner.
+
+THE SOFTWARE IS PROVIDED "AS IS". THE PROJECT OWNER SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR OTHER DAMAGES ARISING FROM THE USE, REVIEW, INSPECTION, ACCESS, OR INABILITY TO USE THE SOFTWARE.
+
+---
+
+TÜRKÇE
+
+Bu proje portfolyo, demo ve inceleme amacıyla herkese açık olarak görüntülenebilir. Kaynak kodu yalnızca inceleme ve değerlendirme amacıyla erişime açıktır.
+
+Proje sahibinden önceden yazılı izin alınmadan bu yazılımın tamamı veya herhangi bir bölümü kullanılamaz, kopyalanamaz, değiştirilemez, birleştirilemez, dağıtılamaz, yeniden yayınlanamaz, alt lisanslanamaz, satılamaz, deploy edilemez, barındırılamaz veya türev çalışmalara dönüştürülemez.
+
+Bu izin; yazılım üzerinde herhangi bir ticari, kişisel, eğitim, açık kaynak, ürünleştirme, üretim ortamı veya başka bir operasyonel kullanım hakkı vermez.
+
+Proje adı, marka öğeleri, kullanıcı arayüzü, görsel tasarım, içerik yapısı, seed verileri ve ilgili varlıklar da korunur; proje sahibinden önceden yazılı izin alınmadan kullanılamaz, kopyalanamaz, değiştirilemez, dağıtılamaz veya yeniden kullanılamaz.
+
+Bu reponun herkese açık olması, açık kaynak lisansı verildiği anlamına gelmez. Tüm haklar proje sahibine aittir.
+
+YAZILIM "OLDUĞU GİBİ" SUNULUR. PROJE SAHİBİ; YAZILIMIN KULLANIMINDAN, İNCELENMESİNDEN, DEĞERLENDİRİLMESİNDEN, YAZILIMA ERİŞİMDEN VEYA YAZILIMIN KULLANILAMAMASINDAN DOĞABİLECEK HERHANGİ BİR DOĞRUDAN, DOLAYLI, ARIZİ, ÖZEL, SONUÇSAL, CEZAİ VEYA DİĞER ZARARDAN SORUMLU DEĞİLDİR.
