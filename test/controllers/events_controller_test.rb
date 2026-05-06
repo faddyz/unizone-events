@@ -22,6 +22,30 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     refute_includes response.body, @owner_draft_event.title
   end
 
+  test "public pages exclude expired published events" do
+    expired_event = Event.create!(
+      user: @member,
+      title: "Expired Public Event",
+      description: "This event should no longer appear publicly.",
+      category: "technology",
+      date: 1.minute.ago,
+      city: "Online",
+      location: "Online",
+      status: "published"
+    )
+
+    get root_path
+    assert_response :success
+    refute_includes response.body, expired_event.title
+
+    get explore_events_path
+    assert_response :success
+    refute_includes response.body, expired_event.title
+
+    get event_path(expired_event)
+    assert_response :not_found
+  end
+
   test "explore applies search category date price and sort params" do
     free_event = Event.create!(
       user: @member,
@@ -49,8 +73,8 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       user: @member,
       title: "Today Design Crit",
       description: "A same-day review table for designers and builders.",
-      category: "art",
-      date: Time.zone.now.change(hour: 18, min: 0),
+      category: "art_exhibition",
+      date: Time.zone.now.change(hour: 23, min: 59),
       city: "İzmir",
       location: "Studio Room",
       price: 0,
@@ -121,7 +145,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       user: @member,
       title: "Sold Out Tiny Room",
       description: "A tiny room event with no available seats.",
-      category: "art",
+      category: "art_exhibition",
       date: 5.days.from_now.change(hour: 20, min: 0),
       city: "İstanbul",
       location: "Tiny Room",
@@ -176,9 +200,38 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     get event_path(@published_event)
 
     assert_response :success
-    assert_includes response.body, "Kayıt / Bilet Al"
+    assert_includes response.body, "Bilet Al"
     assert_includes response.body, @published_event.ticket_url
     assert_includes response.body, "Kontenjan"
+  end
+
+  test "event show surfaces imported attribution and source ticket copy" do
+    imported_event = Event.create!(
+      user: @member,
+      title: "Imported Source Event",
+      description: "Imported event description",
+      category: "technology",
+      date: 1.week.from_now,
+      city: "Online",
+      location: "Online",
+      status: "published",
+      external_source: "etkinlik_io",
+      external_id: "imported-source-event",
+      external_url: "https://etkinlik.io/event/imported-source-event",
+      ticket_url: "https://etkinlik.io/event/imported-source-event",
+      ticket_url_kind: "etkinlik_detail",
+      external_is_free: false,
+      remote_poster_url: "https://cdn.example.test/imported.jpg"
+    )
+
+    get event_path(imported_event)
+
+    assert_response :success
+    assert_includes response.body, "Bilet bilgisi kaynakta"
+    assert_includes response.body, "Etkinlik Detayı"
+    assert_includes response.body, "Kaynak: Etkinlik.io"
+    refute_includes response.body, @member.email
+    assert_includes response.body, imported_event.remote_poster_url
   end
 
   test "event show invites guests to sign in before choosing attendance" do

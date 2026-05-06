@@ -54,6 +54,8 @@
   <% dashboard_active = controller_path == "dashboards" %>
   <% organizer_active = controller_path.start_with?("organizer/") %>
   <% admin_active = controller_path.start_with?("admin/") %>
+  <% admin_candidates_active = controller_path == "admin/external_event_candidates" %>
+  <% admin_users_active = controller_path == "admin/users" %>
 
   <div id="mobile-account-sheet"
        class="mobile-account-sheet lg:hidden"
@@ -106,6 +108,16 @@
           <%= link_to admin_events_path, class: "mobile-account-item focus-ring #{admin_active ? "is-active" : ""}" do %>
             <span class="nav-review-dot"></span>
             <span>İnceleme</span>
+          <% end %>
+          <%= link_to admin_external_event_candidates_path, class: "mobile-account-item focus-ring #{admin_candidates_active ? "is-active" : ""}" do %>
+            <%= render "icons/sparkles", class: "size-4" %>
+            <span>API Adayları</span>
+          <% end %>
+        <% end %>
+        <% if current_user.admin? %>
+          <%= link_to admin_users_path, class: "mobile-account-item focus-ring #{admin_users_active ? "is-active" : ""}" do %>
+            <%= render "icons/users", class: "size-4" %>
+            <span>Kullanicilar</span>
           <% end %>
         <% end %>
         <%= button_to destroy_user_session_path, method: :delete, class: "mobile-account-item mobile-account-danger w-full text-left focus-ring" do %>

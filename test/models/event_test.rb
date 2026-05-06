@@ -32,6 +32,71 @@ class EventTest < ActiveSupport::TestCase
     assert event.valid?
   end
 
+  test "classifies etkinlik ticket redirects as ticket links" do
+    assert_equal "redirect_ticket", Event.classify_ticket_url("https://etkinlik.io/redirect-ticket-url/demo")
+    assert_equal "redirect_ticket", Event.classify_ticket_url("https://etkinlik.io/api/v2/events/282895/ticket-url?publisher_code=CBejonrdsX")
+    assert Event.ticket_kind_linkable?("redirect_ticket")
+  end
+
+  test "published visible excludes events whose end or start time passed" do
+    current = Event.create!(
+      user: users(:one),
+      title: "Current Imported Event",
+      description: "Visible because its end date is still in the future.",
+      category: "technology",
+      date: 2.hours.ago,
+      end_date: 2.hours.from_now,
+      city: "Online",
+      location: "Online",
+      status: "published"
+    )
+    expired = Event.create!(
+      user: users(:one),
+      title: "Expired Imported Event",
+      description: "Hidden because the event time has passed.",
+      category: "technology",
+      date: 1.minute.ago,
+      city: "Online",
+      location: "Online",
+      status: "published"
+    )
+
+    assert_includes Event.published_visible, current
+    refute_includes Event.published_visible, expired
+  end
+
+  test "published visible ignores suspicious long imported end dates" do
+    imported = Event.create!(
+      user: users(:one),
+      title: "Long Imported End Event",
+      description: "Hidden because imported end date looks like a series range.",
+      category: "music",
+      date: 1.day.ago,
+      end_date: 20.days.from_now,
+      city: "İstanbul",
+      location: "Venue",
+      status: "published",
+      external_source: "etkinlik_io",
+      external_id: "long-imported-end-event"
+    )
+    internal = Event.create!(
+      user: users(:one),
+      title: "Long Internal Event",
+      description: "Visible because internal multi-day events may be intentional.",
+      category: "music",
+      date: 1.day.ago,
+      end_date: 20.days.from_now,
+      city: "İstanbul",
+      location: "Venue",
+      status: "published"
+    )
+
+    assert imported.expired?
+    refute_includes Event.published_visible, imported
+    refute internal.expired?
+    assert_includes Event.published_visible, internal
+  end
+
   test "image accepts webp and rejects unsupported content types" do
     event = events(:published_event)
 

@@ -74,10 +74,10 @@
             <article class="explore-list-card animate-rise-in" style="animation-delay: <%= index * 45 %>ms">
               <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
                 <div class="poster-art absolute inset-0 opacity-100"></div>
-                <% if event.image.attached? %>
-                  <%= event_image_tag event,
+                <% if event_has_poster?(event) %>
+                  <%= event_poster_image_tag event,
                         :list,
-                        alt: event.title,
+                        alt: event_display_title(event),
                         loading: "lazy",
                         sizes: "(min-width: 1024px) 12.5rem, (min-width: 640px) 12rem, 92vw",
                         class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
@@ -95,9 +95,9 @@
                 </div>
 
                 <h2>
-                  <%= link_to event.title, event_path(event), class: "focus-ring" %>
+                  <%= link_to event_display_title(event), event_path(event), class: "focus-ring" %>
                 </h2>
-                <p><%= truncate(event.description.to_s.squish, length: 150) %></p>
+                <p><%= event_description_snippet(event, length: 150) %></p>
               </div>
 
               <dl class="explore-list-facts">
@@ -115,7 +115,7 @@
                 </div>
               </dl>
 
-              <%= link_to event_path(event), class: "explore-list-action focus-ring", aria: { label: "#{event.title} detayları" } do %>
+              <%= link_to event_path(event), class: "explore-list-action focus-ring", aria: { label: "#{event_display_title(event)} detayları" } do %>
                 <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                   <path d="M5 12h14M13 6l6 6-6 6"/>
                 </svg>

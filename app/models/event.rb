@@ -2,6 +2,17 @@ class Event < ApplicationRecord
   extend FriendlyId
 
   VALID_TICKET_URL = /\Ahttps?:\/\/[^\s]+\z/i
+  VALID_REMOTE_URL = /\Ahttps?:\/\/[^\s]+\z/i
+  TICKET_URL_KINDS = %w[external_ticket ticket redirect_ticket etkinlik_detail unknown].freeze
+  MAX_IMPORTED_PUBLIC_DURATION = 18.hours
+  PUBLIC_EXPIRY_SQL = <<~SQL.squish.freeze
+    CASE
+      WHEN end_date IS NOT NULL
+        AND (external_source IS NULL OR end_date <= date + INTERVAL '18 hours')
+      THEN end_date
+      ELSE date
+    END
+  SQL
   MAX_IMAGE_SIZE = 5.megabytes
   ACCEPTABLE_IMAGE_TYPES = [ "image/jpeg", "image/jpg", "image/png", "image/webp" ].freeze
   IMAGE_VARIANT_DIMENSIONS = {
@@ -101,7 +112,8 @@ class Event < ApplicationRecord
     "Van",
     "Yalova",
     "Yozgat",
-    "Zonguldak"
+    "Zonguldak",
+    "Online"
   ].freeze
 
   friendly_id :title, use: :slugged
@@ -128,37 +140,41 @@ class Event < ApplicationRecord
   }, default: :draft, validate: true
 
   enum :category, {
-    general: "general",
-    technology: "technology",
     music: "music",
-    art: "art",
-    sports: "sports",
-    education: "education",
-    concert: "concert",
     festival: "festival",
-    workshop: "workshop",
-    party: "party",
-    theater: "theater",
-    exhibition: "exhibition",
+    art_exhibition: "art_exhibition",
     conference: "conference",
-    networking: "networking"
-  }, default: :general
+    workshop: "workshop",
+    networking: "networking",
+    technology: "technology",
+    education: "education",
+    business: "business",
+    career: "career",
+    food_lifestyle: "food_lifestyle",
+    nightlife: "nightlife",
+    sports_wellness: "sports_wellness",
+    theater: "theater",
+    family: "family",
+    community: "community"
+  }, default: :community
 
   CATEGORY_TITLES = {
-    general: "Community",
-    technology: "Tech",
     music: "Music",
-    art: "Art & Design",
-    sports: "Sports",
-    education: "Learning",
-    concert: "Live Music",
     festival: "Festival",
-    workshop: "Workshop",
-    party: "Nightlife",
-    theater: "Stage",
-    exhibition: "Exhibition",
+    art_exhibition: "Art & Exhibitions",
     conference: "Conference",
-    networking: "Meetups"
+    workshop: "Workshop",
+    networking: "Meetups",
+    technology: "Tech",
+    education: "Learning",
+    business: "Business",
+    career: "Career",
+    food_lifestyle: "Food & Lifestyle",
+    nightlife: "Nightlife",
+    sports_wellness: "Sports & Wellness",
+    theater: "Stage",
+    family: "Family",
+    community: "Community"
   }.freeze
 
   attribute :city, :string, default: "İstanbul"
@@ -168,6 +184,8 @@ class Event < ApplicationRecord
   validates :price, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
   validates :capacity, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
   validates :ticket_url, format: { with: VALID_TICKET_URL, allow_blank: true }
+  validates :external_url, :remote_poster_url, format: { with: VALID_REMOTE_URL, allow_blank: true }
+  validates :ticket_url_kind, inclusion: { in: TICKET_URL_KINDS, allow_blank: true }
   validate :acceptable_image
 
   scope :by_query, ->(query) do
@@ -181,8 +199,35 @@ class Event < ApplicationRecord
   scope :by_date, ->(date) { where("date >= ?", date) if date.present? }
   scope :by_category, ->(categories) { where(category: categories) if categories.present? }
   scope :by_city, ->(city) { where(city: city) if city.present? }
-  scope :upcoming, -> { where("date >= ?", Time.current).order(date: :asc) }
-  scope :published_visible, -> { published.where("date >= ?", 1.day.ago) }
+  scope :upcoming, -> { where("#{PUBLIC_EXPIRY_SQL} >= ?", Time.current).order(date: :asc) }
+  scope :published_visible, -> { published.where("#{PUBLIC_EXPIRY_SQL} >= ?", Time.current) }
+
+  def self.classify_ticket_url(ticket_url, _external_url = nil)
+    value = ticket_url.to_s.strip
+    return "unknown" if value.blank?
+
+    uri = URI.parse(value)
+    host = uri.host.to_s.downcase
+    return "redirect_ticket" if etkinlik_host?(host) && etkinlik_ticket_redirect_path?(uri.path.to_s)
+    return "etkinlik_detail" if etkinlik_host?(host)
+
+    "external_ticket"
+  rescue URI::InvalidURIError
+    "unknown"
+  end
+
+  def self.ticket_kind_linkable?(kind)
+    %w[external_ticket redirect_ticket ticket].include?(kind.to_s)
+  end
+
+  def self.etkinlik_host?(host)
+    host == "etkinlik.io" || host.end_with?(".etkinlik.io")
+  end
+
+  def self.etkinlik_ticket_redirect_path?(path)
+    path.start_with?("/redirect-ticket-url") ||
+      path.match?(%r{\A/api/v\d+/events/[^/]+/ticket-url\z})
+  end
 
   def attendees_count
     attendance_count_for("going")
@@ -209,19 +254,18 @@ class Event < ApplicationRecord
   end
 
   def similar_events(limit = 6)
-    Event.published
+    Event.published_visible
          .with_attached_image
          .includes(:user)
          .where(category: category)
          .where.not(id: id)
-         .where("date >= ?", Time.current)
          .order(date: :asc)
          .limit(limit)
   end
 
   def organizer_other_events(limit = 4)
     user.events
-        .published
+        .published_visible
         .with_attached_image
         .includes(:user)
         .where.not(id: id)
@@ -236,11 +280,41 @@ class Event < ApplicationRecord
   end
 
   def free?
+    if imported?
+      return external_is_free? unless external_is_free.nil?
+      return price.to_f.zero? if price.present?
+
+      return false
+    end
+
     price.nil? || price.to_f.zero?
   end
 
+  def imported?
+    external_source.present?
+  end
+
+  def expired?
+    reference = public_expiry_at
+    reference.present? && reference < Time.current
+  end
+
+  def public_expiry_at
+    return date if imported? && suspicious_imported_end_date?
+
+    end_date || date
+  end
+
+  def suspicious_imported_end_date?
+    imported? && end_date.present? && date.present? && end_date > date + MAX_IMPORTED_PUBLIC_DURATION
+  end
+
+  def publicly_visible?
+    published? && !expired?
+  end
+
   def visible_to_public?
-    published?
+    publicly_visible?
   end
 
   def reviewable?
@@ -264,7 +338,10 @@ class Event < ApplicationRecord
   end
 
   def display_image
-    image.attached? ? image : "https://placehold.co/600x350/e2e8f0/0f172a?text=#{title.truncate(20)}"
+    return remote_poster_url if remote_poster_url.present?
+    return image if image.attached?
+
+    "https://placehold.co/600x350/e2e8f0/0f172a?text=#{title.truncate(20)}"
   end
 
   def normalize_friendly_id(string)

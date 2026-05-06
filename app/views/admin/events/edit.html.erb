@@ -13,6 +13,39 @@
     </div>
   </header>
 
+  <% if @event.imported? %>
+    <section class="admin-panel admin-import-panel">
+      <div class="admin-section-head">
+        <div>
+          <p class="section-eyebrow text-coral">İçe aktarılan etkinlik</p>
+          <h2>Etkinlik.io bilgisi</h2>
+        </div>
+        <div class="admin-review-hero-actions">
+          <%= link_to "Public sayfa", event_path(@event), class: "admin-secondary-action focus-ring" if @event.published? %>
+          <%= link_to "Kaynağı aç", event_source_link_url(@event), target: "_blank", rel: "noopener", class: "admin-secondary-action focus-ring" if event_source_link_url(@event).present? %>
+        </div>
+      </div>
+
+      <div class="admin-import-grid">
+        <div class="admin-import-poster <%= event_poster_background_classes(@event) %>">
+          <% if @event.remote_poster_url.present? %>
+            <%= image_tag @event.remote_poster_url, alt: event_display_title(@event), loading: "lazy" %>
+          <% else %>
+            <span>Remote poster yok</span>
+          <% end %>
+        </div>
+        <dl class="admin-detail-grid">
+          <div><dt>Kaynak</dt><dd><%= @event.external_source %></dd></div>
+          <div><dt>External ID</dt><dd><%= @event.external_id %></dd></div>
+          <div><dt>Ticket kind</dt><dd><%= @event.ticket_url_kind.presence || "unknown" %></dd></div>
+          <div><dt>Attribution</dt><dd><%= event_source_attribution_text(@event) %></dd></div>
+          <div><dt>External URL</dt><dd><%= @event.external_url.presence || "-" %></dd></div>
+          <div><dt>Ticket URL</dt><dd><%= @event.ticket_url.presence || "-" %></dd></div>
+        </dl>
+      </div>
+    </section>
+  <% end %>
+
   <div class="admin-panel admin-edit-panel">
     <%= render "form", event: @event %>
   </div>
