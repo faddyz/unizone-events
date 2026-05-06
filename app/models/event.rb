@@ -183,6 +183,7 @@ class Event < ApplicationRecord
   validates :city, inclusion: { in: CITY_OPTIONS }
   validates :price, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
   validates :capacity, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+  validates :editor_score, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100, allow_nil: true }
   validates :ticket_url, format: { with: VALID_TICKET_URL, allow_blank: true }
   validates :external_url, :remote_poster_url, format: { with: VALID_REMOTE_URL, allow_blank: true }
   validates :ticket_url_kind, inclusion: { in: TICKET_URL_KINDS, allow_blank: true }

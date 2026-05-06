@@ -100,7 +100,7 @@ class Admin::EventsController < ApplicationController
   end
 
   def event_params
-    permitted = params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :image, :status, :review_note)
+    permitted = params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :editor_score, :image, :status, :review_note)
     permitted.delete(:image) if permitted[:image].blank?
     permitted
   end

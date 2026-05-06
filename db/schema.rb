@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_05_230200) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_06_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -80,6 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_05_230200) do
     t.string "ticket_url_kind"
     t.datetime "imported_at"
     t.datetime "end_date"
+    t.integer "editor_score"
     t.index ["approved"], name: "index_events_on_approved"
     t.index ["city"], name: "index_events_on_city"
     t.index ["end_date"], name: "index_events_on_end_date"

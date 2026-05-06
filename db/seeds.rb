@@ -61,8 +61,7 @@ EVENTS = [
     price: 450,
     capacity: 220,
     ticket_url: "https://tickets.unizone.test/kadikoy-indie-sahne",
-    status: "published",
-    rsvps: { going: 30, interested: 1 }
+    status: "published"
   },
   {
     host: "leo@example.com",
@@ -75,8 +74,7 @@ EVENTS = [
     category: "technology",
     price: 0,
     capacity: 80,
-    status: "published",
-    rsvps: { going: 25, interested: 5, not_going: 1 }
+    status: "published"
   },
   {
     host: "zeynep@example.com",
@@ -88,8 +86,7 @@ EVENTS = [
     date: demo_time(6, hour: 12),
     category: "art_exhibition",
     price: 0,
-    status: "published",
-    rsvps: { going: 23, interested: 5 }
+    status: "published"
   },
   {
     host: "deniz@example.com",
@@ -102,8 +99,7 @@ EVENTS = [
     category: "nightlife",
     price: 320,
     capacity: 180,
-    status: "published",
-    rsvps: { going: 21, interested: 6, not_going: 1 }
+    status: "published"
   },
   {
     host: "mina@example.com",
@@ -117,8 +113,7 @@ EVENTS = [
     price: 650,
     capacity: 160,
     ticket_url: "https://tickets.unizone.test/bogazda-akustik-seri",
-    status: "published",
-    rsvps: { going: 20, interested: 5 }
+    status: "published"
   },
   {
     host: "zeynep@example.com",
@@ -131,8 +126,7 @@ EVENTS = [
     category: "art_exhibition",
     price: 250,
     capacity: 90,
-    status: "published",
-    rsvps: { going: 18, interested: 6, not_going: 1 }
+    status: "published"
   },
   {
     host: "can@example.com",
@@ -144,8 +138,7 @@ EVENTS = [
     date: demo_time(13, hour: 10, min: 30),
     category: "networking",
     price: 0,
-    status: "published",
-    rsvps: { going: 15, interested: 4 }
+    status: "published"
   },
   {
     host: "arya@example.com",
@@ -158,8 +151,7 @@ EVENTS = [
     category: "community",
     price: 0,
     capacity: 140,
-    status: "published",
-    rsvps: { going: 17, interested: 5 }
+    status: "published"
   },
   {
     host: "leo@example.com",
@@ -172,8 +164,7 @@ EVENTS = [
     category: "technology",
     price: 250,
     capacity: 70,
-    status: "published",
-    rsvps: { going: 29, interested: 2 }
+    status: "published"
   },
   {
     host: "organizer@example.com",
@@ -185,8 +176,7 @@ EVENTS = [
     category: "theater",
     price: 180,
     capacity: 60,
-    status: "published",
-    rsvps: { going: 10, interested: 4 }
+    status: "published"
   },
   {
     host: "deniz@example.com",
@@ -198,8 +188,7 @@ EVENTS = [
     date: demo_time(20, hour: 14),
     category: "music",
     price: 150,
-    status: "published",
-    rsvps: { going: 15, interested: 5 }
+    status: "published"
   },
   {
     host: "deniz@example.com",
@@ -212,8 +201,7 @@ EVENTS = [
     price: 550,
     capacity: 120,
     ticket_url: "https://tickets.unizone.test/kordon-caz",
-    status: "published",
-    rsvps: { going: 28, interested: 3 }
+    status: "published"
   },
   {
     host: "zeynep@example.com",
@@ -225,8 +213,7 @@ EVENTS = [
     category: "art_exhibition",
     price: 200,
     capacity: 35,
-    status: "published",
-    rsvps: { going: 12, interested: 4 }
+    status: "published"
   },
   {
     host: "mel@example.com",
@@ -238,8 +225,7 @@ EVENTS = [
     category: "nightlife",
     price: 700,
     capacity: 200,
-    status: "published",
-    rsvps: { going: 17, interested: 6 }
+    status: "published"
   },
   {
     host: "mel@example.com",
@@ -252,8 +238,7 @@ EVENTS = [
     category: "community",
     price: 0,
     capacity: 90,
-    status: "published",
-    rsvps: { going: 11, interested: 5 }
+    status: "published"
   },
   {
     host: "arya@example.com",
@@ -266,8 +251,7 @@ EVENTS = [
     category: "workshop",
     price: 300,
     capacity: 22,
-    status: "published",
-    rsvps: { going: 13, interested: 3 }
+    status: "published"
   },
   {
     host: "organizer@example.com",
@@ -279,8 +263,7 @@ EVENTS = [
     category: "festival",
     price: 350,
     capacity: 45,
-    status: "published",
-    rsvps: { going: 12, interested: 5 }
+    status: "published"
   },
   {
     host: "mel@example.com",
@@ -293,8 +276,7 @@ EVENTS = [
     category: "sports_wellness",
     price: 180,
     capacity: 40,
-    status: "published",
-    rsvps: { going: 9, interested: 4 }
+    status: "published"
   },
   {
     host: "zeynep@example.com",
@@ -306,8 +288,7 @@ EVENTS = [
     category: "workshop",
     price: 420,
     capacity: 18,
-    status: "published",
-    rsvps: { going: 15, interested: 2 }
+    status: "published"
   },
   {
     host: "organizer@example.com",
@@ -319,8 +300,7 @@ EVENTS = [
     category: "community",
     price: 0,
     capacity: 50,
-    status: "published",
-    rsvps: { going: 14, interested: 6 }
+    status: "published"
   },
   {
     host: "can@example.com",
@@ -437,46 +417,11 @@ def demo_event(users_by_email, attrs)
   event
 end
 
-def desired_rsvps_for(event, demo_users, counts, offset)
-  eligible_users = demo_users.reject { |user| user.admin? || user == event.user }
-  eligible_users = eligible_users.rotate(offset % eligible_users.length)
-  desired = {}
-
-  %i[going interested not_going].each do |status|
-    eligible_users.shift(counts.fetch(status, 0).to_i).each do |user|
-      desired[user] = status.to_s
-    end
-  end
-
-  desired
-end
-
-def reconcile_demo_attendances(event, desired_statuses, demo_users)
-  demo_user_ids = demo_users.map(&:id)
-  desired_user_ids = desired_statuses.keys.map(&:id)
-  stale_scope = Attendance.where(event: event, user_id: demo_user_ids)
-  stale_scope = stale_scope.where.not(user_id: desired_user_ids) if desired_user_ids.any?
-  stale_scope.destroy_all
-
-  desired_statuses.each do |user, status|
-    attendance = Attendance.find_or_initialize_by(user: user, event: event)
-    attendance.status = status
-    attendance.save!
-  end
-end
-
 users_by_email = DEMO_USERS.to_h { |attrs| [ attrs.fetch(:email), demo_user(**attrs) ] }
 events = []
 
 if SEED_DEMO_EVENTS
   events = EVENTS.map { |attrs| demo_event(users_by_email, attrs) }
-  demo_users = users_by_email.values
-
-  events.each_with_index do |event, index|
-    rsvp_counts = EVENTS.fetch(index).fetch(:rsvps, {})
-    desired_statuses = event.published? ? desired_rsvps_for(event, demo_users, rsvp_counts, index * 5) : {}
-    reconcile_demo_attendances(event, desired_statuses, demo_users)
-  end
 end
 
 puts "Seeded Unizone demo data."
@@ -484,5 +429,5 @@ puts "Users: #{DEMO_USERS.size} demo accounts"
 puts "Events: #{events.size} demo events"
 puts "Sample user: member@example.com / #{PASSWORD}"
 puts "Sample organizer: mina@example.com / #{PASSWORD}"
-puts "Set DEMO_SEED_EVENTS=1 to seed demo events and RSVP data."
+puts "Set DEMO_SEED_EVENTS=1 to seed demo events."
 puts "Set DEMO_SEED_RESET_PASSWORDS=1 to reset existing demo account passwords."

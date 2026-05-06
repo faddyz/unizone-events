@@ -59,6 +59,7 @@ module EtkinlikIo
         external_source: candidate.source,
         external_id: candidate.external_id,
         imported_at: Time.current,
+        editor_score: editor_score,
         status: "published"
       }
     end
@@ -79,6 +80,10 @@ module EtkinlikIo
 
     def external_url
       @external_url ||= valid_url(value_for("external_url", candidate.external_url))
+    end
+
+    def editor_score
+      value_for("editor_score", nil)
     end
 
     def normalized_category(value)

@@ -118,6 +118,10 @@
             <dt>Yanıtlar</dt>
             <dd><%= @event.total_responses_count %></dd>
           </div>
+          <div>
+            <dt>Editoryal oncelik</dt>
+            <dd><%= @event.editor_score.nil? ? "Otomatik" : @event.editor_score %></dd>
+          </div>
         </dl>
       </section>
 

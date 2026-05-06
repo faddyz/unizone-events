@@ -201,7 +201,7 @@ class Admin::ExternalEventCandidatesController < ApplicationController
   def approval_params
     return {} unless params[:approval].present?
 
-    params.require(:approval).permit(:title, :category, :city, :location, :description, :starts_at, :ends_at, :ticket_url, :external_url, :external_is_free)
+    params.require(:approval).permit(:title, :category, :city, :location, :description, :starts_at, :ends_at, :ticket_url, :external_url, :external_is_free, :editor_score)
   end
 
   def approval_defaults(candidate)
@@ -216,7 +216,8 @@ class Admin::ExternalEventCandidatesController < ApplicationController
       ends_at: candidate.ends_at,
       ticket_url: candidate.ticket_url,
       external_url: candidate.external_url,
-      external_is_free: mapped["external_is_free"]
+      external_is_free: mapped["external_is_free"],
+      editor_score: candidate.resolved_event&.editor_score
     }
   end
 
