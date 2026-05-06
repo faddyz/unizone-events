@@ -124,7 +124,7 @@ module EtkinlikIo
       return false if category.in?(%w[music festival])
 
       LOW_PRIORITY_SLUGS.include?(payload.dig("category", "slug").to_s) &&
-        category.in?(%w[theater family community])
+        category.in?(%w[theater family community workshop])
     end
 
     def niche_education_topic?
@@ -134,7 +134,7 @@ module EtkinlikIo
 
     def priority_for(category)
       case category
-      when "music", "festival", "conference", "workshop", "technology", "business"
+      when "music", "festival", "conference", "technology", "business"
         90
       when "art_exhibition", "networking", "education", "career"
         70
@@ -147,7 +147,7 @@ module EtkinlikIo
 
     def priority_reasons(category)
       reasons = []
-      reasons << "priority_category" if %w[music festival conference workshop technology business].include?(category)
+      reasons << "priority_category" if %w[music festival conference technology business].include?(category)
       reasons << "online_priority_kept" if payload["venue_type"] == "ONLINE" && reasons.any?
       reasons
     end
