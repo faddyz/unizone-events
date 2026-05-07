@@ -232,11 +232,19 @@
 .hero-android-lite .hero-stage-wash,
 .hero-android-lite .hero-orb,
 .hero-android-lite .hero-ribbon,
-.hero-android-lite .hero-glow-field,
-.hero-android-lite .hero-energy,
 .hero-android-lite .hero-scanlines,
 .hero-android-lite .soft-grid {
   animation: none;
+}
+
+.hero-android-lite .hero-atmosphere {
+  animation: androidHeroBreath 14s ease-in-out infinite alternate;
+}
+
+.hero-android-lite .hero-glow-field,
+.hero-android-lite .hero-energy {
+  animation: androidHeroPulse 11s ease-in-out infinite alternate;
+  will-change: opacity, transform;
 }
 
 .hero-android-lite .hero-orb {
@@ -269,6 +277,28 @@
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background: rgba(18, 19, 24, 0.9);
+}
+
+@keyframes androidHeroBreath {
+  from {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+}
+
+@keyframes androidHeroPulse {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 0.68;
+  }
 }
 
 .hero-copy {
