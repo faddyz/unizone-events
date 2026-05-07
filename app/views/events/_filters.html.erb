@@ -1,4 +1,5 @@
 <% view_mode = params[:view] == "list" ? "list" : "grid" %>
+<% hide_started = ActiveModel::Type::Boolean.new.cast(params[:hide_started]) %>
 
 <div class="explore-filter-stack" data-controller="explore-filters">
   <span class="explore-sticky-sentinel" data-explore-filters-target="sentinel" aria-hidden="true"></span>
@@ -23,6 +24,18 @@
           <small>Arama, kategori ve zaman</small>
         </span>
       </div>
+
+      <%= link_to explore_events_path(explore_filter_params_with(hide_started: hide_started ? nil : "1")),
+            class: "explore-started-toggle #{hide_started ? "is-active" : ""} focus-ring",
+            role: "checkbox",
+            aria: { checked: hide_started.to_s } do %>
+        <span class="explore-started-copy">
+          <strong><%= hide_started ? "Başlayan etkinlikler gizlendi." : "Başlamış etkinlikleri gizle" %></strong>
+        </span>
+        <span class="explore-started-switch" aria-hidden="true">
+          <span></span>
+        </span>
+      <% end %>
 
       <% if @active_filters.any? %>
         <div class="explore-results-meta" aria-live="polite">
@@ -61,6 +74,7 @@
             action: "change->explore-filters#submit input->explore-filters#queueSubmit"
           } do |form| %>
       <%= form.hidden_field :view, value: view_mode if view_mode == "list" %>
+      <%= form.hidden_field :hide_started, value: "1" if hide_started %>
 
       <div class="explore-filter-main">
         <div class="explore-search-field">
@@ -195,7 +209,7 @@
               </svg>
             <% end %>
           <% end %>
-          <%= link_to "Temizle", explore_events_path(explore_filter_params_with(query: nil, city: nil, category: nil, date_filter: nil, time_filter: nil, price_filter: nil, availability_filter: nil, registration_filter: nil, sort_by: nil)), class: "explore-clear-link focus-ring" %>
+          <%= link_to "Temizle", explore_events_path(explore_filter_params_with(query: nil, city: nil, category: nil, date_filter: nil, time_filter: nil, price_filter: nil, availability_filter: nil, registration_filter: nil, hide_started: nil, sort_by: nil)), class: "explore-clear-link focus-ring" %>
         </div>
       <% else %>
         <p class="explore-filter-hint">Filtre seçince sonuç sayısı ve aktif seçimler burada görünür.</p>

@@ -544,6 +544,7 @@ module EventsHelper
       "price_filter",
       "availability_filter",
       "registration_filter",
+      "hide_started",
       "sort_by",
       "view"
     )

@@ -71,6 +71,7 @@ class EventsController < ApplicationController
       :price_filter,
       :availability_filter,
       :registration_filter,
+      :hide_started,
       :sort_by,
       :view,
       :category,
@@ -147,6 +148,10 @@ class EventsController < ApplicationController
     registration_filter = params[:registration_filter].to_s
     if registration_labels.key?(registration_filter)
       filters << { key: "registration_filter", value: registration_filter, label: "Kayıt: #{registration_labels[registration_filter]}" }
+    end
+
+    if ActiveModel::Type::Boolean.new.cast(params[:hide_started])
+      filters << { key: "hide_started", value: "1", label: "Başlamış etkinlikler gizli" }
     end
 
     sort_labels = {

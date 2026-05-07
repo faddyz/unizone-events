@@ -20,6 +20,7 @@ class EventSearch
     relation = filter_by_price(relation)
     relation = filter_by_availability(relation)
     relation = filter_by_registration(relation)
+    relation = filter_started_events(relation)
     sort(relation)
   end
 
@@ -137,6 +138,12 @@ class EventSearch
     else
       relation
     end
+  end
+
+  def filter_started_events(relation)
+    return relation unless ActiveModel::Type::Boolean.new.cast(params[:hide_started])
+
+    relation.not_started
   end
 
   def sort(relation)

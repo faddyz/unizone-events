@@ -70,6 +70,11 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_includes results_html, ongoing_event.title
     assert_includes results_html, "Şu anda gerçekleşiyor!"
 
+    get explore_events_path(hide_started: "1")
+    assert_response :success
+    refute_includes results_html, ongoing_event.title
+    assert_includes response.body, "Başlamış etkinlikler gizli"
+
     get event_path(ongoing_event)
     assert_response :success
     assert_includes response.body, "başladı;"
