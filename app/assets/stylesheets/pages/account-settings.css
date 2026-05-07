@@ -66,7 +66,7 @@
 .account-summary-panel,
 .account-settings-card {
   border: 1px solid rgba(15, 15, 18, 0.08);
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--card-bg) 94%, transparent);
   box-shadow:
     0 1px 2px rgba(15, 15, 18, 0.04),
     0 18px 54px rgba(15, 15, 18, 0.08);
@@ -293,7 +293,7 @@
   min-height: 3.3rem;
   border: 1px solid rgba(15, 15, 18, 0.12);
   border-radius: 0.82rem;
-  background: rgba(255, 255, 255, 0.96);
+  background: color-mix(in srgb, var(--card-bg-strong) 94%, transparent);
   padding: 0.85rem 1rem;
   color: var(--page-text);
   font-weight: 800;
@@ -306,7 +306,7 @@
 
 .account-input:hover {
   border-color: rgba(15, 15, 18, 0.2);
-  background: white;
+  background: var(--card-bg-strong);
 }
 
 .account-input:focus {

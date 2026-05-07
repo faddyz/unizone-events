@@ -16,8 +16,8 @@
 }
 
 .cinema-panel {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(15, 15, 18, 0.08);
+  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+  border: 1px solid var(--card-border);
   box-shadow:
     0 1px 2px rgba(15, 15, 18, 0.04),
     0 12px 35px rgba(15, 15, 18, 0.07);
@@ -30,7 +30,7 @@
 
 .cinema-panel:hover {
   transform: translateY(-2px);
-  border-color: rgba(15, 15, 18, 0.12);
+  border-color: rgba(15, 15, 18, 0.15);
   box-shadow:
     0 2px 3px rgba(15, 15, 18, 0.05),
     0 18px 50px rgba(15, 15, 18, 0.1);

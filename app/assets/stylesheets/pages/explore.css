@@ -82,7 +82,7 @@
 .explore-category-button {
   width: 2.15rem;
   min-height: 2.15rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: color-mix(in srgb, var(--card-bg-strong) 86%, transparent);
 }
 
 .is-at-start .explore-category-button.is-left,
@@ -129,7 +129,7 @@
   border-radius: var(--radius-pill);
   background:
     radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--category-pill-accent) 16%, transparent), transparent 52%),
-    rgba(255, 255, 255, 0.72);
+    color-mix(in srgb, var(--card-bg-strong) 76%, transparent);
   background-clip: padding-box;
   padding: 0.48rem 0.82rem 0.48rem 0.5rem;
   color: rgba(15, 15, 18, 0.72);
@@ -163,7 +163,7 @@
   border-color: color-mix(in srgb, var(--category-pill-accent) 46%, rgba(15, 15, 18, 0.12));
   background:
     radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--category-pill-accent) 26%, transparent), transparent 52%),
-    white;
+    var(--card-bg-strong);
   color: var(--page-text);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--category-pill-accent) 26%, transparent),
@@ -224,15 +224,15 @@
   z-index: 20;
   display: grid;
   gap: 0.7rem;
-  border: 1px solid rgba(15, 15, 18, 0.08);
+  border: 1px solid var(--card-border);
   border-radius: 1.05rem;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.82)),
+    linear-gradient(145deg, color-mix(in srgb, var(--card-bg-strong) 94%, white), color-mix(in srgb, var(--card-bg) 88%, transparent)),
     var(--page-bg);
   padding: 0.76rem;
   box-shadow:
     0 1px 2px rgba(15, 15, 18, 0.04),
-    0 14px 38px rgba(15, 15, 18, 0.08);
+    0 14px 34px rgba(15, 15, 18, 0.07);
   backdrop-filter: blur(20px);
   transition:
     transform 220ms var(--ease-out-expressive),
@@ -338,7 +338,7 @@
   border-radius: var(--radius-pill);
   background:
     radial-gradient(circle at 18% 12%, rgba(215, 255, 57, 0.2), transparent 58%),
-    rgba(255, 255, 255, 0.9);
+    color-mix(in srgb, var(--card-bg-strong) 92%, transparent);
   padding: 0.42rem 0.5rem 0.42rem 0.85rem;
   color: rgba(15, 15, 18, 0.72);
   box-shadow:
@@ -355,9 +355,9 @@
 .explore-started-toggle.is-active {
   transform: translateY(-1px);
   border-color: rgba(15, 15, 18, 0.86);
-  background: white;
+  background: color-mix(in srgb, var(--card-bg-strong) 96%, white);
   box-shadow:
-    0 12px 28px rgba(15, 15, 18, 0.12),
+    0 10px 24px rgba(15, 15, 18, 0.09),
     0 0 0 3px rgba(215, 255, 57, 0.2);
 }
 
@@ -381,7 +381,7 @@
   height: 1.34rem;
   margin-left: 0.19rem;
   border-radius: var(--radius-pill);
-  background: white;
+  background: var(--card-bg-strong);
   box-shadow:
     0 2px 6px rgba(15, 15, 18, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.75);
@@ -454,7 +454,7 @@
   min-height: 2.65rem;
   border: 1px solid rgba(15, 15, 18, 0.11);
   border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--card-bg-strong) 94%, white);
   padding: 0.62rem 0.78rem;
   color: var(--page-text);
   font-size: 0.84rem;
@@ -478,7 +478,7 @@
 .explore-filter-input:focus,
 .explore-filter-select:focus {
   border-color: rgba(215, 255, 57, 0.95);
-  background: white;
+  background: var(--card-bg-strong);
   box-shadow: 0 0 0 4px rgba(215, 255, 57, 0.2);
 }
 
@@ -589,9 +589,9 @@
 
 .explore-active-filter:hover {
   transform: translateY(-1px);
-  border-color: var(--page-text);
-  background: var(--page-text);
-  color: white;
+  border-color: rgba(15, 15, 18, 0.2);
+  background: rgba(15, 15, 18, 0.075);
+  color: var(--page-text);
 }
 
 .explore-clear-link {
@@ -628,7 +628,7 @@
 
 .explore-view-button:hover,
 .explore-view-button.is-active {
-  background: white;
+  background: var(--card-bg-strong);
   color: var(--page-text);
   box-shadow: 0 8px 18px rgba(15, 15, 18, 0.08);
 }
@@ -643,6 +643,25 @@
   gap: 1rem;
 }
 
+.explore-results-grid .event-card {
+  border-color: rgba(15, 15, 18, 0.17);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.48),
+    0 0 0 1px rgba(15, 15, 18, 0.035),
+    0 1px 2px rgba(15, 15, 18, 0.035),
+    0 9px 22px rgba(15, 15, 18, 0.055);
+}
+
+.explore-results-grid .event-card:hover,
+.explore-results-grid .event-card:focus-within {
+  border-color: rgba(15, 15, 18, 0.23);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.54),
+    0 0 0 1px rgba(15, 15, 18, 0.055),
+    0 2px 4px rgba(15, 15, 18, 0.045),
+    0 14px 30px rgba(15, 15, 18, 0.08);
+}
+
 .explore-results-list {
   display: grid;
   gap: 0.72rem;
@@ -654,27 +673,32 @@
   min-width: 0;
   gap: 0.85rem;
   overflow: hidden;
-  border: 1px solid rgba(15, 15, 18, 0.08);
+  border: 1px solid rgba(15, 15, 18, 0.17);
   border-radius: 1.05rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9)),
+    linear-gradient(180deg, color-mix(in srgb, var(--card-bg-strong) 95%, white), var(--card-bg)),
     var(--page-bg);
   padding: 0.72rem;
   box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.48),
+    0 0 0 1px rgba(15, 15, 18, 0.035),
     0 1px 2px rgba(15, 15, 18, 0.04),
-    0 10px 28px rgba(15, 15, 18, 0.07);
+    0 10px 26px rgba(15, 15, 18, 0.06);
   transition:
-    transform 220ms var(--ease-out-expressive),
-    border-color 180ms ease,
-    box-shadow 220ms ease;
+    transform 320ms var(--ease-out-expressive),
+    border-color 280ms ease,
+    box-shadow 320ms ease,
+    background-color 280ms ease;
 }
 
 .explore-list-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(15, 15, 18, 0.14);
+  transform: translateY(-2px);
+  border-color: rgba(15, 15, 18, 0.23);
   box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.54),
+    0 0 0 1px rgba(15, 15, 18, 0.055),
     0 2px 4px rgba(15, 15, 18, 0.05),
-    0 18px 44px rgba(15, 15, 18, 0.1);
+    0 16px 38px rgba(15, 15, 18, 0.09);
 }
 
 .explore-list-poster {
@@ -699,7 +723,7 @@
   min-width: 3.4rem;
   place-items: center;
   border-radius: 0.75rem;
-  background: white;
+  background: var(--card-bg-strong);
   padding: 0.48rem 0.55rem;
   color: var(--page-text);
   box-shadow:
@@ -820,7 +844,7 @@
   place-items: center;
   border: 1px solid rgba(15, 15, 18, 0.1);
   border-radius: var(--radius-pill);
-  background: white;
+  background: var(--card-bg-strong);
   color: var(--page-text);
   transition:
     transform var(--transition-fast),

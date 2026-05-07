@@ -13,7 +13,11 @@
   --surface: #18181c;
   --lift: #242429;
   --edge: #2e2e35;
-  --page-bg: #f7f2e8;
+  --page-bg: #e7e1d6;
+  --page-bg-wash: #eee8de;
+  --card-bg: #f4efe6;
+  --card-bg-strong: #faf6ee;
+  --card-border: rgba(15, 15, 18, 0.105);
   --page-text: #0f0f12;
   --text-muted: #6f6a60;
   --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;

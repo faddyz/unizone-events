@@ -212,7 +212,7 @@
 .event-form-preview-card,
 .event-form-checklist {
   border: 1px solid rgba(15, 15, 18, 0.08);
-  background: rgba(255, 255, 255, 0.92);
+  background: color-mix(in srgb, var(--card-bg) 94%, transparent);
   box-shadow:
     0 1px 2px rgba(15, 15, 18, 0.04),
     0 18px 54px rgba(15, 15, 18, 0.09);
@@ -456,7 +456,7 @@
   min-height: 3.3rem;
   border: 1px solid rgba(15, 15, 18, 0.12);
   border-radius: 0.95rem;
-  background: rgba(255, 255, 255, 0.94);
+  background: color-mix(in srgb, var(--card-bg-strong) 92%, transparent);
   padding: 0.85rem 1rem;
   color: var(--page-text);
   font-weight: 800;
@@ -711,7 +711,7 @@
   min-width: 4rem;
   place-items: center;
   border-radius: 0.9rem;
-  background: white;
+  background: var(--card-bg-strong);
   padding: 0.65rem 0.75rem;
   color: var(--page-text);
   box-shadow:

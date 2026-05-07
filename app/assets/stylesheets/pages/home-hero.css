@@ -210,8 +210,8 @@
 .hero-fade {
   height: 11rem;
   background:
-    radial-gradient(ellipse 100% 62% at 48% 48%, rgba(247, 242, 232, 0.14), transparent 58%),
-    linear-gradient(180deg, rgba(8, 8, 10, 0) 0%, rgba(247, 242, 232, 0.08) 34%, rgba(247, 242, 232, 0.62) 76%, var(--page-bg) 100%);
+    radial-gradient(ellipse 100% 62% at 48% 48%, color-mix(in srgb, var(--page-bg) 18%, transparent), transparent 58%),
+    linear-gradient(180deg, rgba(8, 8, 10, 0) 0%, color-mix(in srgb, var(--page-bg) 10%, transparent) 34%, color-mix(in srgb, var(--page-bg) 68%, transparent) 76%, var(--page-bg) 100%);
 }
 
 @media (min-width: 1024px) {

@@ -40,12 +40,12 @@
 
 .btn-outline {
   border: 1px solid rgba(15, 15, 18, 0.16);
-  background: rgba(255, 255, 255, 0.64);
+  background: color-mix(in srgb, var(--card-bg-strong) 72%, transparent);
   color: var(--page-text);
 }
 
 .btn-outline:hover {
-  border-color: var(--page-text);
-  background: var(--page-text);
-  color: white;
+  border-color: rgba(15, 15, 18, 0.24);
+  background: var(--card-bg-strong);
+  color: var(--page-text);
 }

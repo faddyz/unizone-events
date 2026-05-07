@@ -2,7 +2,7 @@
   min-height: 3rem;
   border-radius: 0.9rem;
   border: 1px solid rgba(15, 15, 18, 0.12);
-  background: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--card-bg-strong) 90%, transparent);
   font-weight: 700;
   transition:
     border-color var(--transition-fast),

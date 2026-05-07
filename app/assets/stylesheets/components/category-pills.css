@@ -16,8 +16,8 @@
 }
 
 .category-pill:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 26px rgba(15, 15, 18, 0.13);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(15, 15, 18, 0.1);
   filter: saturate(1.08);
 }
 

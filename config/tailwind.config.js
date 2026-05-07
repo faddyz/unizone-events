@@ -29,7 +29,7 @@ module.exports = {
         void: "#08080a",
         ink: "#0f0f12",
         surface: "#18181c",
-        page: "#f7f2e8",
+        page: "#e7e1d6",
       },
       animation: {
         rise: "rise 0.7s cubic-bezier(0.16,1,0.3,1) both",
