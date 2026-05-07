@@ -5,6 +5,8 @@ const PREVIEW_URL_KEY = "unizone:hero-preview-url"
 
 export default class extends Controller {
   connect() {
+    this.element.classList.toggle("hero-android-lite", this.isAndroidDevice())
+
     this.gsapContext = gsap.context(() => {
       this.resetAnimatedTargets()
       this.element.classList.add("hero-ready")
@@ -57,14 +59,13 @@ export default class extends Controller {
     this.timeline
       .fromTo(
         ambientTargets,
-        { autoAlpha: 0.62, scale: 0.98, filter: "saturate(0.92)" },
+        { autoAlpha: 0.62, scale: 0.98 },
         {
           autoAlpha: 1,
           scale: 1,
-          filter: "saturate(1)",
           duration: 1.35,
           stagger: 0.035,
-          clearProps: "opacity,visibility,transform,filter"
+          clearProps: "opacity,visibility,transform"
         },
         0
       )
@@ -122,6 +123,10 @@ export default class extends Controller {
     }
 
     return false
+  }
+
+  isAndroidDevice() {
+    return /Android/i.test(window.navigator.userAgent)
   }
 
   get animatedTargets() {

@@ -220,6 +220,57 @@
   }
 }
 
+.hero-android-lite .hero-stage-wash,
+.hero-android-lite .hero-orb,
+.hero-android-lite .hero-ribbon,
+.hero-android-lite .hero-noise,
+.hero-android-lite .hero-scanlines {
+  mix-blend-mode: normal;
+}
+
+.hero-android-lite .hero-atmosphere,
+.hero-android-lite .hero-stage-wash,
+.hero-android-lite .hero-orb,
+.hero-android-lite .hero-ribbon,
+.hero-android-lite .hero-glow-field,
+.hero-android-lite .hero-energy,
+.hero-android-lite .hero-scanlines,
+.hero-android-lite .soft-grid {
+  animation: none;
+}
+
+.hero-android-lite .hero-orb {
+  filter: none;
+  opacity: 0.28;
+}
+
+.hero-android-lite .hero-ribbon {
+  opacity: 0.28;
+  box-shadow: none;
+}
+
+.hero-android-lite .hero-ribbon::before,
+.hero-android-lite .hero-ribbon::after,
+.hero-android-lite .hero-noise,
+.hero-android-lite .hero-scanlines {
+  display: none;
+}
+
+.hero-android-lite .hero-glow-field {
+  filter: none;
+  opacity: 0.62;
+}
+
+.hero-android-lite .hero-energy {
+  opacity: 0.48;
+}
+
+.hero-android-lite .hero-search {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(18, 19, 24, 0.9);
+}
+
 .hero-copy {
   text-shadow: none;
 }
@@ -454,8 +505,8 @@
   .electric-hero .hero-copy h1 {
     max-width: 100%;
     font-family: var(--font-display);
-    font-size: clamp(2.75rem, 13.2vw, 4.45rem);
-    line-height: 0.9;
+    font-size: clamp(2.68rem, 12.5vw, 4.18rem);
+    line-height: 0.92;
     letter-spacing: 0;
   }
 
@@ -501,7 +552,7 @@
   }
 
   .electric-hero .hero-copy h1 {
-    font-size: clamp(2.45rem, 12.4vw, 3.45rem);
+    font-size: clamp(2.4rem, 11.8vw, 3.32rem);
   }
 }
 
