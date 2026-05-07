@@ -296,7 +296,7 @@
     <dl class="event-essentials-grid">
       <div class="event-essential-card animate-rise-in" style="animation-delay: 40ms">
         <dt>Ne zaman</dt>
-        <dd><%= l(@event.date, format: :long) %></dd>
+        <dd><%= event_show_datetime_label(@event) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 100ms">
         <dt>Mekan / Şehir</dt>
@@ -391,7 +391,7 @@
         <dl class="mt-6 grid gap-4 sm:grid-cols-2">
           <div>
             <dt><%= render "icons/calendar", class: "size-4" %> Tarih</dt>
-            <dd><%= l(@event.date, format: :long) %></dd>
+            <dd><%= event_show_datetime_label(@event) %></dd>
           </div>
           <div>
             <dt><%= render "icons/location", class: "size-4" %> Mekan / Şehir</dt>

@@ -91,7 +91,7 @@
               <div class="explore-list-main">
                 <div class="explore-list-tags">
                   <span class="<%= event_category_badge_classes(event) %>"><%= event_category_title(event) %></span>
-                  <span class="explore-list-time"><%= event.date.strftime("%d %b, %H:%M") %></span>
+                  <span class="<%= event_list_time_classes(event) %>"><%= event_card_time_label(event) %></span>
                 </div>
 
                 <h2>

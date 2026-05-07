@@ -89,6 +89,18 @@ class EventsHelperTest < ActionView::TestCase
     assert_equal "06 Ağu, 16:30", event_card_datetime_label(date)
   end
 
+  test "ongoing events use live timing labels" do
+    event = events(:published_event)
+    event.date = 30.minutes.ago
+    event.end_date = 30.minutes.from_now
+    event.external_source = "etkinlik_io"
+
+    assert_equal "Şu anda gerçekleşiyor!", event_card_time_label(event)
+    assert_includes event_card_time_classes(event), "is-live"
+    assert_includes event_list_time_classes(event), "is-live"
+    assert_includes event_show_datetime_label(event), "başladı; şu an devam ediyor."
+  end
+
   test "imported events hide zero crowd counts in signal copy" do
     event = events(:published_event)
     event.external_source = "etkinlik_io"

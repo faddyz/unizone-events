@@ -202,6 +202,7 @@ class Event < ApplicationRecord
   scope :by_city, ->(city) { where(city: city) if city.present? }
   scope :upcoming, -> { where("#{PUBLIC_EXPIRY_SQL} >= ?", Time.current).order(date: :asc) }
   scope :published_visible, -> { published.where("#{PUBLIC_EXPIRY_SQL} >= ?", Time.current) }
+  scope :not_started, -> { where("date > ?", Time.current) }
 
   def self.classify_ticket_url(ticket_url, _external_url = nil)
     value = ticket_url.to_s.strip
@@ -298,6 +299,13 @@ class Event < ApplicationRecord
   def expired?
     reference = public_expiry_at
     reference.present? && reference < Time.current
+  end
+
+  def ongoing?
+    return false if date.blank?
+
+    reference = public_expiry_at
+    reference.present? && date <= Time.current && reference > Time.current
   end
 
   def public_expiry_at

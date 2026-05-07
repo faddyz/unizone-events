@@ -183,6 +183,26 @@ module EventsHelper
     l(date, format: "%d %b, %H:%M")
   end
 
+  def event_card_time_label(event)
+    return "Şu anda gerçekleşiyor!" if event.ongoing?
+
+    event_card_datetime_label(event.date)
+  end
+
+  def event_card_time_classes(event)
+    [ "event-card-time", ("is-live" if event.ongoing?) ].compact.join(" ")
+  end
+
+  def event_list_time_classes(event)
+    [ "explore-list-time", ("is-live" if event.ongoing?) ].compact.join(" ")
+  end
+
+  def event_show_datetime_label(event)
+    return "#{l(event.date, format: :long)} başladı; şu an devam ediyor." if event.ongoing?
+
+    l(event.date, format: :long)
+  end
+
   def event_crowd_signal_title(event, going_count)
     return "Katılım bilgisi kaynakta" if event.imported? && going_count.to_i.zero?
 

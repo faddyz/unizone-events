@@ -46,6 +46,35 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "homepage hides started ongoing events while explore and show keep them live" do
+    ongoing_event = Event.create!(
+      user: @member,
+      title: "Live External Set",
+      description: "An imported event that already started but has not ended yet.",
+      category: "music",
+      date: 30.minutes.ago,
+      end_date: 30.minutes.from_now,
+      city: "Online",
+      location: "Online",
+      status: "published",
+      external_source: "etkinlik_io",
+      external_id: "live-external-set"
+    )
+
+    get root_path
+    assert_response :success
+    refute_includes response.body, ongoing_event.title
+
+    get explore_events_path
+    assert_response :success
+    assert_includes results_html, ongoing_event.title
+    assert_includes results_html, "Şu anda gerçekleşiyor!"
+
+    get event_path(ongoing_event)
+    assert_response :success
+    assert_includes response.body, "başladı; şu an devam ediyor."
+  end
+
   test "explore applies search category date price and sort params" do
     free_event = Event.create!(
       user: @member,

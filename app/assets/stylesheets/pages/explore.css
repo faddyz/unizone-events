@@ -654,6 +654,11 @@
   text-transform: uppercase;
 }
 
+.explore-list-time.is-live {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
 .explore-list-main h2 {
   margin-top: 0.55rem;
   color: var(--page-text);

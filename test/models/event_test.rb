@@ -81,7 +81,9 @@ class EventTest < ActiveSupport::TestCase
     )
 
     assert_includes Event.published_visible, current
+    assert current.ongoing?
     refute_includes Event.published_visible, expired
+    refute expired.ongoing?
   end
 
   test "published visible ignores suspicious long imported end dates" do
@@ -114,6 +116,26 @@ class EventTest < ActiveSupport::TestCase
     refute_includes Event.published_visible, imported
     refute internal.expired?
     assert_includes Event.published_visible, internal
+  end
+
+  test "not started excludes ongoing imported events from homepage scope" do
+    ongoing = Event.create!(
+      user: users(:one),
+      title: "Ongoing Imported Event",
+      description: "Visible in explore because its end date is still in the future.",
+      category: "music",
+      date: 30.minutes.ago,
+      end_date: 30.minutes.from_now,
+      city: "Online",
+      location: "Online",
+      status: "published",
+      external_source: "etkinlik_io",
+      external_id: "ongoing-imported-event"
+    )
+
+    assert_includes Event.published_visible, ongoing
+    assert ongoing.ongoing?
+    refute_includes Event.published_visible.not_started, ongoing
   end
 
   test "image accepts webp and rejects unsupported content types" do

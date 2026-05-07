@@ -50,7 +50,7 @@
 
   <div class="event-card-body flex flex-1 flex-col p-4">
     <div class="flex-1">
-      <p class="event-card-time"><%= event_card_datetime_label(event.date) %></p>
+      <p class="<%= event_card_time_classes(event) %>"><%= event_card_time_label(event) %></p>
       <% unless featured %>
         <h3 class="event-card-heading">
           <%= link_to event_display_title(event), event_path(event), class: "transition group-hover:text-coral focus-ring" %>
