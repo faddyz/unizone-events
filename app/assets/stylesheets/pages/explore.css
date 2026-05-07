@@ -644,22 +644,25 @@
 }
 
 .explore-results-grid .event-card {
-  border-color: rgba(15, 15, 18, 0.17);
+  border-color: rgba(15, 15, 18, 0.32);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.48),
-    0 0 0 1px rgba(15, 15, 18, 0.035),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.52),
+    0 0 0 1px rgba(15, 15, 18, 0.12),
+    2px 2px 0 rgba(15, 15, 18, 0.045),
     0 1px 2px rgba(15, 15, 18, 0.035),
-    0 9px 22px rgba(15, 15, 18, 0.055);
+    0 8px 18px rgba(15, 15, 18, 0.045);
 }
 
 .explore-results-grid .event-card:hover,
 .explore-results-grid .event-card:focus-within {
-  border-color: rgba(15, 15, 18, 0.23);
+  transform: translateY(-3px);
+  border-color: rgba(15, 15, 18, 0.42);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.54),
-    0 0 0 1px rgba(15, 15, 18, 0.055),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.56),
+    0 0 0 1px rgba(15, 15, 18, 0.16),
+    3px 3px 0 rgba(15, 15, 18, 0.06),
     0 2px 4px rgba(15, 15, 18, 0.045),
-    0 14px 30px rgba(15, 15, 18, 0.08);
+    0 12px 26px rgba(15, 15, 18, 0.065);
 }
 
 .explore-results-list {
