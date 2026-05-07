@@ -655,7 +655,8 @@
 }
 
 .explore-list-time.is-live {
-  background: rgba(16, 185, 129, 0.12);
+  background: transparent;
+  padding-inline: 0;
   color: #047857;
 }
 

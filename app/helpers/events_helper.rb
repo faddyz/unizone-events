@@ -198,7 +198,12 @@ module EventsHelper
   end
 
   def event_show_datetime_label(event)
-    return "#{l(event.date, format: :long)} başladı; şu an devam ediyor." if event.ongoing?
+    if event.ongoing?
+      return safe_join([
+        "#{l(event.date, format: :long)} başladı; ",
+        tag.span("şu an devam ediyor.", class: "event-live-inline")
+      ])
+    end
 
     l(event.date, format: :long)
   end

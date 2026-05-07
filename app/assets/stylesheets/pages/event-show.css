@@ -1033,6 +1033,13 @@ html.external-redirect-open body {
   overflow-wrap: anywhere;
 }
 
+.event-live-inline {
+  color: var(--citron);
+  text-shadow:
+    0 1px 0 rgba(15, 15, 18, 0.92),
+    0 0 16px rgba(215, 255, 57, 0.34);
+}
+
 .event-section-head {
   max-width: 44rem;
 }

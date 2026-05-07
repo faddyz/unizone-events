@@ -72,7 +72,9 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
     get event_path(ongoing_event)
     assert_response :success
-    assert_includes response.body, "başladı; şu an devam ediyor."
+    assert_includes response.body, "başladı;"
+    assert_includes response.body, "event-live-inline"
+    assert_includes response.body, "şu an devam ediyor."
   end
 
   test "explore applies search category date price and sort params" do

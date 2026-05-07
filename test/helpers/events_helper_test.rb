@@ -98,7 +98,9 @@ class EventsHelperTest < ActionView::TestCase
     assert_equal "Şu anda gerçekleşiyor!", event_card_time_label(event)
     assert_includes event_card_time_classes(event), "is-live"
     assert_includes event_list_time_classes(event), "is-live"
-    assert_includes event_show_datetime_label(event), "başladı; şu an devam ediyor."
+    assert_includes event_show_datetime_label(event), "başladı;"
+    assert_includes event_show_datetime_label(event), "event-live-inline"
+    assert_includes event_show_datetime_label(event), "şu an devam ediyor."
   end
 
   test "imported events hide zero crowd counts in signal copy" do

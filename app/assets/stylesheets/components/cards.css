@@ -163,12 +163,6 @@
 }
 
 .event-card-time.is-live {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  border-radius: var(--radius-pill);
-  background: rgba(16, 185, 129, 0.12);
-  padding: 0.34rem 0.55rem;
   color: #047857;
   letter-spacing: 0.08em;
 }
