@@ -32,10 +32,13 @@ export default class extends Controller {
   animateIntro() {
     this.timeline?.kill()
 
+    const androidLite = this.element.classList.contains("hero-android-lite")
     const lines = this.lineTargets
-    const ambientTargets = Array.from(
-      this.element.querySelectorAll(".hero-orb, .hero-ribbon, .hero-stage-wash, .hero-glow-field")
-    )
+    const ambientTargets = androidLite
+      ? []
+      : Array.from(
+          this.element.querySelectorAll(".hero-orb, .hero-ribbon, .hero-stage-wash, .hero-glow-field")
+        )
 
     gsap.set(lines, {
       autoAlpha: 0,
@@ -56,8 +59,8 @@ export default class extends Controller {
       onComplete: () => this.clearAnimatedProps()
     })
 
-    this.timeline
-      .fromTo(
+    if (ambientTargets.length > 0) {
+      this.timeline.fromTo(
         ambientTargets,
         { autoAlpha: 0.62, scale: 0.98 },
         {
@@ -69,6 +72,9 @@ export default class extends Controller {
         },
         0
       )
+    }
+
+    this.timeline
       .to(
         this.logoTarget,
         {
