@@ -13,6 +13,8 @@ Proje aynı zamanda admin paneli üzerinden Etkinlik.io API kaynaklı etkinlik a
 
 https://unizone.onrender.com
 
+<img src="public/unizone-preview.gif" alt="Unizone canlı demo önizlemesi" width="420">
+
 ## 🚀 Öne Çıkan Özellikler
 
 - 🗓️ Yayındaki etkinlikleri listeleme ve detay sayfasında görüntüleme
@@ -51,8 +53,6 @@ Unizone, Etkinlik.io API üzerinden etkinlik verilerini admin kontrollü bir imp
 - Active Storage
 - Solid Queue, Solid Cache ve Solid Cable
 - Docker / Docker Compose
-
-
 
 ## 🗂️ Önemli Rotalar
 
