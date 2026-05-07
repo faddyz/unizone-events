@@ -10,7 +10,7 @@
   { key: "art_exhibition", icon: "palette", mood: "Kültür rotası", note: "Sergi, tasarım ve bağımsız sanat işleri.", class_name: "is-grape" },
   { key: "networking", icon: "users", mood: "Yeni çevre", note: "İnsanlarla tanışmak, ekip bulmak ve fikir paylaşmak için.", class_name: "is-ice" }
 ] %>
-<% upcoming_events = @events.first(8) %>
+<% upcoming_events = @events %>
 
 <%= render "events/hero" %>
 

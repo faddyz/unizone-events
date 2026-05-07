@@ -1,13 +1,16 @@
 class EventsController < ApplicationController
+  HOME_UPCOMING_EVENTS_LIMIT = 12
+  HOME_FEATURED_EVENTS_LIMIT = 12
+
   before_action :set_event, only: :show
 
   def index
     @events = EventSearch.new(scope: home_scope, params: search_params)
                          .results
                          .reorder(Arel.sql(home_order_sql))
-                         .limit(8)
+                         .limit(HOME_UPCOMING_EVENTS_LIMIT)
                          .to_a
-    @featured_events = EventRanker.rank(home_scope).limit(6).to_a
+    @featured_events = EventRanker.rank(home_scope).limit(HOME_FEATURED_EVENTS_LIMIT).to_a
     @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
     prepare_event_card_data(@events + @featured_events)
   end
