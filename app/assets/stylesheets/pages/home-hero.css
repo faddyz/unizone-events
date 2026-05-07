@@ -224,7 +224,13 @@
 .hero-android-lite .hero-orb,
 .hero-android-lite .hero-ribbon,
 .hero-android-lite .hero-noise,
-.hero-android-lite .hero-scanlines {
+.hero-android-lite .hero-scanlines,
+.is-android .hero-stage-wash,
+.is-android .hero-orb,
+.is-android .hero-ribbon,
+.is-android .hero-noise,
+.is-android .hero-scanlines,
+.is-android .poster-noise {
   mix-blend-mode: normal;
 }
 
@@ -233,49 +239,75 @@
 .hero-android-lite .hero-orb,
 .hero-android-lite .hero-ribbon,
 .hero-android-lite .hero-scanlines,
-.hero-android-lite .soft-grid {
+.hero-android-lite .soft-grid,
+.is-android .hero-stage-wash,
+.is-android .hero-orb,
+.is-android .hero-ribbon,
+.is-android .hero-noise,
+.is-android .hero-scanlines,
+.is-android .soft-grid,
+.is-android .poster-noise {
   animation: none;
 }
 
-.hero-android-lite .hero-atmosphere {
+.hero-android-lite .hero-atmosphere,
+.is-android .hero-atmosphere {
   animation: androidHeroBreath 14s ease-in-out infinite alternate;
 }
 
 .hero-android-lite .hero-glow-field,
-.hero-android-lite .hero-energy {
+.hero-android-lite .hero-energy,
+.is-android .hero-glow-field,
+.is-android .hero-energy {
   animation: androidHeroPulse 11s ease-in-out infinite alternate;
   will-change: opacity, transform;
-}
-
-.hero-android-lite .hero-orb {
-  filter: none;
-  opacity: 0.28;
-}
-
-.hero-android-lite .hero-ribbon {
-  opacity: 0.28;
-  box-shadow: none;
 }
 
 .hero-android-lite .hero-ribbon::before,
 .hero-android-lite .hero-ribbon::after,
 .hero-android-lite .hero-noise,
-.hero-android-lite .hero-scanlines {
+.hero-android-lite .hero-scanlines,
+.is-android .hero-noise,
+.is-android .hero-scanlines,
+.is-android .poster-noise {
   display: none;
 }
 
-.hero-android-lite .hero-glow-field {
+.hero-android-lite .hero-orb,
+.is-android .hero-orb {
+  filter: blur(14px);
+  opacity: 0.34;
+}
+
+.hero-android-lite .hero-ribbon,
+.is-android .hero-ribbon {
+  opacity: 0.15;
+  box-shadow: none;
+}
+
+.is-android .hero-ribbon::before,
+.is-android .hero-ribbon::after {
+  box-shadow: none;
+}
+
+.hero-android-lite .hero-glow-field,
+.is-android .hero-glow-field {
   filter: none;
   opacity: 0.62;
 }
 
-.hero-android-lite .hero-energy {
+.hero-android-lite .hero-energy,
+.is-android .hero-energy {
   opacity: 0.48;
 }
 
-.hero-android-lite .hero-search {
+.hero-android-lite .hero-search,
+.is-android .backdrop-blur-xl {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+.hero-android-lite .hero-search {
   background: rgba(18, 19, 24, 0.9);
 }
 
