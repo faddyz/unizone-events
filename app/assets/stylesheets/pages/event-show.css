@@ -1035,9 +1035,15 @@ html.external-redirect-open body {
 
 .event-live-inline {
   color: var(--citron);
+  font-weight: 900;
+  line-height: 1;
   text-shadow:
-    0 1px 0 rgba(15, 15, 18, 0.92),
-    0 0 16px rgba(215, 255, 57, 0.34);
+    -1px -1px 0 rgba(15, 15, 18, 0.92),
+    1px -1px 0 rgba(15, 15, 18, 0.92),
+    -1px 1px 0 rgba(15, 15, 18, 0.92),
+    1px 1px 0 rgba(15, 15, 18, 0.92),
+    0 2px 0 rgba(15, 15, 18, 0.82),
+    0 0 18px rgba(215, 255, 57, 0.42);
 }
 
 .event-section-head {

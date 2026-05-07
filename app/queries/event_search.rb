@@ -56,9 +56,9 @@ class EventSearch
     when "", "all"
       relation
     when "today"
-      relation.where("DATE(date) = ?", Time.zone.today)
+      relation.where("#{local_date_sql} = ?", Time.zone.today)
     when "tomorrow"
-      relation.where("DATE(date) = ?", Time.zone.tomorrow)
+      relation.where("#{local_date_sql} = ?", Time.zone.tomorrow)
     when "tonight"
       relation.where(date: Time.zone.today.beginning_of_day + 18.hours..Time.zone.tomorrow.beginning_of_day + 5.hours)
     when "this_week"
@@ -79,13 +79,13 @@ class EventSearch
   def filter_by_time(relation)
     case params[:time_filter].to_s
     when "morning"
-      relation.where("EXTRACT(HOUR FROM date) >= 5 AND EXTRACT(HOUR FROM date) < 12")
+      relation.where("EXTRACT(HOUR FROM #{local_datetime_sql}) >= 5 AND EXTRACT(HOUR FROM #{local_datetime_sql}) < 12")
     when "afternoon"
-      relation.where("EXTRACT(HOUR FROM date) >= 12 AND EXTRACT(HOUR FROM date) < 17")
+      relation.where("EXTRACT(HOUR FROM #{local_datetime_sql}) >= 12 AND EXTRACT(HOUR FROM #{local_datetime_sql}) < 17")
     when "evening"
-      relation.where("EXTRACT(HOUR FROM date) >= 17 AND EXTRACT(HOUR FROM date) < 22")
+      relation.where("EXTRACT(HOUR FROM #{local_datetime_sql}) >= 17 AND EXTRACT(HOUR FROM #{local_datetime_sql}) < 22")
     when "night"
-      relation.where("(EXTRACT(HOUR FROM date) >= 22 OR EXTRACT(HOUR FROM date) < 5)")
+      relation.where("(EXTRACT(HOUR FROM #{local_datetime_sql}) >= 22 OR EXTRACT(HOUR FROM #{local_datetime_sql}) < 5)")
     else
       relation
     end
@@ -169,5 +169,14 @@ class EventSearch
     saturday = Time.zone.today.beginning_of_week + 5.days
     saturday = saturday + 7.days if saturday < Time.zone.today
     saturday.beginning_of_day..(saturday + 1.day).end_of_day
+  end
+
+  def local_date_sql
+    "DATE(#{local_datetime_sql})"
+  end
+
+  def local_datetime_sql
+    timezone = ActiveRecord::Base.connection.quote(Time.zone.tzinfo.name)
+    "events.date AT TIME ZONE 'UTC' AT TIME ZONE #{timezone}"
   end
 end

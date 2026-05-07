@@ -164,6 +164,7 @@
 
 .event-card-time.is-live {
   color: #047857;
+  font-weight: 800;
   letter-spacing: 0.08em;
 }
 
