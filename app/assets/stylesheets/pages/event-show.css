@@ -1782,6 +1782,10 @@ button.event-side-ticket {
     left: max(0.625rem, env(safe-area-inset-left));
   }
 
+  .scroll-top-button {
+    bottom: calc(var(--mobile-bottom-nav-height) + 5.45rem);
+  }
+
   .event-mobile-primary,
   .event-mobile-secondary {
     overflow: hidden;
