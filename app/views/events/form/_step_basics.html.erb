@@ -14,9 +14,7 @@
             aria: presenter.aria(:title, describedby: "event-title-hint"),
             data: { event_preview_target: "title", wizard_required: "true" } %>
       <p id="event-title-hint" class="event-form-hint">Başlık, etkinliğinin ilk dikkat çeken alanıdır; sade ve güçlü olsun.</p>
-      <% if presenter.field_error?(:title) %>
-        <p id="<%= presenter.field_error_id(:title) %>" class="event-form-field-error"><%= presenter.field_error_message(:title) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :title %>
     </div>
 
     <div class="event-form-field">
@@ -27,9 +25,7 @@
             class: presenter.control_classes(:category),
             aria: presenter.aria(:category),
             data: { event_preview_target: "category", wizard_required: "true" } %>
-      <% if presenter.field_error?(:category) %>
-        <p id="<%= presenter.field_error_id(:category) %>" class="event-form-field-error"><%= presenter.field_error_message(:category) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :category %>
     </div>
 
     <div class="event-form-note">

@@ -1,0 +1,26 @@
+<div class="mt-7 flex flex-wrap items-center gap-3 text-sm font-semibold text-white/66">
+  <div class="event-show-avatar-stack" aria-hidden="true">
+    <% if show.attendee_preview.any? %>
+      <% show.attendee_preview.each_with_index do |user, avatar_index| %>
+        <% avatar_name = user.name.presence || user.email %>
+        <span class="event-show-avatar" style="--avatar-hue: <%= (avatar_name.to_s.sum + avatar_index * 37) % 360 %>"><%= avatar_name.to_s.first.upcase %></span>
+      <% end %>
+    <% else %>
+      <span class="event-show-live-dot"></span>
+    <% end %>
+  </div>
+  <p>
+    <% if show.preview_mode %>
+      Yayına çıkınca katılım hareketi burada görünür.
+    <% else %>
+      <strong class="text-white" data-attendance-target="count" data-attendance-count-key="attendees_count"><%= show.going_count %></strong>
+      kişi katılıyor!
+      <% if show.capacity %>
+        <span class="text-white/38">/</span>
+        <span data-attendance-target="spots"><%= show.spots_left %></span> yer kaldı
+      <% elsif show.total_responses.positive? %>
+        <span class="text-white/38">/</span> <%= show.total_responses %> toplam geri bildirim.
+      <% end %>
+    <% end %>
+  </p>
+</div>

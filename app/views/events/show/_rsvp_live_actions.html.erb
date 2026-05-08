@@ -1,0 +1,51 @@
+<% unless show.signed_in? %>
+  <div class="event-rsvp-auth-card">
+    <strong>Katılmak için giriş yap</strong>
+    <p>Giriş yaptıktan sonra katılım durumunu seçebilir ve daha sonra dilediğin an değiştirebilirsin.</p>
+    <div>
+      <%= link_to "Giriş yap", new_user_session_path, class: "event-rsvp-auth-primary focus-ring" %>
+      <%= link_to "Hesap oluştur", new_user_registration_path, class: "event-rsvp-auth-secondary focus-ring" %>
+    </div>
+  </div>
+<% end %>
+
+<% if show.ticket_url %>
+  <%= link_to(show.ticket_url,
+        target: "_blank",
+        rel: "noopener",
+        class: "event-side-ticket focus-ring",
+        data: {
+          action: "external-redirect#open",
+          external_redirect_url_param: show.ticket_url
+        },
+        aria: {
+          haspopup: "dialog",
+          controls: "event-external-redirect-dialog"
+        }) do %>
+    <span><%= show.external_action_label %></span>
+    <%= render "icons/ticket", class: "size-5" %>
+  <% end %>
+<% end %>
+
+<% if show.signed_in? %>
+  <div class="mt-5 grid gap-2">
+    <% show.rsvp_options.each do |option| %>
+      <button type="button"
+              class="event-rsvp-choice <%= show.status_selected?(option[:status]) ? "is-active" : "" %> focus-ring"
+              data-attendance-status="<%= option[:status] %>"
+              data-attendance-target="button"
+              data-attendance-active-class="is-active"
+              data-attendance-inactive-class=""
+              data-attendance-default-label="<%= option[:label] %>"
+              data-attendance-selected-label="<%= option[:active_label] %>"
+              data-action="click->attendance#update"
+              aria-pressed="<%= show.status_selected?(option[:status]) %>">
+        <span>
+          <strong data-attendance-state><%= show.rsvp_label(option) %></strong>
+          <small><%= option[:note] %></small>
+        </span>
+        <span class="event-rsvp-choice-dot"></span>
+      </button>
+    <% end %>
+  </div>
+<% end %>

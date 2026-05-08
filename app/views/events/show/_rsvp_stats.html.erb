@@ -1,0 +1,39 @@
+<div class="mt-5 grid grid-cols-3 gap-2 text-center">
+  <div class="event-rsvp-stat">
+    <strong data-attendance-target="count" data-attendance-count-key="attendees_count"><%= show.going_count %></strong>
+    <span>Katılıyor</span>
+  </div>
+  <div class="event-rsvp-stat">
+    <strong data-attendance-target="count" data-attendance-count-key="interested_attendees_count"><%= show.interested_count %></strong>
+    <span>İlgileniyor</span>
+  </div>
+  <div class="event-rsvp-stat">
+    <strong data-attendance-target="count" data-attendance-count-key="not_going_attendees_count"><%= show.not_going_count %></strong>
+    <span>Pas Geçti</span>
+  </div>
+</div>
+
+<% if show.capacity %>
+  <div class="mt-5 rounded-2xl bg-stone-950 p-4 text-white">
+    <div class="flex items-center justify-between gap-3 text-sm font-bold">
+      <span>Doluluk</span>
+      <span><span data-attendance-target="spots"><%= show.spots_left %></span> yer kaldı</span>
+    </div>
+    <div class="event-capacity-track mt-3 bg-white/12">
+      <div class="event-capacity-fill" style="width: <%= show.capacity_percent %>%" data-attendance-target="meter"></div>
+    </div>
+  </div>
+<% end %>
+
+<button type="button"
+        class="event-share-button focus-ring"
+        data-share-target="trigger"
+        data-action="share#share"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+        aria-controls="event-share-panel">
+  <%= render "icons/link", class: "size-4" %>
+  <span data-share-target="label">Paylaş</span>
+</button>
+<div class="event-share-toast hidden" role="status" aria-live="polite" data-share-target="toast"></div>
+<div data-attendance-target="toast" class="hidden" role="status" aria-live="polite"></div>

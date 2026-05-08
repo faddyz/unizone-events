@@ -1,0 +1,14 @@
+<% if policy(show.event).edit? %>
+  <section class="cinema-panel rounded-[1.25rem] p-5">
+    <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Yönet</h2>
+    <p class="mt-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(show.event) %></p>
+    <div class="mt-4 flex flex-col gap-2">
+      <% if show.current_user == show.event.user %>
+        <%= link_to "Etkinliklerimde aç", organizer_event_path(show.event), class: "btn-void flex w-full focus-ring" %>
+      <% end %>
+      <% if show.current_user&.admin? %>
+        <%= link_to "İncelemede aç", admin_event_path(show.event), class: "btn-outline flex w-full focus-ring" %>
+      <% end %>
+    </div>
+  </section>
+<% end %>

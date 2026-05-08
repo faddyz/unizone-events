@@ -16,9 +16,7 @@
               data: { event_preview_target: "imageInput", existing: presenter.existing_image_data_value } %>
         <p id="event-image-hint">PNG, JPG veya WebP, en fazla 5 MB.</p>
       </div>
-      <% if presenter.field_error?(:image) %>
-        <p id="<%= presenter.field_error_id(:image) %>" class="event-form-field-error"><%= presenter.field_error_message(:image) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :image %>
       <% if presenter.show_remove_image_control? %>
         <label class="event-form-remove-image">
           <%= form.check_box :remove_image, { class: "event-form-remove-image-checkbox" }, "1", "0" %>

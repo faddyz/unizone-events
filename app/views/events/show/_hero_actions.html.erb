@@ -1,0 +1,61 @@
+<div class="event-hero-actions mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
+  <% if show.preview_mode %>
+    <button type="button" class="event-cta-primary is-preview-disabled" disabled aria-disabled="true">
+      <span><%= show.public_action_label %></span>
+      <%= render show.ticket_url ? "icons/ticket" : "icons/check_circle", class: "size-5" %>
+    </button>
+  <% elsif show.ticket_url %>
+    <%= link_to(show.ticket_url,
+          target: "_blank",
+          rel: "noopener",
+          class: "event-cta-primary focus-ring",
+          data: {
+            action: "external-redirect#open",
+            external_redirect_url_param: show.ticket_url
+          },
+          aria: {
+            haspopup: "dialog",
+            controls: "event-external-redirect-dialog"
+          }) do %>
+      <span><%= show.external_action_label %></span>
+      <%= render "icons/ticket", class: "size-5" %>
+    <% end %>
+  <% elsif !show.signed_in? %>
+    <%= link_to new_user_session_path, class: "event-cta-primary focus-ring" do %>
+      <span>Giriş yap</span>
+      <%= render "icons/check_circle", class: "size-5" %>
+    <% end %>
+  <% else %>
+    <button type="button"
+            class="event-cta-primary <%= show.going_selected? ? "is-active" : "" %> focus-ring"
+            data-attendance-status="going"
+            data-attendance-target="button"
+            data-attendance-active-class="is-active"
+            data-attendance-inactive-class=""
+            data-attendance-default-label="Katıl!"
+            data-attendance-selected-label="Yerini aldın!"
+            data-action="click->attendance#update"
+            aria-pressed="<%= show.going_selected? %>">
+      <span data-attendance-state><%= show.going_selected? ? "Yerini aldın!" : "Katıl!" %></span>
+      <%= render "icons/check_circle", class: "size-5" %>
+    </button>
+  <% end %>
+
+  <% if show.preview_mode %>
+    <button type="button" class="event-cta-ghost is-preview-disabled" disabled aria-disabled="true">
+      <%= render "icons/link", class: "size-5" %>
+      <span>Paylaş</span>
+    </button>
+  <% else %>
+    <button type="button"
+            class="event-cta-ghost focus-ring"
+            data-share-target="trigger"
+            data-action="share#share"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="event-share-panel">
+      <%= render "icons/link", class: "size-5" %>
+      <span data-share-target="label">Paylaş</span>
+    </button>
+  <% end %>
+</div>
