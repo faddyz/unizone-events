@@ -1,13 +1,5 @@
 class Admin::ExternalEventCandidatesController < ApplicationController
-  PRESETS = [
-    [ "complete", "Tam Uygun" ],
-    [ "new", "Yeni Gelenler" ],
-    [ "low_priority", "Dusuk Oncelik" ],
-    [ "incomplete", "Eksik Bilgili" ],
-    [ "approved", "Yayina Alinan" ],
-    [ "skipped", "Gecilen" ],
-    [ "rejected", "Reddedilen" ]
-  ].freeze
+  PRESETS = Admin::ExternalEventCandidateFilter::PRESETS
 
   before_action :authenticate_user!
   before_action :authorize_index!
@@ -15,7 +7,7 @@ class Admin::ExternalEventCandidatesController < ApplicationController
 
   def index
     @preset_tabs = PRESETS
-    @preset = PRESETS.map(&:first).include?(params[:preset].to_s) ? params[:preset].to_s : "complete"
+    @preset = Admin::ExternalEventCandidateFilter.normalize_preset(params[:preset])
     @query = params[:query].to_s.strip
     @per_page = per_page_param
     @stats = ExternalEventCandidate.status_counts
@@ -29,7 +21,7 @@ class Admin::ExternalEventCandidatesController < ApplicationController
 
   def show
     authorize @candidate
-    @approval = approval_defaults(@candidate)
+    @approval = Admin::ExternalEventCandidateApprovalDefaults.new(@candidate).to_h
   end
 
   def scan
@@ -75,51 +67,37 @@ class Admin::ExternalEventCandidatesController < ApplicationController
         return
       end
 
-      errors = bulk_approval_errors(candidates)
+      bulk_action = Admin::ExternalEventCandidateBulkAction.new(action: "approve", candidates: candidates)
+      errors = bulk_action.approval_errors
       if errors.present?
         redirect_to candidate_index_location, alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
         return
       end
 
-      count = 0
-      candidates.find_each do |candidate|
-        EtkinlikIo::CandidatePublisher.new(candidate).call
-        count += 1
-      end
+      count = bulk_action.call
 
       redirect_to candidate_index_location, notice: "#{count} aday yayinlandi.", status: :see_other
       return
     end
 
     candidates = policy_scope(ExternalEventCandidate).where(id: Array(params[:candidate_ids]).reject(&:blank?))
-    count = 0
 
     if candidates.blank?
       redirect_to candidate_index_location, alert: "Once aday sec.", status: :see_other
       return
     end
 
+    bulk_action = Admin::ExternalEventCandidateBulkAction.new(action: action, candidates: candidates)
+
     if action == "approve"
-      errors = bulk_approval_errors(candidates)
+      errors = bulk_action.approval_errors
       if errors.present?
         redirect_to candidate_index_location, alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
         return
       end
     end
 
-    candidates.find_each do |candidate|
-      case action
-      when "approve"
-        EtkinlikIo::CandidatePublisher.new(candidate).call
-      when "reject"
-        candidate.update!(status: "rejected")
-      when "skip"
-        candidate.update!(status: "skipped")
-      else
-        next
-      end
-      count += 1
-    end
+    count = bulk_action.call
 
     redirect_to candidate_index_location, notice: "#{count} aday guncellendi.", status: :see_other
   rescue ActiveRecord::RecordInvalid => error
@@ -153,35 +131,12 @@ class Admin::ExternalEventCandidatesController < ApplicationController
   end
 
   def filtered_candidates_scope(preset, query)
-    scope = policy_scope(ExternalEventCandidate).order(priority: :desc, starts_at: :asc, created_at: :desc)
-    scope = apply_preset(scope, preset)
-    if query.present?
-      needle = "%#{query.downcase}%"
-      scope = scope.where("LOWER(title) LIKE :query OR LOWER(venue) LIKE :query OR LOWER(city) LIKE :query", query: needle)
-    end
-    scope
-  end
-
-  def apply_preset(scope, preset)
-    case preset.to_s
-    when "complete"
-      scope.pending.where.not(category: [ "theater", "family" ])
-           .where.not(poster_url: [ nil, "" ])
-           .where("starts_at IS NOT NULL AND (city IS NOT NULL OR venue_type = 'ONLINE') AND (venue IS NOT NULL OR venue_type = 'ONLINE') AND (ticket_url IS NOT NULL OR external_url IS NOT NULL)")
-           .where("COALESCE(ends_at, starts_at) >= ?", Time.current)
-    when "new"
-      since = @last_run&.started_at || 24.hours.ago
-      scope.pending.where("first_seen_at >= ? OR created_at >= ?", since, 24.hours.ago)
-    when "low_priority"
-      scope.where(status: %w[pending hidden expired])
-           .where("category IN (?) OR hidden_reason = ?", %w[theater family community], "low_priority_category")
-    when "incomplete"
-      scope.pending.where("poster_url IS NULL OR poster_url = '' OR starts_at IS NULL OR category IS NULL OR (venue IS NULL AND venue_type != 'ONLINE') OR (ticket_url IS NULL AND external_url IS NULL)")
-    when "approved", "skipped", "rejected"
-      scope.where(status: preset)
-    else
-      scope.pending
-    end
+    Admin::ExternalEventCandidateFilter.new(
+      scope: policy_scope(ExternalEventCandidate),
+      preset: preset,
+      query: query,
+      last_run: @last_run
+    ).results
   end
 
   def scan_params
@@ -204,24 +159,6 @@ class Admin::ExternalEventCandidatesController < ApplicationController
     params.require(:approval).permit(:title, :category, :city, :location, :description, :starts_at, :ends_at, :ticket_url, :external_url, :external_is_free, :editor_score)
   end
 
-  def approval_defaults(candidate)
-    mapped = candidate.mapped_data.to_h
-    {
-      title: mapped["title"].presence || candidate.title,
-      category: mapped["category"].presence || candidate.category,
-      city: mapped["city"].presence || candidate.city,
-      location: mapped["location"].presence || candidate.venue,
-      description: mapped["description"],
-      starts_at: candidate.starts_at,
-      ends_at: candidate.ends_at,
-      ticket_url: candidate.ticket_url,
-      external_url: candidate.external_url,
-      external_is_free: mapped["external_is_free"],
-      editor_score: candidate.resolved_event&.editor_score
-    }
-  end
-
-
   def per_page_param
     value = params[:per_page].to_i
     [ 20, 50, 100 ].include?(value) ? value : 20
@@ -236,14 +173,4 @@ class Admin::ExternalEventCandidatesController < ApplicationController
     )
   end
 
-  def bulk_approval_errors(candidates)
-    candidates.filter_map do |candidate|
-      next if candidate.approved?
-
-      event = EtkinlikIo::CandidatePublisher.new(candidate).preview_event
-      next if event.valid?
-
-      "#{candidate.title.presence || candidate.external_id}: #{event.errors.full_messages.to_sentence}"
-    end
-  end
 end
