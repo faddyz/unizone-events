@@ -79,71 +79,92 @@
       <div class="explore-filter-main">
         <div class="explore-search-field">
           <%= form.label :query, "Etkinlik ara", class: "sr-only" %>
-          <%= form.text_field :query,
-                value: params[:query],
-                class: "explore-filter-input",
-                placeholder: "Etkinlik, mekan veya konu ara" %>
+          <div class="explore-field-control has-leading-icon">
+            <%= render "icons/search", class: "size-4" %>
+            <%= form.text_field :query,
+                  value: params[:query],
+                  class: "explore-filter-input",
+                  placeholder: "Etkinlik, mekan veya konu ara" %>
+          </div>
         </div>
 
         <div class="explore-filter-field">
           <%= form.label :city, "Şehir", class: "sr-only" %>
-          <%= form.select :city,
-                options_for_select([["Tüm Şehirler", ""]] + Event::CITY_OPTIONS.map { |city| [city, city] }, params[:city]),
-                {},
-                class: "explore-filter-select" %>
+          <div class="explore-field-control has-trailing-icon">
+            <%= form.select :city,
+                  options_for_select([["Tüm Şehirler", ""]] + Event::CITY_OPTIONS.map { |city| [city, city] }, params[:city]),
+                  {},
+                  class: "explore-filter-select" %>
+            <%= render "icons/chevron_down", class: "size-4" %>
+          </div>
         </div>
 
         <div class="explore-filter-field">
           <%= form.label :category, "Kategori", class: "sr-only" %>
-          <%= form.select :category,
-                options_for_select([["Tüm Kategoriler", ""]] + @categories, Array(params[:category]).first),
-                {},
-                class: "explore-filter-select" %>
+          <div class="explore-field-control has-trailing-icon">
+            <%= form.select :category,
+                  options_for_select([["Tüm Kategoriler", ""]] + @categories, Array(params[:category]).first),
+                  {},
+                  class: "explore-filter-select" %>
+            <%= render "icons/chevron_down", class: "size-4" %>
+          </div>
         </div>
 
         <div class="explore-filter-field">
           <%= form.label :date_filter, "Tarih", class: "sr-only" %>
-          <%= form.select :date_filter,
-                options_for_select([
-                  ["Tüm tarihler", "all"],
-                  ["Yaklaşan", "upcoming"],
-                  ["Bugün", "today"],
-                  ["Yarın", "tomorrow"],
-                  ["Bu akşam", "tonight"],
-                  ["Bu hafta", "this_week"],
-                  ["Hafta sonu", "weekend"],
-                  ["Bu ay", "this_month"]
-                ], params[:date_filter].presence || "all"),
-                {},
-                class: "explore-filter-select" %>
+          <div class="explore-field-control has-trailing-icon">
+            <%= form.select :date_filter,
+                  options_for_select([
+                    ["Tüm tarihler", "all"],
+                    ["Yaklaşan", "upcoming"],
+                    ["Bugün", "today"],
+                    ["Yarın", "tomorrow"],
+                    ["Bu akşam", "tonight"],
+                    ["Bu hafta", "this_week"],
+                    ["Hafta sonu", "weekend"],
+                    ["Bu ay", "this_month"]
+                  ], params[:date_filter].presence || "all"),
+                  {},
+                  class: "explore-filter-select" %>
+            <%= render "icons/chevron_down", class: "size-4" %>
+          </div>
         </div>
 
         <div class="explore-filter-field">
           <%= form.label :price_filter, "Ücret", class: "sr-only" %>
-          <%= form.select :price_filter,
-                options_for_select([
-                  ["Tüm Ücretler", ""],
-                  ["Ücretsiz", "free"],
-                  ["Ücretli", "paid"]
-                ], params[:price_filter]),
-                {},
-                class: "explore-filter-select" %>
+          <div class="explore-field-control has-trailing-icon">
+            <%= form.select :price_filter,
+                  options_for_select([
+                    ["Tüm Ücretler", ""],
+                    ["Ücretsiz", "free"],
+                    ["Ücretli", "paid"]
+                  ], params[:price_filter]),
+                  {},
+                  class: "explore-filter-select" %>
+            <%= render "icons/chevron_down", class: "size-4" %>
+          </div>
         </div>
 
         <div class="explore-filter-field">
           <%= form.label :sort_by, "Sıralama", class: "sr-only" %>
-          <%= form.select :sort_by,
-                options_for_select([
-                  ["En yakın", "date_asc"],
-                  ["En uzak", "date_desc"],
-                  ["En yeni", "newest"],
-                  ["Popüler", "popular"]
-                ], params[:sort_by].presence || "date_asc"),
-                {},
-                class: "explore-filter-select" %>
+          <div class="explore-field-control has-trailing-icon">
+            <%= form.select :sort_by,
+                  options_for_select([
+                    ["En yakın", "date_asc"],
+                    ["En uzak", "date_desc"],
+                    ["En yeni", "newest"],
+                    ["Popüler", "popular"]
+                  ], params[:sort_by].presence || "date_asc"),
+                  {},
+                  class: "explore-filter-select" %>
+            <%= render "icons/chevron_down", class: "size-4" %>
+          </div>
         </div>
 
-        <%= form.submit "Ara", class: "explore-filter-submit focus-ring", data: { explore_filters_target: "submit" } %>
+        <%= form.button type: "submit", class: "explore-filter-submit focus-ring", data: { explore_filters_target: "submit" } do %>
+          <%= render "icons/search", class: "size-4" %>
+          <span>Ara</span>
+        <% end %>
       </div>
 
       <details class="explore-advanced">
@@ -157,40 +178,49 @@
         <div class="explore-advanced-grid">
           <div class="explore-filter-field">
             <%= form.label :time_filter, "Saat aralığı", class: "explore-filter-label" %>
-            <%= form.select :time_filter,
-                  options_for_select([
-                    ["Tüm Saatler", ""],
-                    ["Sabah", "morning"],
-                    ["Öğleden sonra", "afternoon"],
-                    ["Akşam", "evening"],
-                    ["Gece", "night"]
-                  ], params[:time_filter]),
-                  {},
-                  class: "explore-filter-select" %>
+            <div class="explore-field-control has-trailing-icon">
+              <%= form.select :time_filter,
+                    options_for_select([
+                      ["Tüm Saatler", ""],
+                      ["Sabah", "morning"],
+                      ["Öğleden sonra", "afternoon"],
+                      ["Akşam", "evening"],
+                      ["Gece", "night"]
+                    ], params[:time_filter]),
+                    {},
+                    class: "explore-filter-select" %>
+              <%= render "icons/chevron_down", class: "size-4" %>
+            </div>
           </div>
 
           <div class="explore-filter-field">
             <%= form.label :availability_filter, "Kontenjan", class: "explore-filter-label" %>
-            <%= form.select :availability_filter,
-                  options_for_select([
-                    ["Tüm Etkinlikler", ""],
-                    ["Yer var", "available"],
-                    ["Az yer kaldı", "limited"]
-                  ], params[:availability_filter]),
-                  {},
-                  class: "explore-filter-select" %>
+            <div class="explore-field-control has-trailing-icon">
+              <%= form.select :availability_filter,
+                    options_for_select([
+                      ["Tüm Etkinlikler", ""],
+                      ["Yer var", "available"],
+                      ["Az yer kaldı", "limited"]
+                    ], params[:availability_filter]),
+                    {},
+                    class: "explore-filter-select" %>
+              <%= render "icons/chevron_down", class: "size-4" %>
+            </div>
           </div>
 
           <div class="explore-filter-field">
             <%= form.label :registration_filter, "Kayıt tipi", class: "explore-filter-label" %>
-            <%= form.select :registration_filter,
-                  options_for_select([
-                    ["Tüm Kayıt Tipleri", ""],
-                    ["Unizone RSVP", "unizone"],
-                    ["Dış Kayıt / Bilet", "external"]
-                  ], params[:registration_filter]),
-                  {},
-                  class: "explore-filter-select" %>
+            <div class="explore-field-control has-trailing-icon">
+              <%= form.select :registration_filter,
+                    options_for_select([
+                      ["Tüm Kayıt Tipleri", ""],
+                      ["Unizone RSVP", "unizone"],
+                      ["Dış Kayıt / Bilet", "external"]
+                    ], params[:registration_filter]),
+                    {},
+                    class: "explore-filter-select" %>
+              <%= render "icons/chevron_down", class: "size-4" %>
+            </div>
           </div>
         </div>
       </details>

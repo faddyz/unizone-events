@@ -24,6 +24,7 @@ class EventsController < ApplicationController
     @categories = filter_state.category_options
     @active_filters = filter_state.active_filters
     prepare_event_card_data(@events.to_a)
+    prepare_event_attendance_statuses(@events.to_a)
 
     respond_to do |format|
       format.html

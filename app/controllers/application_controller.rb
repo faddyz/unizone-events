@@ -64,4 +64,17 @@ class ApplicationController < ActionController::Base
 
     @event_attendee_previews.merge!(previews)
   end
+
+  def prepare_event_attendance_statuses(events)
+    records = Array(events).compact
+    ids = records.map(&:id).compact.uniq
+    @event_attendance_statuses = {}
+    return if ids.blank? || !user_signed_in?
+
+    @event_attendance_statuses = current_user
+                                  .attendances
+                                  .where(event_id: ids)
+                                  .pluck(:event_id, :status)
+                                  .to_h
+  end
 end
