@@ -1,0 +1,181 @@
+  <section class="event-show-hero relative isolate overflow-hidden bg-void text-white">
+    <div class="absolute inset-0 <%= event_poster_background_classes(show.event) %> opacity-80"></div>
+    <div class="poster-noise absolute inset-0"></div>
+    <div class="hero-atmosphere absolute inset-0 opacity-70"></div>
+    <div class="hero-stage-wash absolute inset-0 opacity-65"></div>
+    <div class="hero-ribbon hero-ribbon-citron"></div>
+    <div class="hero-ribbon hero-ribbon-blue"></div>
+    <div class="hero-glow-field absolute inset-0"></div>
+    <div class="soft-grid absolute inset-0 opacity-45"></div>
+    <div class="hero-energy absolute inset-0"></div>
+    <div class="hero-noise absolute inset-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-void via-stone-950/70 to-stone-950/28"></div>
+
+    <% if show.preview_mode %>
+      <div class="event-preview-banner page-shell relative z-20">
+        <div class="event-preview-banner-inner">
+          <div>
+            <p class="section-eyebrow text-citron">Önizleme modu</p>
+            <strong>Bu sayfa sadece etkinlik sahibi ve adminler tarafından görülebilir.</strong>
+            <span>Yayına alınana kadar keşifte listelenmez; katılım, paylaşım ve bilet aksiyonları kapalıdır.</span>
+          </div>
+          <%= link_to show.preview_back_label, show.preview_back_path, class: "event-preview-back focus-ring" %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="page-shell relative z-10 grid min-h-[46rem] content-end gap-10 pb-24 pt-32 lg:min-h-[50rem] lg:grid-cols-[minmax(0,1fr)_25rem] lg:items-end lg:pb-28">
+      <div class="hero-copy max-w-5xl">
+        <%= link_to show.preview_back_path, class: "mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white/72 backdrop-blur-xl transition hover:border-citron/60 hover:text-citron focus-ring" do %>
+          <%= render "icons/arrow_left", class: "size-4" %>
+          <%= show.preview_back_label %>
+        <% end %>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="<%= event_category_badge_classes(show.event) %>"><%= event_category_title(show.event) %></span>
+          <% unless show.event.published? %>
+            <span class="<%= event_status_badge_classes(show.event) %>"><%= event_status_label(show.event) %></span>
+          <% end %>
+          <span class="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.12em] text-white/70"><%= show.event.date.strftime("%H:%M") %></span>
+        </div>
+
+        <h1 class="event-show-title <%= show.title_density_class %> mt-5 max-w-5xl text-pretty font-display font-extrabold leading-[0.9] tracking-tight <%= show.title_size_class %>">
+          <%= show.display_title %>
+        </h1>
+        <p class="mt-6 max-w-3xl text-base font-medium leading-7 text-white/74 sm:text-xl sm:leading-8">
+          <%= truncate(show.display_description.squish, length: 190) %>
+        </p>
+
+        <div class="event-hero-actions mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <% if show.preview_mode %>
+            <button type="button" class="event-cta-primary is-preview-disabled" disabled aria-disabled="true">
+              <span><%= show.public_action_label %></span>
+              <%= render show.ticket_url ? "icons/ticket" : "icons/check_circle", class: "size-5" %>
+            </button>
+          <% elsif show.ticket_url %>
+            <%= link_to(show.ticket_url,
+                  target: "_blank",
+                  rel: "noopener",
+                  class: "event-cta-primary focus-ring",
+                  data: {
+                    action: "external-redirect#open",
+                    external_redirect_url_param: show.ticket_url
+                  },
+                  aria: {
+                    haspopup: "dialog",
+                    controls: "event-external-redirect-dialog"
+                  }) do %>
+              <span><%= event_external_action_label(show.event) %></span>
+              <%= render "icons/ticket", class: "size-5" %>
+            <% end %>
+          <% elsif !show.signed_in? %>
+            <%= link_to new_user_session_path, class: "event-cta-primary focus-ring" do %>
+              <span>Giriş yap</span>
+              <%= render "icons/check_circle", class: "size-5" %>
+            <% end %>
+          <% else %>
+            <% selected = show.selected_status == "going" %>
+            <button type="button"
+                    class="event-cta-primary <%= selected ? "is-active" : "" %> focus-ring"
+                    data-attendance-status="going"
+                    data-attendance-target="button"
+                    data-attendance-active-class="is-active"
+                    data-attendance-inactive-class=""
+                    data-attendance-default-label="Katıl!"
+                    data-attendance-selected-label="Yerini aldın!"
+                    data-action="click->attendance#update"
+                    aria-pressed="<%= selected %>">
+              <span data-attendance-state><%= selected ? "Yerini aldın!" : "Katıl!" %></span>
+              <%= render "icons/check_circle", class: "size-5" %>
+            </button>
+          <% end %>
+
+          <% if show.preview_mode %>
+            <button type="button" class="event-cta-ghost is-preview-disabled" disabled aria-disabled="true">
+              <%= render "icons/link", class: "size-5" %>
+              <span>Paylaş</span>
+            </button>
+          <% else %>
+            <button type="button"
+                    class="event-cta-ghost focus-ring"
+                    data-share-target="trigger"
+                    data-action="share#share"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                    aria-controls="event-share-panel">
+              <%= render "icons/link", class: "size-5" %>
+              <span data-share-target="label">Paylaş</span>
+            </button>
+          <% end %>
+        </div>
+
+        <div class="mt-7 flex flex-wrap items-center gap-3 text-sm font-semibold text-white/66">
+          <div class="event-show-avatar-stack" aria-hidden="true">
+            <% if show.attendee_preview.any? %>
+              <% show.attendee_preview.each_with_index do |user, avatar_index| %>
+                <% avatar_name = user.name.presence || user.email %>
+                <span class="event-show-avatar" style="--avatar-hue: <%= (avatar_name.to_s.sum + avatar_index * 37) % 360 %>"><%= avatar_name.to_s.first.upcase %></span>
+              <% end %>
+            <% else %>
+              <span class="event-show-live-dot"></span>
+            <% end %>
+          </div>
+          <p>
+            <% if show.preview_mode %>
+              Yayına çıkınca katılım hareketi burada görünür.
+            <% else %>
+              <strong class="text-white" data-attendance-target="count" data-attendance-count-key="attendees_count"><%= show.going_count %></strong>
+              kişi katılıyor!
+              <% if show.capacity %>
+                <span class="text-white/38">/</span>
+                <span data-attendance-target="spots"><%= show.spots_left %></span> yer kaldı
+              <% elsif show.total_responses.positive? %>
+                <span class="text-white/38">/</span> <%= show.total_responses %> toplam geri bildirim.
+              <% end %>
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <aside class="event-show-poster-card hidden lg:block" <%= tag.attributes(data: { controller: "poster-palette" }) if event_has_poster?(show.event) %>>
+        <div class="event-show-date-ticket">
+          <span><%= show.event.date.strftime("%b") %></span>
+          <strong><%= show.event.date.strftime("%-d") %></strong>
+        </div>
+        <% if event_has_poster?(show.event) %>
+          <button type="button"
+                  class="event-show-poster-frame event-show-poster-button <%= event_poster_background_classes(show.event) %> focus-ring"
+                  data-action="poster-lightbox#open"
+                  aria-haspopup="dialog"
+                  aria-controls="event-poster-lightbox"
+                  aria-label="<%= show.display_title %> afişini büyüt">
+            <div class="poster-art absolute inset-0 opacity-35"></div>
+            <%= event_poster_image_tag show.event,
+                  :detail,
+                  alt: show.display_title,
+                  loading: "eager",
+                  fetchpriority: "high",
+                  sizes: "(min-width: 1024px) 25rem, 92vw",
+                  class_name: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl",
+                  data: { poster_palette_target: "image" } %>
+            <span class="event-show-poster-zoom">
+              <%= render "icons/image", class: "size-4" %>
+              <span>Afişi büyüt</span>
+            </span>
+            <div class="poster-chrome absolute inset-0"></div>
+            <div class="poster-spotlight absolute inset-0"></div>
+          </button>
+        <% else %>
+          <div class="event-show-poster-frame <%= event_poster_background_classes(show.event) %>">
+            <div class="poster-art absolute inset-0 opacity-100"></div>
+            <div class="relative z-10 grid h-full place-items-center p-8 text-center">
+              <p class="font-display text-4xl font-extrabold leading-none"><%= show.display_title %></p>
+            </div>
+            <div class="poster-chrome absolute inset-0"></div>
+            <div class="poster-spotlight absolute inset-0"></div>
+          </div>
+        <% end %>
+
+      </aside>
+    </div>
+  </section>

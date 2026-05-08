@@ -1,0 +1,37 @@
+  <% if event_has_poster?(show.event) %>
+    <dialog class="event-poster-lightbox"
+            id="event-poster-lightbox"
+            aria-labelledby="event-poster-lightbox-title"
+            data-poster-lightbox-target="dialog"
+            data-action="click->poster-lightbox#closeFromBackdrop">
+      <div class="event-poster-lightbox-panel">
+        <header class="event-poster-lightbox-head">
+          <div>
+            <p class="section-eyebrow text-citron">Afiş</p>
+            <h2 id="event-poster-lightbox-title"><%= show.display_title %></h2>
+          </div>
+          <button type="button"
+                  class="event-poster-lightbox-close focus-ring"
+                  data-action="poster-lightbox#close"
+                  aria-label="Afişi kapat">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/>
+            </svg>
+          </button>
+        </header>
+        <div class="event-poster-lightbox-media <%= event_poster_background_classes(show.event) %>" data-controller="poster-palette">
+          <div class="poster-art absolute inset-0 opacity-35"></div>
+          <%= event_poster_image_tag show.event,
+                :lightbox,
+                alt: show.display_title,
+                loading: "lazy",
+                sizes: "min(64rem, 100vw)",
+                class_name: "event-poster-lightbox-image",
+                data: { poster_palette_target: "image" },
+                defer_src: true %>
+          <div class="poster-noise absolute inset-0"></div>
+          <div class="poster-chrome absolute inset-0"></div>
+        </div>
+      </div>
+    </dialog>
+  <% end %>

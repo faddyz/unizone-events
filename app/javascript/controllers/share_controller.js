@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { gsap } from "gsap"
+import { compactUrl } from "lib/url_helpers"
 
 export default class extends Controller {
   static targets = [
@@ -138,7 +139,7 @@ export default class extends Controller {
     })
 
     if (this.hasUrlPreviewTarget) {
-      this.urlPreviewTarget.textContent = this.compactUrl(this.payload.url)
+      this.urlPreviewTarget.textContent = compactUrl(this.payload.url)
     }
   }
 
@@ -366,15 +367,6 @@ export default class extends Controller {
     this.triggerTargets.forEach((trigger) => {
       trigger.setAttribute("aria-expanded", trigger === activeTrigger ? "true" : "false")
     })
-  }
-
-  compactUrl(url) {
-    try {
-      const parsedUrl = new URL(url)
-      return `${parsedUrl.host}${parsedUrl.pathname}`
-    } catch (error) {
-      return url
-    }
   }
 
   get payload() {

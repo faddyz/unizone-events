@@ -1,0 +1,65 @@
+<section class="event-form-step" data-wizard-target="step">
+  <div class="event-form-step-intro">
+    <p class="section-eyebrow text-coral">Zaman ve yer</p>
+    <h3>Etkinliğin ne zaman ve nerede olacağını netleştir.</h3>
+    <p>Belirsiz tarih, saat veya konum iyi bir etkinliğin bile ertelenmesine neden olabilir.</p>
+  </div>
+
+  <div class="event-form-grid">
+    <div class="event-form-field">
+      <%= form.label :date, "Tarih ve saat", class: "event-form-label" %>
+      <%= form.datetime_local_field :date,
+            class: event_form_control_classes(model, :date),
+            aria: event_form_aria(model, :date),
+            data: { event_preview_target: "date", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :date) %>
+        <p id="<%= event_form_field_error_id(:date) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :date) %></p>
+      <% end %>
+    </div>
+
+    <div class="event-form-field">
+      <%= form.label :city, "Şehir", class: "event-form-label" %>
+      <%= form.select :city,
+            Event::CITY_OPTIONS,
+            {},
+            class: event_form_control_classes(model, :city),
+            aria: event_form_aria(model, :city),
+            data: { event_preview_target: "city", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :city) %>
+        <p id="<%= event_form_field_error_id(:city) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :city) %></p>
+      <% end %>
+    </div>
+
+    <div class="event-form-field">
+      <%= form.label :location, "Mekan", class: "event-form-label" %>
+      <%= form.text_field :location,
+            class: event_form_control_classes(model, :location),
+            placeholder: "Salon, kampüs, semt veya çevrim içi bağlantı",
+            aria: event_form_aria(model, :location),
+            data: { event_preview_target: "location", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :location) %>
+        <p id="<%= event_form_field_error_id(:location) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :location) %></p>
+      <% end %>
+    </div>
+
+    <div class="event-form-field">
+      <%= form.label :capacity, "Kontenjan", class: "event-form-label" %>
+      <%= form.number_field :capacity,
+            min: 1,
+            step: 1,
+            class: event_form_control_classes(model, :capacity),
+            placeholder: "120",
+            aria: event_form_aria(model, :capacity, describedby: "event-capacity-hint"),
+            data: { event_preview_target: "capacity" } %>
+      <p id="event-capacity-hint" class="event-form-hint">Boş bırakırsan etkinlik sayfasında kontenjan gösterilmez.</p>
+      <% if event_form_field_error?(model, :capacity) %>
+        <p id="<%= event_form_field_error_id(:capacity) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :capacity) %></p>
+      <% end %>
+    </div>
+
+    <div class="event-form-note is-blue">
+      <%= render "icons/location", class: "size-5" %>
+      <p>Şehri ayrı seç; mekan alanına salon, kampüs, semt veya online buluşma bağlantısını yaz.</p>
+    </div>
+  </div>
+</section>

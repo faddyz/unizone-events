@@ -1,3 +1,5 @@
+require_dependency Rails.root.join("app/presenters/event_show_presenter").to_s
+
 class EventsController < ApplicationController
   HOME_UPCOMING_EVENTS_LIMIT = 12
   HOME_FEATURED_EVENTS_LIMIT = 12
@@ -11,15 +13,16 @@ class EventsController < ApplicationController
                          .limit(HOME_UPCOMING_EVENTS_LIMIT)
                          .to_a
     @featured_events = EventRanker.rank(home_scope).limit(HOME_FEATURED_EVENTS_LIMIT).to_a
-    @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
+    @categories = EventFilterState.category_options
     prepare_event_card_data(@events + @featured_events)
   end
 
   def explore
-    @view_mode = explore_view_mode
+    filter_state = EventFilterState.new(params)
+    @view_mode = filter_state.view_mode
     @events = EventSearch.new(scope: published_scope, params: search_params).results.page(params[:page]).per(12)
-    @categories = Event.categories.keys.map { |category| [ Event.new(category: category).category_title, category ] }
-    @active_filters = active_explore_filters
+    @categories = filter_state.category_options
+    @active_filters = filter_state.active_filters
     prepare_event_card_data(@events.to_a)
 
     respond_to do |format|
@@ -37,6 +40,17 @@ class EventsController < ApplicationController
     @attendance = current_user&.attendances&.find_by(event: @event)
     prepare_event_card_data([ @event ] + @similar_events + @organizer_other_events, preview_limit: 5)
     @attendee_preview = @event_attendee_previews.fetch(@event.id, [])
+    @event_show = EventShowPresenter.new(
+      event: @event,
+      current_user: current_user,
+      attendance: @attendance,
+      attendee_preview: @attendee_preview,
+      preview_mode: @preview_mode,
+      going_count: @event_attendance_counts.fetch(@event.id) { @event.attendees_count },
+      similar_events: @similar_events,
+      organizer_other_events: @organizer_other_events,
+      helpers: view_context
+    )
   end
 
   private
@@ -63,114 +77,6 @@ class EventsController < ApplicationController
   end
 
   def search_params
-    params.permit(
-      :query,
-      :city,
-      :date,
-      :date_filter,
-      :start_date,
-      :end_date,
-      :time_filter,
-      :price_filter,
-      :availability_filter,
-      :registration_filter,
-      :hide_started,
-      :sort_by,
-      :view,
-      :category,
-      category: []
-    )
-  end
-
-  def active_explore_filters
-    filters = []
-
-    if params[:query].present?
-      filters << { key: "query", value: params[:query].to_s, label: "Arama: #{params[:query]}" }
-    end
-
-    Array(params[:category]).flatten.reject(&:blank?).uniq.each do |category|
-      next unless Event.categories.key?(category)
-
-      filters << { key: "category", value: category, label: "Kategori: #{Event.new(category: category).category_title}" }
-    end
-
-    city = params[:city].to_s
-    if Event::CITY_OPTIONS.include?(city)
-      filters << { key: "city", value: city, label: "Şehir: #{city}" }
-    end
-
-    date_labels = {
-      "today" => "Bugün",
-      "tomorrow" => "Yarın",
-      "tonight" => "Bu akşam",
-      "this_week" => "Bu hafta",
-      "weekend" => "Hafta sonu",
-      "this_month" => "Bu ay",
-      "past" => "Geçmiş",
-      "upcoming" => "Yaklaşan"
-    }
-    date_filter = params[:date_filter].to_s
-    if date_labels.key?(date_filter)
-      filters << { key: "date_filter", value: date_filter, label: "Tarih: #{date_labels[date_filter]}" }
-    end
-
-    time_labels = {
-      "morning" => "Sabah",
-      "afternoon" => "Öğleden sonra",
-      "evening" => "Akşam",
-      "night" => "Gece"
-    }
-    time_filter = params[:time_filter].to_s
-    if time_labels.key?(time_filter)
-      filters << { key: "time_filter", value: time_filter, label: "Saat: #{time_labels[time_filter]}" }
-    end
-
-    price_labels = {
-      "free" => "Ücretsiz",
-      "paid" => "Ücretli"
-    }
-    price_filter = params[:price_filter].to_s
-    if price_labels.key?(price_filter)
-      filters << { key: "price_filter", value: price_filter, label: "Ücret: #{price_labels[price_filter]}" }
-    end
-
-    availability_labels = {
-      "available" => "Yer var",
-      "limited" => "Az yer kaldı"
-    }
-    availability_filter = params[:availability_filter].to_s
-    if availability_labels.key?(availability_filter)
-      filters << { key: "availability_filter", value: availability_filter, label: "Kontenjan: #{availability_labels[availability_filter]}" }
-    end
-
-    registration_labels = {
-      "unizone" => "Unizone RSVP",
-      "external" => "Dış kayıt"
-    }
-    registration_filter = params[:registration_filter].to_s
-    if registration_labels.key?(registration_filter)
-      filters << { key: "registration_filter", value: registration_filter, label: "Kayıt: #{registration_labels[registration_filter]}" }
-    end
-
-    if ActiveModel::Type::Boolean.new.cast(params[:hide_started])
-      filters << { key: "hide_started", value: "1", label: "Başlamış etkinlikler gizli" }
-    end
-
-    sort_labels = {
-      "date_desc" => "En uzak",
-      "popular" => "Popüler",
-      "newest" => "En yeni"
-    }
-    sort_by = params[:sort_by].to_s
-    if sort_labels.key?(sort_by)
-      filters << { key: "sort_by", value: sort_by, label: "Sıralama: #{sort_labels[sort_by]}" }
-    end
-
-    filters
-  end
-
-  def explore_view_mode
-    params[:view] == "list" ? "list" : "grid"
+    EventSearchParams.from(params)
   end
 end

@@ -1,0 +1,52 @@
+<section class="event-form-step" data-wizard-target="step">
+  <div class="event-form-step-intro">
+    <p class="section-eyebrow text-coral">Afiş ve son kontrol</p>
+    <h3>Etkinliğinin görsel etkisini güçlendir.</h3>
+    <p>İyi bir afiş, keşif akışında etkinliğinin daha hızlı fark edilmesine yardımcı olur. Afişin yok ise merak etme, senin için her kategoriye özel; güzel bir gradyan hazırladık!</p>
+  </div>
+
+  <div class="event-form-grid">
+    <div class="event-form-field md:col-span-2">
+      <%= form.label :image, "Afiş görseli", class: "event-form-label" %>
+      <div class="event-form-upload <%= "is-invalid" if event_form_field_error?(model, :image) %>">
+        <%= form.file_field :image,
+              accept: "image/png,image/jpeg,image/jpg,image/webp",
+              class: event_form_control_classes(model, :image, base: "event-form-file"),
+              aria: event_form_aria(model, :image, describedby: "event-image-hint"),
+              data: { event_preview_target: "imageInput", existing: (model.image.attached? && model.image.attachment&.persisted?) ? "true" : "false" } %>
+        <p id="event-image-hint">PNG, JPG veya WebP, en fazla 5 MB.</p>
+      </div>
+      <% if event_form_field_error?(model, :image) %>
+        <p id="<%= event_form_field_error_id(:image) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :image) %></p>
+      <% end %>
+      <% if model.persisted? && model.image.attached? && model.image.attachment&.persisted? %>
+        <label class="event-form-remove-image">
+          <%= form.check_box :remove_image, { class: "event-form-remove-image-checkbox" }, "1", "0" %>
+          <span>
+            <strong>Mevcut afişi kaldır</strong>
+            <small>Yeni görsel seçmezsen kaydettiğinde mevcut afiş silinir.</small>
+          </span>
+        </label>
+      <% end %>
+    </div>
+
+    <div class="event-form-review md:col-span-2">
+      <p class="section-eyebrow text-citron">Yayın akışı</p>
+      <div>
+        <span>1</span>
+        <strong>Hazırlık</strong>
+        <p>Formdaki bilgiler etkinlik sayfasının temelini oluşturur.</p>
+      </div>
+      <div>
+        <span>2</span>
+        <strong>İnceleme</strong>
+        <p>Gönderdiğinde etkinlik otomatik olarak inceleme kuyruğuna alınır.</p>
+      </div>
+      <div>
+        <span>3</span>
+        <strong>Yayında</strong>
+        <p>Onaylandıktan sonra keşif akışında ve paylaşım sayfasında görünür olur.</p>
+      </div>
+    </div>
+  </div>
+</section>

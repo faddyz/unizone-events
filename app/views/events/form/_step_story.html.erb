@@ -1,0 +1,50 @@
+<section class="event-form-step" data-wizard-target="step">
+  <div class="event-form-step-intro">
+    <p class="section-eyebrow text-coral">Hikaye ve kayıt</p>
+    <h3>İnsanlara neden katılmak isteyeceklerini göster.</h3>
+    <p>Etkinliğin atmosferini, akışını ve katılımcıların neler bekleyebileceğini anlat.</p>
+  </div>
+
+  <div class="event-form-grid">
+    <div class="event-form-field md:col-span-2">
+      <%= form.label :description, "Açıklama", class: "event-form-label" %>
+      <%= form.text_area :description,
+            rows: 8,
+            class: event_form_control_classes(model, :description, base: "event-form-control event-form-textarea"),
+            placeholder: "Atmosferi, akışı ve katılımcıların neler bekleyebileceğini anlat.",
+            aria: event_form_aria(model, :description),
+            data: { event_preview_target: "description", wizard_required: "true" } %>
+      <% if event_form_field_error?(model, :description) %>
+        <p id="<%= event_form_field_error_id(:description) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :description) %></p>
+      <% end %>
+    </div>
+
+    <div class="event-form-field">
+      <%= form.label :price, "Ücret", class: "event-form-label" %>
+      <%= form.number_field :price,
+            step: "0.01",
+            min: 0,
+            class: event_form_control_classes(model, :price),
+            placeholder: "0",
+            aria: event_form_aria(model, :price, describedby: "event-price-hint"),
+            data: { event_preview_target: "price" } %>
+      <p id="event-price-hint" class="event-form-hint">Ücretsiz etkinlik için 0 yaz veya boş bırak.</p>
+      <% if event_form_field_error?(model, :price) %>
+        <p id="<%= event_form_field_error_id(:price) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :price) %></p>
+      <% end %>
+    </div>
+
+    <div class="event-form-field">
+      <%= form.label :ticket_url, "Bilet / kayıt bağlantısı", class: "event-form-label" %>
+      <%= form.url_field :ticket_url,
+            class: event_form_control_classes(model, :ticket_url),
+            placeholder: "https://...",
+            aria: event_form_aria(model, :ticket_url, describedby: "event-ticket-url-hint"),
+            data: { event_preview_target: "ticketUrl" } %>
+      <p id="event-ticket-url-hint" class="event-form-hint">Varsa ana aksiyon bu bağlantıya yönlendirilir.</p>
+      <% if event_form_field_error?(model, :ticket_url) %>
+        <p id="<%= event_form_field_error_id(:ticket_url) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :ticket_url) %></p>
+      <% end %>
+    </div>
+  </div>
+</section>

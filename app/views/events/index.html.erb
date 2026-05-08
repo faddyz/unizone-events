@@ -12,7 +12,7 @@
 ] %>
 <% upcoming_events = @events %>
 
-<%= render "events/hero" %>
+<%= render "events/home/hero" %>
 
 <section class="page-shell mt-8 space-y-7 lg:mt-10" data-controller="carousel">
   <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -36,7 +36,7 @@
         <div class="featured-carousel-track">
           <% @featured_events.each_with_index do |event, index| %>
             <div class="featured-carousel-slide">
-              <%= render "events/event_card", event: event, featured: true, index: index %>
+              <%= render "events/cards/event_card", event: event, featured: true, index: index %>
             </div>
           <% end %>
         </div>
@@ -114,7 +114,7 @@
         <div class="upcoming-carousel-track">
           <% upcoming_events.each_with_index do |event, index| %>
             <div class="upcoming-carousel-slide">
-              <%= render "events/event_card", event: event, compact: true, index: index %>
+              <%= render "events/cards/event_card", event: event, compact: true, index: index %>
             </div>
           <% end %>
         </div>

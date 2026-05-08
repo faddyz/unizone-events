@@ -1,0 +1,28 @@
+    <nav class="event-form-step-rail" aria-label="Etkinlik oluşturma adımları">
+      <div class="event-form-rail-head">
+        <p class="section-eyebrow text-coral"><%= mode == :edit ? "Düzenleme" : "Yeni etkinlik" %></p>
+        <h2><%= form_title %></h2>
+        <p><%= form_description %></p>
+      </div>
+
+      <div class="event-form-steps">
+        <% steps.each_with_index do |step, index| %>
+          <button type="button"
+                  class="event-form-step-tab focus-ring"
+                  data-wizard-target="tab"
+                  data-wizard-index="<%= index %>"
+                  data-wizard-title="<%= step[:title] %>"
+                  data-wizard-summary="<%= step[:summary] %>"
+                  data-action="wizard#go keydown->wizard#keydown">
+            <span class="event-form-step-tab-index"><%= (index + 1).to_s.rjust(2, "0") %></span>
+            <span class="event-form-step-tab-copy">
+              <span><%= step[:label] %></span>
+              <small><%= step[:summary] %></small>
+            </span>
+            <span class="event-form-step-tab-check">
+              <%= render "icons/#{step[:icon]}", class: "size-4" %>
+            </span>
+          </button>
+        <% end %>
+      </div>
+    </nav>

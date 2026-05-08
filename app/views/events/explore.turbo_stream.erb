@@ -1,7 +1,7 @@
 <%= turbo_stream.append "explore_events_results" do %>
-  <%= render "events/explore_event_items", events: @events, view_mode: @view_mode %>
+  <%= render "events/explore/event_items", events: @events, view_mode: @view_mode %>
 <% end %>
 
 <%= turbo_stream.replace "explore_load_more" do %>
-  <%= render "events/explore_load_more", events: @events %>
+  <%= render "events/explore/load_more", events: @events %>
 <% end %>
