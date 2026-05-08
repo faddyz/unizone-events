@@ -112,7 +112,7 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
 
     get organizer_events_path(status: "published")
     assert_response :success
-    assert_includes response.body, "Yayındaki sayfa"
+    assert_includes response.body, "Yayın Sayfası"
   end
 
   test "organizer can create an event directly for review" do

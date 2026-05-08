@@ -1,0 +1,476 @@
+/* Member workbench responsive rules */
+@media (min-width: 640px) {
+  .workbench-hero,
+  .workbench-panel {
+    padding: 1.25rem;
+  }
+
+  .plans-overview {
+    padding: 1.05rem;
+  }
+
+  .organizer-overview {
+    padding: 1.05rem;
+  }
+
+  .plans-next-link {
+    grid-template-areas: "date copy status arrow";
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    min-height: 6.8rem;
+    padding: 0.82rem;
+  }
+
+  .plans-next-date {
+    width: 4.15rem;
+    min-height: 4.75rem;
+  }
+
+  .plans-next-copy h2,
+  .plans-next-empty h2 {
+    font-size: clamp(1.35rem, 3vw, 2rem);
+    line-height: 1;
+  }
+
+  .plans-card {
+    grid-template-areas: "poster date body open";
+    grid-template-columns: 6.6rem 4.6rem minmax(0, 1fr) 2.35rem;
+    align-items: center;
+  }
+
+  .plans-card > .plans-date-card {
+    width: 4.6rem;
+  }
+
+  .plans-card-poster,
+  .plans-card > .plans-date-card,
+  .plans-card-open {
+    align-self: center;
+  }
+
+  .plans-card-open {
+    justify-self: center;
+  }
+
+  .plans-card-body {
+    padding-right: 0;
+  }
+
+  .plans-card-body {
+    padding-top: 0.05rem;
+  }
+
+  .organizer-search-form {
+    grid-template-columns: minmax(14rem, 1fr) auto auto;
+    align-items: center;
+  }
+
+  .organizer-desk-search {
+    grid-template-columns: minmax(14rem, 1fr) auto auto;
+    align-items: center;
+  }
+
+  .organizer-event-card {
+    display: grid;
+    grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+  }
+
+  .organizer-event-poster {
+    aspect-ratio: auto;
+    min-height: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .workbench-signal-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .organizer-pulse-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .organizer-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .organizer-desk-card {
+    grid-template-columns: 8rem 4.6rem minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .member-workbench {
+    gap: 1.25rem;
+  }
+
+  .plans-overview {
+    grid-template-columns: minmax(0, 0.82fr) minmax(24rem, 1fr);
+    align-items: center;
+    padding: 1.18rem;
+  }
+
+  .organizer-overview {
+    grid-template-columns: minmax(0, 0.82fr) minmax(24rem, 1fr);
+    align-items: center;
+    padding: 1.18rem;
+  }
+
+  .workbench-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem);
+    grid-template-areas: "copy side";
+    align-items: end;
+    padding: 1.55rem;
+  }
+
+  .workbench-hero-copy {
+    grid-area: copy;
+  }
+
+  .dashboard-next,
+  .organizer-hero-status {
+    grid-area: side;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 25rem);
+  }
+
+  .plans-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 25rem);
+  }
+
+  .organizer-desk-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 24rem);
+  }
+
+  .dashboard-side-stack {
+    position: sticky;
+    top: 6.5rem;
+  }
+
+  .plans-side-stack {
+    position: sticky;
+    top: 6.5rem;
+  }
+
+  .organizer-side-stack {
+    position: sticky;
+    top: 6.5rem;
+  }
+
+  .organizer-controls {
+    grid-template-columns: minmax(0, 0.86fr) minmax(24rem, 0.56fr);
+    align-items: center;
+  }
+
+  .organizer-event-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .organizer-event-card {
+    grid-template-columns: minmax(10rem, 12rem) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .organizer-desk-card {
+    grid-template-areas: "poster date body actions";
+    grid-template-columns: 8.6rem 4.6rem minmax(0, 1fr) minmax(8.5rem, 9.6rem);
+  }
+
+  .organizer-desk-actions {
+    display: grid;
+    align-content: center;
+  }
+
+  .organizer-desk-actions form,
+  .organizer-card-action,
+  .organizer-card-action[type="submit"] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-page,
+  .organizer-workbench {
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 2rem);
+  }
+
+  .plans-overview {
+    gap: 0.68rem;
+    border-radius: 1rem;
+    padding: 0.78rem;
+  }
+
+  .organizer-overview {
+    gap: 0.68rem;
+    border-radius: 1rem;
+    padding: 0.78rem;
+  }
+
+  .plans-overview-copy h1 {
+    font-size: clamp(1.85rem, 9vw, 2.35rem);
+    line-height: 0.95;
+  }
+
+  .organizer-overview-copy h1 {
+    font-size: clamp(1.85rem, 9vw, 2.35rem);
+    line-height: 0.95;
+  }
+
+  .plans-overview-copy p:not(.section-eyebrow) {
+    margin-top: 0.42rem;
+    font-size: 0.84rem;
+    line-height: 1.34;
+  }
+
+  .organizer-overview-copy p:not(.section-eyebrow) {
+    margin-top: 0.42rem;
+    font-size: 0.84rem;
+    line-height: 1.34;
+  }
+
+  .plans-next-link {
+    grid-template-areas:
+      "date copy arrow"
+      "date status arrow";
+    grid-template-columns: 3.32rem minmax(0, 1fr) 1.45rem;
+    gap: 0.42rem 0.56rem;
+    border-radius: 0.9rem;
+    padding: 0.56rem;
+  }
+
+  .plans-next-date {
+    width: 3.22rem;
+    min-height: 3.65rem;
+    border-radius: 0.72rem;
+    padding: 0.36rem;
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.22),
+      2px 2px 0 var(--citron);
+  }
+
+  .plans-next-date span,
+  .plans-next-date small {
+    font-size: 0.5rem;
+  }
+
+  .plans-next-date strong {
+    font-size: 1.24rem;
+  }
+
+  .plans-next-copy > span {
+    display: none;
+  }
+
+  .plans-next-copy h2 {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 0;
+    font-size: clamp(1rem, 4.5vw, 1.18rem);
+    line-height: 1.05;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .plans-next-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 0.32rem;
+    font-size: 0.72rem;
+    line-height: 1.28;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .plans-next-link > .plans-status-badge {
+    align-self: start;
+    padding: 0.3rem 0.54rem;
+    font-size: 0.64rem;
+  }
+
+  .plans-next-arrow {
+    width: 1rem;
+    height: 1rem;
+    justify-self: center;
+  }
+
+  .plans-filter-bar {
+    gap: 0.34rem;
+    border-radius: 0.95rem;
+    padding: 0.34rem;
+  }
+
+  .plans-filter-chip {
+    min-height: 2.14rem;
+    gap: 0.34rem;
+    padding: 0.32rem 0.42rem 0.32rem 0.52rem;
+    font-size: 0.68rem;
+  }
+
+  .plans-filter-chip strong {
+    min-width: 1.28rem;
+    height: 1.28rem;
+    font-size: 0.58rem;
+  }
+
+  .plans-filter-dot {
+    width: 0.38rem;
+    height: 0.38rem;
+  }
+
+  .dashboard-page .workbench-panel {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--card-bg-strong) 98%, white), color-mix(in srgb, var(--card-bg) 94%, var(--page-bg))),
+      var(--page-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .plans-calendar-card {
+    isolation: isolate;
+    transform: translateZ(0);
+  }
+
+  .plans-list {
+    gap: 0.68rem;
+  }
+
+  .plans-card {
+    display: none;
+  }
+
+  .organizer-desk-card {
+    display: none;
+  }
+
+  .plans-mobile-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(7.3rem, 38%) minmax(0, 1fr);
+    min-height: 9.55rem;
+    overflow: hidden;
+    border: 1px solid rgba(15, 15, 18, 0.1);
+    border-radius: 1rem;
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.92), color-mix(in srgb, var(--card-bg-strong) 90%, transparent)),
+      var(--page-bg);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.54),
+      0 1px 2px rgba(15, 15, 18, 0.04),
+      0 10px 24px rgba(15, 15, 18, 0.055);
+  }
+
+  .organizer-mobile-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(7.3rem, 38%) minmax(0, 1fr);
+    min-height: 9.55rem;
+    overflow: hidden;
+    border: 1px solid rgba(15, 15, 18, 0.1);
+    border-radius: 1rem;
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.92), color-mix(in srgb, var(--card-bg-strong) 90%, transparent)),
+      var(--page-bg);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.54),
+      0 1px 2px rgba(15, 15, 18, 0.04),
+      0 10px 24px rgba(15, 15, 18, 0.055);
+  }
+
+  .organizer-desk-head {
+    display: grid;
+  }
+
+  .organizer-desk-search {
+    width: 100%;
+  }
+
+  .plans-load-more {
+    margin-top: 0.2rem;
+  }
+
+  .plans-load-more-button {
+    width: 100%;
+    min-height: 2.75rem;
+    font-size: 0.8rem;
+  }
+
+  .plans-mobile-poster-title {
+    font-size: clamp(0.58rem, 2.3vw, 0.76rem);
+    -webkit-line-clamp: 3;
+  }
+
+  .organizer-mobile-poster-title {
+    font-size: clamp(0.58rem, 2.3vw, 0.76rem);
+    -webkit-line-clamp: 3;
+  }
+}
+
+@media (max-width: 639px) {
+  .workbench-hero h1 {
+    font-size: clamp(2rem, 10vw, 3.1rem);
+  }
+
+  .plans-overview-copy h1 {
+    font-size: clamp(1.82rem, 9.6vw, 2.24rem);
+    line-height: 0.96;
+  }
+
+  .organizer-overview-copy h1 {
+    font-size: clamp(1.82rem, 9.6vw, 2.24rem);
+    line-height: 0.96;
+  }
+
+  .plans-section-head {
+    align-items: flex-start;
+  }
+
+  .plans-section-head .workbench-link {
+    display: none;
+  }
+
+  .plans-card-topline {
+    padding-right: 0;
+  }
+
+  .plans-mobile-poster-title {
+    top: 3.9rem;
+    font-size: clamp(0.54rem, 2.45vw, 0.72rem);
+    line-height: 1.05;
+    -webkit-line-clamp: 3;
+  }
+
+  .organizer-mobile-poster-title {
+    top: 3.9rem;
+    font-size: clamp(0.54rem, 2.45vw, 0.72rem);
+    line-height: 1.05;
+    -webkit-line-clamp: 3;
+  }
+
+  .workbench-primary-action,
+  .workbench-secondary-action,
+  .organizer-search-submit,
+  .organizer-clear-link {
+    width: 100%;
+  }
+
+  .workbench-section-head {
+    align-items: flex-start;
+  }
+
+  .organizer-event-actions > * {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .member-workbench *,
+  .member-workbench *::before,
+  .member-workbench *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}

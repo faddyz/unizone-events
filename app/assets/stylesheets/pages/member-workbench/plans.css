@@ -1,0 +1,1034 @@
+/* Plans page module */
+.plans-overview {
+  display: grid;
+  gap: 0.78rem;
+  border: 1px solid rgba(15, 15, 18, 0.08);
+  border-radius: 1.15rem;
+  background:
+    radial-gradient(circle at 4% 12%, rgba(215, 255, 57, 0.16), transparent 15rem),
+    linear-gradient(135deg, rgba(250, 246, 238, 0.98), rgba(244, 239, 230, 0.92));
+  padding: 0.9rem;
+  box-shadow:
+    0 1px 2px rgba(15, 15, 18, 0.04),
+    0 16px 44px rgba(15, 15, 18, 0.08);
+}
+
+.plans-overview-copy {
+  min-width: 0;
+}
+
+.plans-overview-copy h1 {
+  margin-top: 0;
+  color: var(--page-text);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.92;
+  overflow-wrap: anywhere;
+}
+
+.plans-overview-copy p:not(.section-eyebrow) {
+  margin-top: 0.56rem;
+  max-width: 30rem;
+  color: rgba(15, 15, 18, 0.58);
+  font-size: 0.94rem;
+  font-weight: 750;
+  line-height: 1.42;
+}
+
+.plans-next-card {
+  min-width: 0;
+}
+
+.plans-next-link,
+.plans-next-empty {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(215, 255, 57, 0.16), transparent 12rem),
+    radial-gradient(circle at 100% 0, rgba(47, 107, 255, 0.22), transparent 16rem),
+    linear-gradient(135deg, rgba(8, 8, 10, 0.98), rgba(21, 27, 40, 0.98));
+  color: white;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 42px rgba(15, 15, 18, 0.18);
+}
+
+.plans-next-link {
+  display: grid;
+  grid-template-areas:
+    "date copy arrow"
+    "status status status";
+  grid-template-columns: 4rem minmax(0, 1fr) 1.4rem;
+  gap: 0.65rem;
+  align-items: center;
+  min-height: 0;
+  padding: 0.68rem;
+  transition:
+    transform 220ms var(--ease-out-expressive),
+    box-shadow 220ms ease;
+}
+
+.plans-next-link:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 22px 50px rgba(15, 15, 18, 0.22);
+}
+
+.plans-next-date {
+  grid-area: date;
+  width: 3.85rem;
+  min-height: 4.25rem;
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.24),
+    3px 3px 0 var(--citron);
+}
+
+.plans-next-copy {
+  grid-area: copy;
+  min-width: 0;
+}
+
+.plans-next-copy > span,
+.plans-next-empty span:not(.dashboard-empty-dot) {
+  display: block;
+  color: rgba(255, 255, 255, 0.42);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.plans-next-copy h2,
+.plans-next-empty h2 {
+  margin-top: 0.45rem;
+  color: white;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 5.2vw, 1.55rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.04;
+  overflow-wrap: anywhere;
+}
+
+.plans-next-copy p,
+.plans-next-empty p {
+  margin-top: 0.55rem;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.plans-next-arrow {
+  grid-area: arrow;
+  align-self: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.plans-next-link > .plans-status-badge {
+  grid-area: status;
+  justify-self: start;
+}
+
+.plans-next-empty {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  min-height: 8rem;
+  padding: 1rem;
+}
+
+.plans-filter-bar {
+  display: flex;
+  gap: 0.38rem;
+  overflow-x: auto;
+  border: 1px solid rgba(15, 15, 18, 0.08);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), color-mix(in srgb, var(--card-bg-strong) 88%, transparent)),
+    var(--page-bg);
+  padding: 0.34rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 1px 2px rgba(15, 15, 18, 0.035),
+    0 8px 22px rgba(15, 15, 18, 0.055);
+  scrollbar-width: none;
+}
+
+.plans-filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.plans-filter-chip {
+  display: inline-flex;
+  min-height: 2.28rem;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.42rem;
+  border: 1px solid rgba(15, 15, 18, 0.055);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.58);
+  padding: 0.36rem 0.46rem 0.36rem 0.6rem;
+  color: rgba(15, 15, 18, 0.62);
+  font-size: 0.76rem;
+  font-weight: 950;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.plans-filter-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(15, 15, 18, 0.13);
+  background: color-mix(in srgb, var(--card-bg-strong) 96%, white);
+  color: var(--page-text);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 7px 16px rgba(15, 15, 18, 0.075);
+}
+
+.plans-filter-chip.is-active {
+  transform: translateY(-1px);
+  border-color: rgba(15, 15, 18, 0.9);
+  background: var(--page-text);
+  color: var(--citron);
+  box-shadow:
+    0 9px 20px rgba(15, 15, 18, 0.16),
+    0 0 0 1px rgba(215, 255, 57, 0.1);
+}
+
+.plans-filter-chip.is-active:hover {
+  background: var(--page-text);
+  color: var(--citron);
+}
+
+.plans-filter-chip strong {
+  display: grid;
+  min-width: 1.46rem;
+  height: 1.46rem;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--card-bg-strong) 92%, white);
+  color: var(--page-text);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 950;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 18, 0.04);
+}
+
+.plans-filter-chip.is-active strong {
+  background: var(--citron);
+}
+
+.plans-filter-dot {
+  width: 0.44rem;
+  height: 0.44rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  background: rgba(15, 15, 18, 0.28);
+}
+
+.plans-filter-chip.is-going .plans-filter-dot,
+.plans-filter-chip.is-week .plans-filter-dot {
+  background: var(--mint);
+}
+
+.plans-filter-chip.is-interested .plans-filter-dot {
+  background: var(--bluebolt);
+}
+
+.plans-filter-chip.is-all .plans-filter-dot,
+.plans-filter-chip.is-active .plans-filter-dot {
+  background: var(--citron);
+}
+
+.plans-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.plans-list-panel {
+  min-width: 0;
+}
+
+.plans-section-head {
+  align-items: center;
+}
+
+.plans-list,
+.plans-mini-list,
+.plans-side-stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.plans-card {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    "poster date open"
+    "body body body";
+  grid-template-columns: 4.8rem 4.8rem 2rem;
+  gap: 0.72rem;
+  align-items: start;
+  border: 1px solid rgba(15, 15, 18, 0.075);
+  border-radius: 1rem;
+  background: rgba(15, 15, 18, 0.035);
+  padding: 0.68rem;
+  transition:
+    transform 220ms var(--ease-out-expressive),
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.plans-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 15, 18, 0.13);
+  background: rgba(15, 15, 18, 0.052);
+}
+
+.plans-card-poster,
+.plans-mini-poster {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  color: white;
+  text-align: center;
+}
+
+.plans-card-poster {
+  grid-area: poster;
+  aspect-ratio: 1;
+  border-radius: 0.82rem;
+}
+
+.plans-card-poster .poster-art,
+.plans-card-poster .poster-noise,
+.plans-card-poster .poster-chrome,
+.plans-card-poster .poster-spotlight,
+.plans-mobile-poster .poster-art,
+.plans-mobile-poster .poster-noise,
+.plans-mobile-poster .poster-chrome,
+.plans-mobile-poster .poster-spotlight {
+  pointer-events: none;
+}
+
+.plans-poster-title {
+  position: relative;
+  z-index: 3;
+  display: -webkit-box;
+  max-width: calc(100% - 0.6rem);
+  overflow: hidden;
+  padding: 0.2rem;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: clamp(0.58rem, 0.52rem + 0.35vw, 0.78rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.42),
+    0 10px 22px rgba(0, 0, 0, 0.58);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.plans-poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plans-date-card {
+  grid-area: date;
+  display: grid;
+  width: 4.8rem;
+  min-height: 4.8rem;
+  place-items: center;
+  align-self: start;
+  border: 1px solid rgba(15, 15, 18, 0.1);
+  border-radius: 0.82rem;
+  background: var(--card-bg-strong);
+  padding: 0.48rem;
+  color: var(--page-text);
+  box-shadow: 3px 3px 0 rgba(215, 255, 57, 0.9);
+}
+
+.plans-date-card span,
+.plans-date-card small {
+  color: rgba(15, 15, 18, 0.5);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.plans-date-card strong {
+  margin-top: 0.16rem;
+  font-family: var(--font-mono);
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 0.95;
+}
+
+.plans-card-body {
+  grid-area: body;
+  display: grid;
+  min-width: 0;
+  padding-right: 0;
+}
+
+.plans-card-topline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: space-between;
+  min-height: 1.55rem;
+  width: 100%;
+}
+
+.plans-card-category {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--plans-category-accent, #4d7c0f) 15%, white), rgba(255, 255, 255, 0.72));
+  padding: 0.34rem 0.54rem;
+  color: color-mix(in srgb, var(--plans-category-accent, #4d7c0f) 78%, var(--page-text));
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--plans-category-accent, #4d7c0f) 22%, transparent),
+    0 6px 14px color-mix(in srgb, var(--plans-category-accent, #4d7c0f) 10%, transparent);
+}
+
+.plans-card-category.is-general { --plans-category-accent: #4d7c0f; }
+.plans-card-category.is-technology { --plans-category-accent: var(--bluebolt); }
+.plans-card-category.is-music { --plans-category-accent: #d61a8d; }
+.plans-card-category.is-art { --plans-category-accent: var(--grape); }
+.plans-card-category.is-sports { --plans-category-accent: #65a30d; }
+.plans-card-category.is-education { --plans-category-accent: #0891b2; }
+.plans-card-category.is-concert { --plans-category-accent: #4f46e5; }
+.plans-card-category.is-festival { --plans-category-accent: var(--ember); }
+.plans-card-category.is-workshop { --plans-category-accent: #0f766e; }
+.plans-card-category.is-party { --plans-category-accent: #db2777; }
+.plans-card-category.is-theater { --plans-category-accent: #be123c; }
+.plans-card-category.is-exhibition { --plans-category-accent: #7c3aed; }
+.plans-card-category.is-conference { --plans-category-accent: #2563eb; }
+.plans-card-category.is-networking { --plans-category-accent: #059669; }
+.plans-card-category.is-community { --plans-category-accent: #4d7c0f; }
+.plans-card-category.is-art-exhibition { --plans-category-accent: var(--grape); }
+.plans-card-category.is-sports-wellness { --plans-category-accent: #65a30d; }
+.plans-card-category.is-nightlife { --plans-category-accent: #db2777; }
+.plans-card-category.is-business { --plans-category-accent: #0f172a; }
+.plans-card-category.is-career { --plans-category-accent: #d97706; }
+.plans-card-category.is-food-lifestyle { --plans-category-accent: #16a34a; }
+.plans-card-category.is-family { --plans-category-accent: #0284c7; }
+
+.plans-status-badge {
+  white-space: nowrap;
+}
+
+.plans-card h3,
+.plans-mini-card h3 {
+  color: var(--page-text);
+  font-weight: 950;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.plans-card h3 {
+  margin-top: 0.42rem;
+  font-size: clamp(1.04rem, 2.4vw, 1.28rem);
+}
+
+.plans-card h3 a:hover,
+.plans-mini-card h3 a:hover {
+  color: var(--coral);
+}
+
+.plans-card-meta {
+  display: grid;
+  gap: 0.28rem;
+  margin-top: 0.55rem;
+}
+
+.plans-card-meta span {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(15, 15, 18, 0.56);
+  font-size: 0.84rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.plans-card-meta svg {
+  flex: 0 0 auto;
+  color: rgba(15, 15, 18, 0.38);
+}
+
+.plans-card-signal {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.48rem;
+  margin-top: 0.62rem;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.34), transparent 56%),
+    color-mix(in srgb, var(--card-bg-strong) 60%, rgba(15, 15, 18, 0.055));
+  padding: 0.22rem 0.68rem 0.22rem 0.24rem;
+  color: rgba(15, 15, 18, 0.62);
+  font-size: 0.82rem;
+  font-weight: 760;
+  line-height: 1;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1px 0 rgba(15, 15, 18, 0.035);
+}
+
+.plans-card:hover .plans-card-signal {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.38), transparent 56%),
+    color-mix(in srgb, var(--card-bg-strong) 54%, rgba(15, 15, 18, 0.07));
+  color: rgba(15, 15, 18, 0.76);
+}
+
+.plans-avatar-stack {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.plans-avatar {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.94);
+  border-radius: var(--radius-pill);
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.48), transparent 30%),
+    hsl(var(--avatar-hue) 52% 34%);
+  color: white;
+  font-size: 0.64rem;
+  font-weight: 950;
+  line-height: 1;
+  box-shadow:
+    0 5px 12px rgba(15, 15, 18, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.plans-avatar + .plans-avatar {
+  margin-left: -0.5rem;
+}
+
+.plans-signal-dot {
+  width: 0.54rem;
+  height: 0.54rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  background: var(--mint);
+  box-shadow: 0 0 14px rgba(63, 255, 168, 0.68);
+}
+
+.plans-signal-copy {
+  min-width: 0;
+}
+
+.plans-signal-copy strong {
+  color: var(--page-text);
+  font-weight: 950;
+}
+
+.plans-card-open {
+  grid-area: open;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  align-self: start;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: rgba(15, 15, 18, 0.06);
+  color: rgba(15, 15, 18, 0.58);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.plans-card-open:hover {
+  transform: translateX(2px);
+  background: var(--page-text);
+  color: var(--citron);
+}
+
+.plans-card-open svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.plans-mobile-card {
+  display: none;
+}
+
+.plans-mobile-poster,
+.plans-mobile-content {
+  min-width: 0;
+}
+
+.plans-mobile-poster {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  min-height: 100%;
+  border-radius: 0.9rem 0 0 0.9rem;
+  background-color: var(--ink);
+  color: white;
+}
+
+.plans-mobile-poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(8, 8, 10, 0.02), rgba(8, 8, 10, 0.72));
+  pointer-events: none;
+}
+
+.plans-mobile-poster .plans-poster-image {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+}
+
+.plans-mobile-poster-title {
+  position: absolute;
+  left: 0.56rem;
+  right: 0.56rem;
+  top: 4rem;
+  z-index: 3;
+  max-width: none;
+  padding: 0;
+  font-size: clamp(0.62rem, 0.56rem + 0.55vw, 0.9rem);
+  line-height: 1.08;
+  -webkit-line-clamp: 3;
+}
+
+.plans-mobile-date {
+  position: absolute;
+  left: 0.62rem;
+  top: 0.62rem;
+  z-index: 3;
+  display: grid;
+  min-width: 2.75rem;
+  min-height: 3.2rem;
+  place-items: center;
+  border-radius: 0.58rem;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 0.34rem 0.42rem;
+  color: var(--page-text);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+}
+
+.plans-mobile-date small {
+  color: rgba(15, 15, 18, 0.55);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.plans-mobile-date strong {
+  margin-top: 0.12rem;
+  font-family: var(--font-mono);
+  font-size: 1.24rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.plans-mobile-signal {
+  position: absolute;
+  left: 0.68rem;
+  right: 0.68rem;
+  bottom: 0.68rem;
+  z-index: 3;
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.34rem;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.1;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.62);
+}
+
+.plans-mobile-signal span {
+  width: 0.52rem;
+  height: 0.52rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  background: var(--mint);
+  box-shadow: 0 0 14px rgba(63, 255, 168, 0.78);
+}
+
+.plans-mobile-content {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.34rem;
+  padding: 0.82rem 0.78rem 0.72rem;
+}
+
+.plans-mobile-topline {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.58rem;
+}
+
+.plans-mobile-category {
+  min-width: 0;
+  color: var(--mobile-category-accent, #047857);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.plans-mobile-category.is-general { --mobile-category-accent: #4d7c0f; }
+.plans-mobile-category.is-technology { --mobile-category-accent: var(--bluebolt); }
+.plans-mobile-category.is-music { --mobile-category-accent: #d61a8d; }
+.plans-mobile-category.is-art { --mobile-category-accent: var(--grape); }
+.plans-mobile-category.is-sports { --mobile-category-accent: #65a30d; }
+.plans-mobile-category.is-education { --mobile-category-accent: #0891b2; }
+.plans-mobile-category.is-concert { --mobile-category-accent: #4f46e5; }
+.plans-mobile-category.is-festival { --mobile-category-accent: var(--ember); }
+.plans-mobile-category.is-workshop { --mobile-category-accent: #0f766e; }
+.plans-mobile-category.is-party { --mobile-category-accent: #db2777; }
+.plans-mobile-category.is-theater { --mobile-category-accent: #be123c; }
+.plans-mobile-category.is-exhibition { --mobile-category-accent: #7c3aed; }
+.plans-mobile-category.is-conference { --mobile-category-accent: #2563eb; }
+.plans-mobile-category.is-networking { --mobile-category-accent: #059669; }
+.plans-mobile-category.is-community { --mobile-category-accent: #4d7c0f; }
+.plans-mobile-category.is-art-exhibition { --mobile-category-accent: var(--grape); }
+.plans-mobile-category.is-sports-wellness { --mobile-category-accent: #65a30d; }
+.plans-mobile-category.is-nightlife { --mobile-category-accent: #db2777; }
+.plans-mobile-category.is-business { --mobile-category-accent: #0f172a; }
+.plans-mobile-category.is-career { --mobile-category-accent: #d97706; }
+.plans-mobile-category.is-food-lifestyle { --mobile-category-accent: #16a34a; }
+.plans-mobile-category.is-family { --mobile-category-accent: #0284c7; }
+
+.plans-mobile-open {
+  display: grid;
+  width: 2.12rem;
+  height: 2.12rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(15, 15, 18, 0.1);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(15, 15, 18, 0.68);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.plans-mobile-open:hover {
+  transform: translateX(2px);
+  background: var(--page-text);
+  color: var(--citron);
+}
+
+.plans-mobile-open svg {
+  width: 0.98rem;
+  height: 0.98rem;
+}
+
+.plans-mobile-content h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--page-text);
+  font-size: 0.98rem;
+  font-weight: 900;
+  line-height: 1.16;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.plans-mobile-content h3 a:hover {
+  color: var(--coral);
+}
+
+.plans-mobile-meta {
+  display: grid;
+  gap: 0.24rem;
+  margin-top: 0.04rem;
+}
+
+.plans-mobile-meta span {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.32rem;
+  color: rgba(15, 15, 18, 0.58);
+  font-size: 0.72rem;
+  font-weight: 760;
+  line-height: 1.2;
+}
+
+.plans-mobile-meta svg {
+  flex: 0 0 auto;
+  color: rgba(15, 15, 18, 0.42);
+}
+
+.plans-mobile-status {
+  width: fit-content;
+  margin-top: 0.16rem;
+  padding: 0.32rem 0.58rem;
+  font-size: 0.66rem;
+}
+
+.plans-load-more {
+  display: grid;
+  justify-items: center;
+  gap: 0.62rem;
+  margin-top: 0.35rem;
+  padding-top: 0.3rem;
+  text-align: center;
+}
+
+.plans-load-more p {
+  margin: 0;
+  color: rgba(15, 15, 18, 0.46);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.plans-load-more-button {
+  display: inline-flex;
+  min-height: 2.85rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(15, 15, 18, 0.92);
+  border-radius: var(--radius-pill);
+  background: var(--page-text);
+  padding: 0.72rem 1.05rem;
+  color: var(--citron);
+  font-size: 0.84rem;
+  font-weight: 950;
+  box-shadow: 4px 4px 0 rgba(215, 255, 57, 0.32);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.plans-load-more-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0 rgba(215, 255, 57, 0.45);
+}
+
+.plans-load-more-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.plans-side-stack {
+  align-content: start;
+}
+
+.plans-side-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.95rem;
+}
+
+.plans-side-head h2 {
+  margin-top: 0.32rem;
+  color: var(--page-text);
+  font-family: var(--font-display);
+  font-size: clamp(1.24rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.plans-side-head > span {
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  background: rgba(15, 15, 18, 0.055);
+  padding: 0.42rem 0.62rem;
+  color: rgba(15, 15, 18, 0.55);
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.plans-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.36rem;
+}
+
+.plans-calendar-weekday {
+  display: grid;
+  place-items: center;
+  color: rgba(15, 15, 18, 0.44);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  min-height: 1.7rem;
+  text-transform: uppercase;
+}
+
+.plans-calendar-day {
+  display: grid;
+  aspect-ratio: 1;
+  min-width: 0;
+  place-items: center;
+  color: rgba(15, 15, 18, 0.72);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.plans-calendar-day > span {
+  display: grid;
+  width: 2.05rem;
+  height: 2.05rem;
+  place-items: center;
+  border-radius: var(--radius-pill);
+}
+
+.plans-calendar-day.is-muted {
+  color: rgba(15, 15, 18, 0.28);
+}
+
+.plans-calendar-day.is-today > span {
+  outline: 1px solid rgba(15, 15, 18, 0.2);
+  outline-offset: 2px;
+}
+
+.plans-calendar-day.has-plan > span {
+  background: var(--page-text);
+  color: var(--citron);
+  box-shadow: 0 8px 18px rgba(15, 15, 18, 0.18);
+}
+
+.plans-calendar-day.has-plan.is-interested > span {
+  background: rgba(47, 107, 255, 0.13);
+  color: #1946b8;
+  box-shadow: inset 0 0 0 1px rgba(47, 107, 255, 0.18);
+}
+
+.plans-calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.68rem;
+  margin-top: 0.9rem;
+}
+
+.plans-calendar-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(15, 15, 18, 0.52);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.plans-calendar-legend i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+}
+
+.plans-calendar-legend i.is-going {
+  background: var(--citron);
+  box-shadow: 0 0 0 3px rgba(15, 15, 18, 0.92);
+}
+
+.plans-calendar-legend i.is-interested {
+  background: var(--bluebolt);
+}
+
+.plans-mini-card {
+  display: grid;
+  grid-template-columns: 3.9rem minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: center;
+  border-radius: 0.9rem;
+  background: rgba(15, 15, 18, 0.04);
+  padding: 0.55rem;
+}
+
+.plans-mini-poster {
+  aspect-ratio: 1;
+  border-radius: 0.72rem;
+}
+
+.plans-mini-card h3 {
+  font-size: 0.92rem;
+}
+
+.plans-mini-card p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.2rem;
+  color: rgba(15, 15, 18, 0.54);
+  font-size: 0.75rem;
+  font-weight: 760;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.plans-mini-bookmark {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--page-text);
+}
+

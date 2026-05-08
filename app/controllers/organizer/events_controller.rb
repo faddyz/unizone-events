@@ -15,7 +15,7 @@ class Organizer::EventsController < ApplicationController
     @selected_status = @status_tabs.map(&:first).include?(params[:status].to_s) ? params[:status].to_s : "all"
     @query = params[:query].to_s.strip
 
-    events_scope = current_user.events.with_attached_image.includes(:attendances).order(created_at: :desc)
+    events_scope = current_user.events.with_attached_image.includes(:attendances).order(updated_at: :desc)
     events_scope = events_scope.where(status: @selected_status) unless @selected_status == "all"
     if @query.present?
       events_scope = events_scope.where(
@@ -25,6 +25,9 @@ class Organizer::EventsController < ApplicationController
     end
 
     @events = events_scope
+    @upcoming_events = events_scope.where("date >= ?", Time.current)
+                                   .reorder(date: :asc)
+                                   .limit(4)
     @stats = {
       total: current_user.events.count,
       draft: current_user.events.draft.count,
