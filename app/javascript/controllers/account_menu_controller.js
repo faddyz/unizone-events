@@ -47,6 +47,20 @@ export default class extends Controller {
     this.closeMobile()
   }
 
+  closeMenus() {
+    document.querySelectorAll(".nav-account-menu[open]").forEach((menu) => {
+      menu.open = false
+    })
+
+    if (!this.hasMobileSheetTarget || this.mobileSheetTarget.hidden) return
+
+    this.resetMobileDrag()
+    this.mobileSheetTarget.classList.remove("is-open")
+    this.mobileSheetTarget.hidden = true
+    document.documentElement.classList.remove("mobile-account-open")
+    this.setMobileTriggerState(false)
+  }
+
   openMobile(event) {
     event.preventDefault()
     if (!this.hasMobileSheetTarget) return
