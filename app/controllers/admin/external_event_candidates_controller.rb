@@ -1,22 +1,13 @@
-class Admin::ExternalEventCandidatesController < ApplicationController
-  PRESETS = Admin::ExternalEventCandidateFilter::PRESETS
+require_dependency Rails.root.join("app/presenters/admin/external_event_candidate_index_presenter").to_s
+require_dependency Rails.root.join("app/services/admin/external_event_candidate_bulk_workflow").to_s
 
+class Admin::ExternalEventCandidatesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_index!
   before_action :set_candidate, only: [ :show, :approve, :reject, :skip ]
 
   def index
-    @preset_tabs = PRESETS
-    @preset = Admin::ExternalEventCandidateFilter.normalize_preset(params[:preset])
-    @query = params[:query].to_s.strip
-    @per_page = per_page_param
-    @stats = ExternalEventCandidate.status_counts
-    @last_run = ImportRun.where(source: ExternalEventCandidate::SOURCE_ETKINLIK_IO).recent.first
-    @recent_runs = ImportRun.where(source: ExternalEventCandidate::SOURCE_ETKINLIK_IO).recent.limit(4)
-    @scan_city_options = EtkinlikIo::Catalog.city_options
-    @scan_format_options = EtkinlikIo::Catalog.format_options
-    @scan_category_options = EtkinlikIo::Catalog.category_options
-    @candidates = filtered_candidates.page(params[:page]).per(@per_page)
+    set_index_state
   end
 
   def show
@@ -58,48 +49,8 @@ class Admin::ExternalEventCandidatesController < ApplicationController
 
   def bulk
     authorize ExternalEventCandidate, :bulk?
-    action = params[:bulk_action].to_s
-
-    if action == "approve_filtered"
-      candidates = filtered_candidates_scope(params[:preset].to_s, params[:query].to_s.strip).pending
-      if candidates.blank?
-        redirect_to candidate_index_location, alert: "Onaylanacak aday yok.", status: :see_other
-        return
-      end
-
-      bulk_action = Admin::ExternalEventCandidateBulkAction.new(action: "approve", candidates: candidates)
-      errors = bulk_action.approval_errors
-      if errors.present?
-        redirect_to candidate_index_location, alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
-        return
-      end
-
-      count = bulk_action.call
-
-      redirect_to candidate_index_location, notice: "#{count} aday yayinlandi.", status: :see_other
-      return
-    end
-
-    candidates = policy_scope(ExternalEventCandidate).where(id: Array(params[:candidate_ids]).reject(&:blank?))
-
-    if candidates.blank?
-      redirect_to candidate_index_location, alert: "Once aday sec.", status: :see_other
-      return
-    end
-
-    bulk_action = Admin::ExternalEventCandidateBulkAction.new(action: action, candidates: candidates)
-
-    if action == "approve"
-      errors = bulk_action.approval_errors
-      if errors.present?
-        redirect_to candidate_index_location, alert: "Yayina alinamayan adaylar: #{errors.join(" ? ")}", status: :see_other
-        return
-      end
-    end
-
-    count = bulk_action.call
-
-    redirect_to candidate_index_location, notice: "#{count} aday guncellendi.", status: :see_other
+    result = bulk_workflow.call
+    redirect_to candidate_index_location, result.to_h.compact.merge(status: :see_other)
   rescue ActiveRecord::RecordInvalid => error
     redirect_to candidate_index_location, alert: "Toplu islem durdu: #{error.record.errors.full_messages.to_sentence}", status: :see_other
   end
@@ -126,17 +77,44 @@ class Admin::ExternalEventCandidatesController < ApplicationController
     @candidate = policy_scope(ExternalEventCandidate).find(params[:id])
   end
 
+  def set_index_state
+    @candidate_index = Admin::ExternalEventCandidateIndexPresenter.new(scope: policy_scope(ExternalEventCandidate), params: params)
+    @preset_tabs = @candidate_index.preset_tabs
+    @preset = @candidate_index.preset
+    @query = @candidate_index.query
+    @per_page = @candidate_index.per_page
+    @stats = @candidate_index.stats
+    @last_run = @candidate_index.last_run
+    @recent_runs = @candidate_index.recent_runs
+    @scan_city_options = @candidate_index.scan_city_options
+    @scan_format_options = @candidate_index.scan_format_options
+    @scan_category_options = @candidate_index.scan_category_options
+    @candidates = @candidate_index.candidates
+  end
+
   def filtered_candidates
-    filtered_candidates_scope(@preset, @query)
+    candidate_index.filtered_candidates
   end
 
   def filtered_candidates_scope(preset, query)
-    Admin::ExternalEventCandidateFilter.new(
+    candidate_index.filtered_candidates_scope(preset, query, last_run: @last_run)
+  end
+
+  def bulk_filtered_candidates_scope
+    candidate_index.filtered_candidates_scope(params[:preset].to_s, params[:query].to_s.strip, last_run: nil)
+  end
+
+  def candidate_index
+    @candidate_index ||= Admin::ExternalEventCandidateIndexPresenter.new(scope: policy_scope(ExternalEventCandidate), params: params)
+  end
+
+  def bulk_workflow
+    Admin::ExternalEventCandidateBulkWorkflow.new(
+      action: params[:bulk_action],
+      candidate_ids: params[:candidate_ids],
       scope: policy_scope(ExternalEventCandidate),
-      preset: preset,
-      query: query,
-      last_run: @last_run
-    ).results
+      filtered_scope: bulk_filtered_candidates_scope
+    )
   end
 
   def scan_params
