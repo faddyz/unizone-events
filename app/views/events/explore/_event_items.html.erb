@@ -1,20 +1,17 @@
 <% events.each_with_index do |event, index| %>
   <% going_count = event_attendance_count(event) %>
+  <% attendee_preview = event_attendee_preview(event, limit: 3) %>
   <% current_status = @event_attendance_statuses&.fetch(event.id, nil).to_s %>
   <% interested_selected = current_status == "interested" %>
-  <% mobile_location = plain_display_text(event.location) %>
-  <% mobile_city = plain_display_text(event.city).presence %>
-  <% mobile_location_parts = mobile_location.to_s.split(",").map(&:squish).reject(&:blank?) %>
-  <% mobile_place_primary = if mobile_location.blank? || mobile_location.casecmp("online").zero? || mobile_location.casecmp("çevrimiçi").zero?
-       mobile_location.blank? ? (mobile_city || "Konum yakında") : "Çevrimiçi"
-     else
-       mobile_location_parts.first || mobile_location
-     end %>
-  <% mobile_place_secondary = if mobile_place_primary == "Çevrimiçi"
-       mobile_city
-     else
-       [ mobile_location_parts.second, mobile_city ].compact_blank.uniq.join(", ").presence
-     end %>
+  <% place_primary, place_secondary = event_place_parts(event) %>
+  <% card_price_text = event_card_price_text(event) %>
+  <% list_price_text = card_price_text.presence || event_price_text(event) %>
+  <% remote_poster = event.remote_poster_url.present? %>
+  <% poster_image_data = remote_poster ? { controller: "poster-orientation" } : nil %>
+  <% poster_image_classes = [
+       "event-poster-image event-poster-image-main absolute inset-0 h-full w-full",
+       ("is-remote-poster" if remote_poster)
+     ].compact.join(" ") %>
 
   <article class="explore-mobile-event-card animate-rise-in"
            style="animation-delay: <%= index * 45 %>ms"
@@ -30,7 +27,8 @@
               alt: event_display_title(event),
               loading: "lazy",
               sizes: "40vw",
-              class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
+              class_name: poster_image_classes,
+              data: poster_image_data %>
         <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/10 to-transparent"></div>
       <% else %>
         <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/10 to-transparent"></div>
@@ -77,24 +75,26 @@
         <span class="explore-mobile-place">
           <%= render "icons/location", class: "size-4" %>
           <span>
-            <strong><%= truncate(mobile_place_primary, length: 32) %></strong>
-            <% if mobile_place_secondary.present? %>
-              <small><%= truncate(mobile_place_secondary, length: 34) %></small>
+            <strong><%= truncate(place_primary, length: 32) %></strong>
+            <% if place_secondary.present? %>
+              <small><%= truncate(place_secondary, length: 34) %></small>
             <% end %>
           </span>
         </span>
-        <% if event_card_price_text(event).present? %>
-          <span class="explore-mobile-price <%= event_price_badge_classes(event) %>"><%= event_card_price_text(event) %></span>
+        <% if card_price_text.present? %>
+          <span class="explore-mobile-price <%= event_price_badge_classes(event) %>"><%= card_price_text %></span>
         <% end %>
       </div>
     </div>
   </article>
 
   <% if view_mode == "list" %>
-    <% capacity = event.capacity.to_i.positive? ? event.capacity.to_i : nil %>
-    <% spots_left = capacity ? [capacity - going_count, 0].max : nil %>
-
-    <article class="explore-list-card animate-rise-in" style="animation-delay: <%= index * 45 %>ms">
+    <article class="explore-list-card animate-rise-in"
+             style="animation-delay: <%= index * 45 %>ms"
+             data-controller="attendance"
+             data-attendance-url-value="<%= event_attendance_path(event) %>"
+             data-attendance-signed-in-value="<%= user_signed_in? %>"
+             data-attendance-current-status-value="<%= current_status %>">
       <%= link_to event_path(event), class: "explore-list-poster focus-ring #{event_poster_background_classes(event)}" do %>
         <div class="poster-art absolute inset-0 opacity-100"></div>
         <% if event_has_poster?(event) %>
@@ -103,7 +103,8 @@
                 alt: event_display_title(event),
                 loading: "lazy",
                 sizes: "(min-width: 1024px) 12.5rem, (min-width: 640px) 12rem, 92vw",
-                class_name: "event-poster-image event-poster-image-main absolute inset-0 h-full w-full" %>
+                class_name: poster_image_classes,
+                data: poster_image_data %>
         <% end %>
         <span class="explore-list-date">
           <small><%= event.date.strftime("%b") %></small>
@@ -124,27 +125,80 @@
       </div>
 
       <dl class="explore-list-facts">
-        <div>
-          <dt>Mekan / Şehir</dt>
-          <dd><%= truncate(event_place_text(event), length: 42) %></dd>
+        <div class="explore-list-fact">
+          <dt>
+            <%= render "icons/location", class: "size-4" %>
+            <span>Mekan</span>
+          </dt>
+          <dd>
+            <strong><%= place_primary %></strong>
+            <% if place_secondary.present? %>
+              <small><%= place_secondary %></small>
+            <% end %>
+          </dd>
         </div>
-        <div>
-          <dt>Ücret</dt>
-          <dd><%= event_price_text(event) %></dd>
+        <div class="explore-list-fact">
+          <dt>
+            <%= render "icons/ticket", class: "size-4" %>
+            <span>Ücret</span>
+          </dt>
+          <dd>
+            <span class="explore-list-price <%= event_price_badge_classes(event) %>"><%= list_price_text %></span>
+          </dd>
         </div>
-        <div>
-          <dt><%= capacity ? "Kontenjan" : "Katılım" %></dt>
-          <dd><%= capacity ? "#{spots_left} yer kaldı" : (going_count.positive? ? "#{going_count} gidiyor" : "İlk sen katıl") %></dd>
+        <div class="explore-list-fact">
+          <dt>
+            <%= render "icons/users", class: "size-4" %>
+            <span>Katılım</span>
+          </dt>
+          <dd>
+            <span class="explore-list-attendance">
+              <% if attendee_preview.any? %>
+                <span class="event-avatar-stack" aria-hidden="true">
+                  <% attendee_preview.each_with_index do |user, avatar_index| %>
+                    <% avatar_name = user.name.presence || user.email %>
+                    <span class="event-avatar" style="--avatar-hue: <%= (avatar_name.to_s.sum + avatar_index * 37) % 360 %>">
+                      <%= avatar_name.to_s.first.upcase %>
+                    </span>
+                  <% end %>
+                </span>
+              <% end %>
+              <span><%= going_count.positive? ? "#{going_count} gidiyor" : "İlk sen katıl" %></span>
+            </span>
+          </dd>
         </div>
       </dl>
 
-      <%= link_to event_path(event), class: "explore-list-action focus-ring", aria: { label: "#{event_display_title(event)} detayları" } do %>
-        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-          <path d="M5 12h14M13 6l6 6-6 6"/>
-        </svg>
-      <% end %>
+      <div class="explore-list-actions">
+        <button type="button"
+                class="explore-list-interest <%= interested_selected ? "is-active" : "" %> focus-ring"
+                aria-label="<%= interested_selected ? "İlgileniyorsun" : "İlgileniyorum olarak işaretle" %>"
+                aria-pressed="<%= interested_selected %>"
+                data-attendance-status="interested"
+                data-attendance-target="button"
+                data-attendance-active-class="is-active"
+                data-attendance-inactive-class=""
+                data-attendance-default-label="İlgileniyorum olarak işaretle"
+                data-attendance-selected-label="İlgileniyorsun"
+                data-action="click->attendance#update">
+          <%= render "icons/bookmark", class: "size-4" %>
+          <span class="sr-only" data-attendance-state><%= interested_selected ? "İlgileniyorsun" : "İlgileniyorum olarak işaretle" %></span>
+        </button>
+
+        <%= link_to event_path(event), class: "explore-list-action focus-ring", aria: { label: "#{event_display_title(event)} detayları" } do %>
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        <% end %>
+      </div>
     </article>
   <% else %>
-    <%= render "events/cards/event_card", event: event, index: index %>
+    <%= render "events/cards/event_card",
+          event: event,
+          index: index,
+          going_count: going_count,
+          attendee_preview: attendee_preview,
+          interest_toggle: true,
+          current_status: current_status %>
   <% end %>
 <% end %>

@@ -5,12 +5,28 @@ module Events
     end
 
     def event_card_venue_text(event)
-      location = plain_display_text(event.location)
-      return event_place_text(event) if location.blank?
-      return "Çevrimiçi" if location.casecmp("online").zero? || location.casecmp("çevrimiçi").zero?
+      event_place_parts(event).first
+    end
+
+    def event_card_location_detail_text(event)
+      event_place_parts(event).second
+    end
+
+    def event_place_parts(event)
+      city = plain_display_text(event.city).presence
+      location = plain_display_text(event.location).to_s
+
+      if city == "Online" || location.casecmp("online").zero? || location.casecmp("çevrimiçi").zero?
+        return [ "Çevrimiçi", (city unless city == "Online") ]
+      end
+
+      return [ city || "Konum yakında", nil ] if location.blank?
 
       parts = location.split(",").map(&:squish).reject(&:blank?)
-      [ parts.first || location, parts.second ].compact_blank.uniq.join(", ")
+      primary = parts.first || location
+      secondary = [ parts.second, city ].compact_blank.uniq.join(", ").presence
+
+      [ primary, secondary ]
     end
 
     def event_card_month_label(date)
