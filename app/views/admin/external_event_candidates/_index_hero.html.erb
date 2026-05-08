@@ -1,0 +1,16 @@
+<header class="admin-review-hero admin-compact-hero">
+  <div class="admin-review-hero-copy">
+    <p class="section-eyebrow">Etkinlik.io aday havuzu</p>
+    <h1>API Adayları</h1>
+    <p>Etkinlik.io verisini admin inceleme kuyruğunda hızlıca tara, seç, düzenle ve yayına al.</p>
+    <div class="admin-review-hero-actions">
+      <%= link_to "Etkinlik moderasyonu", admin_events_path, class: "admin-secondary-action focus-ring" %>
+    </div>
+  </div>
+
+  <aside class="admin-next-review">
+    <p class="section-eyebrow">Özet</p>
+    <h2><%= @candidates.total_count %> kayıt</h2>
+    <p><%= @preset_tabs.to_h.fetch(@preset) %></p>
+  </aside>
+</header>

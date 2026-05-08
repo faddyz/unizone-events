@@ -1,0 +1,64 @@
+<section class="admin-panel">
+  <div class="admin-section-head">
+    <div>
+      <p class="section-eyebrow text-coral">Onay öncesi düzenleme</p>
+      <h2>Public Event alanları</h2>
+    </div>
+  </div>
+
+  <%= form_with url: approve_admin_external_event_candidate_path(@candidate), method: :patch, scope: :approval, class: "admin-edit-form", local: true do |form| %>
+    <div class="admin-candidate-control-grid">
+      <label>
+        <span>Başlık</span>
+        <%= form.text_field :title, value: @approval[:title], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Kategori</span>
+        <%= form.select :category, Event.categories.keys.map { |category| [event_category_title(category), category] }, { selected: @approval[:category] }, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Şehir</span>
+        <%= form.select :city, Event::CITY_OPTIONS, { selected: @approval[:city] }, class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Kısa mekan</span>
+        <%= form.text_field :location, value: @approval[:location], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Başlangıç</span>
+        <%= form.datetime_local_field :starts_at, value: @approval[:starts_at]&.strftime("%Y-%m-%dT%H:%M"), class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Bitiş</span>
+        <%= form.datetime_local_field :ends_at, value: @approval[:ends_at]&.strftime("%Y-%m-%dT%H:%M"), class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Bilet URL</span>
+        <%= form.url_field :ticket_url, value: @approval[:ticket_url], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Kaynak URL</span>
+        <%= form.url_field :external_url, value: @approval[:external_url], class: "electric-field w-full px-4 py-3 focus:outline-none" %>
+      </label>
+      <label>
+        <span>Editoryal oncelik</span>
+        <%= form.number_field :editor_score, value: @approval[:editor_score], min: 0, max: 100, step: 1, class: "electric-field w-full px-4 py-3 focus:outline-none", placeholder: "Bos birak: otomatik skor" %>
+      </label>
+    </div>
+
+    <label>
+      <span class="section-eyebrow text-stone-500">Açıklama</span>
+      <%= form.text_area :description, value: @approval[:description], rows: 8, class: "admin-textarea focus-ring" %>
+    </label>
+
+    <label class="admin-candidate-check">
+      <%= form.check_box :external_is_free, { checked: ActiveModel::Type::Boolean.new.cast(@approval[:external_is_free]) }, "1", "0" %>
+      <span>Ücretsiz</span>
+    </label>
+
+    <div class="admin-edit-actions">
+      <%= link_to "Vazgeç", admin_external_event_candidates_path, class: "btn-outline focus-ring" %>
+      <%= form.submit "Düzenleyip Yayına Al", class: "btn-void cursor-pointer border-0 focus-ring" %>
+    </div>
+  <% end %>
+</section>

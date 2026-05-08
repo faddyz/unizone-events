@@ -1,0 +1,74 @@
+<section class="admin-review-results">
+  <%= turbo_frame_tag "admin_candidate_results" do %>
+  <div class="admin-section-head">
+    <div>
+      <p class="section-eyebrow text-coral">Aday listesi</p>
+      <h2><%= @candidates.total_count %> kayıt</h2>
+    </div>
+    <span><%= @preset_tabs.to_h.fetch(@preset) %></span>
+  </div>
+
+  <%= form_with url: bulk_admin_external_event_candidates_path, method: :patch, local: true, data: { controller: "candidate-bulk" } do %>
+    <%= hidden_field_tag :preset, @preset %>
+    <%= hidden_field_tag :query, @query %>
+    <%= hidden_field_tag :per_page, @per_page %>
+    <%= hidden_field_tag :page, params[:page] %>
+
+    <div class="admin-bulk-global">
+      <%= button_tag "Filtredeki Tum Pendingleri Yayina Al", type: :submit, name: "bulk_action", value: "approve_filtered", class: "admin-primary-action focus-ring", data: { turbo_confirm: "Bu filtredeki tum pending adaylar tek seferde yayinlanacak. Devam edilsin mi?" } %>
+    </div>
+
+    <% if @candidates.any? || (turbo_frame_request? && flash.any?) %>
+    <div class="admin-bulk-toolbar">
+      <% if turbo_frame_request? %>
+        <% flash.each do |key, value| %>
+          <div role="<%= key.to_s == "alert" ? "alert" : "status" %>" class="admin-candidate-flash is-<%= key.to_s == "alert" ? "alert" : "notice" %>">
+            <%= value %>
+          </div>
+        <% end %>
+      <% end %>
+
+    <% if @candidates.any? %>
+      <div class="admin-select-all-strip">
+        <label class="admin-select-all-control">
+          <%= check_box_tag :select_all_candidates, "1", false,
+                data: { candidate_bulk_target: "selectAll", action: "candidate-bulk#toggleAll" } %>
+          <span>Tümünü seç</span>
+        </label>
+        <span>Satıra tıklayarak da seçebilirsin.</span>
+      </div>
+    <% end %>
+
+    <div class="admin-bulk-bar hidden" data-candidate-bulk-target="bar">
+      <strong><span data-candidate-bulk-target="count">0</span> aday seçildi</strong>
+      <div>
+        <%= button_tag "Seçilenleri Yayına Al", type: :submit, name: "bulk_action", value: "approve", class: "admin-primary-action focus-ring", data: { turbo_confirm: "Secili adaylar yayinlanacak. Devam edilsin mi?" } %>
+        <%= button_tag "Geç", type: :submit, name: "bulk_action", value: "skip", class: "admin-secondary-action focus-ring" %>
+        <%= button_tag "Reddet", type: :submit, name: "bulk_action", value: "reject", class: "admin-danger-submit focus-ring" %>
+        <button type="button" class="admin-clear-link focus-ring" data-action="candidate-bulk#clear">Seçimi Temizle</button>
+      </div>
+    </div>
+
+    </div>
+    <% end %>
+
+    <% if @candidates.any? %>
+      <div class="admin-candidate-list">
+        <% @candidates.each do |candidate| %>
+          <%= render "admin/external_event_candidates/candidate_row", candidate: candidate %>
+        <% end %>
+      </div>
+
+      <div class="admin-pagination" data-turbo-frame="_top">
+        <%= paginate @candidates, theme: "tailwind" %>
+      </div>
+    <% else %>
+      <div class="admin-empty-state">
+        <span class="admin-live-dot"></span>
+        <h3>Bu görünümde aday yok</h3>
+        <p>Başka preset seç veya yeni bir dry-run/kayıtlı tarama başlat.</p>
+      </div>
+    <% end %>
+  <% end %>
+  <% end %>
+</section>

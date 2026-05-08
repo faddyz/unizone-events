@@ -1,0 +1,23 @@
+<section class="admin-panel">
+  <div class="admin-section-head">
+    <div>
+      <p class="section-eyebrow text-coral">API sinyalleri</p>
+      <h2>Kalite</h2>
+    </div>
+  </div>
+  <dl class="admin-detail-grid">
+    <div><dt>External ID</dt><dd><%= @candidate.external_id %></dd></div>
+    <div><dt>Öncelik</dt><dd><%= @candidate.priority %></dd></div>
+    <div><dt>Format</dt><dd><%= @candidate.format.presence || "-" %></dd></div>
+    <div><dt>Ticket kind</dt><dd><%= candidate_ticket_kind_label(@candidate) %></dd></div>
+    <div><dt>İlk görüldü</dt><dd><%= @candidate.first_seen_at ? l(@candidate.first_seen_at, format: :short) : "-" %></dd></div>
+    <div><dt>Son görüldü</dt><dd><%= @candidate.last_seen_at ? l(@candidate.last_seen_at, format: :short) : "-" %></dd></div>
+  </dl>
+
+  <% if @candidate.hidden_reason.present? || @candidate.review_reasons.present? || @candidate.priority_reasons.present? || @candidate.duplicate_warning.present? %>
+    <div class="admin-review-note is-large mt-4">
+      <span>Notlar</span>
+      <p><%= ([@candidate.hidden_reason, @candidate.duplicate_warning] + Array(@candidate.review_reasons) + Array(@candidate.priority_reasons)).compact_blank.join(", ") %></p>
+    </div>
+  <% end %>
+</section>

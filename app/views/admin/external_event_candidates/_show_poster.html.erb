@@ -1,0 +1,20 @@
+<section class="admin-panel">
+  <div class="admin-section-head">
+    <div>
+      <p class="section-eyebrow text-coral">Poster</p>
+      <h2>Uzaktan görsel</h2>
+    </div>
+  </div>
+  <div class="admin-uploaded-media <%= event_poster_background_classes(@candidate.category.presence || "community") %>">
+    <% if @candidate.poster_url.present? %>
+      <%= image_tag @candidate.poster_url, alt: candidate_display_title(@candidate), loading: "lazy", class: "admin-uploaded-image" %>
+    <% else %>
+      <div class="poster-noise absolute inset-0"></div>
+      <div class="admin-uploaded-empty">
+        <span class="admin-live-dot"></span>
+        <strong>Poster yok</strong>
+        <p>Public sayfada kategori fallback görseli kullanılır.</p>
+      </div>
+    <% end %>
+  </div>
+</section>
