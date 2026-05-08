@@ -1,6 +1,6 @@
 <%
   mode = local_assigns.fetch(:mode, :new).to_sym
-  presenter = EventFormPresenter.new(
+  presenter = ::EventFormPresenter.new(
     model: model,
     mode: mode,
     submit_label: submit_label,

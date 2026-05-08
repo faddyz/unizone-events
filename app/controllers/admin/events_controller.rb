@@ -1,3 +1,5 @@
+require_dependency Rails.root.join("app/presenters/event_form_presenter").to_s
+
 class Admin::EventsController < ApplicationController
   ADMIN_FILTERS = [
     [ "submitted", "İnceleme" ],

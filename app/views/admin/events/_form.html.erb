@@ -1,4 +1,4 @@
-<% presenter = EventFormPresenter.new(model: event, mode: :edit, submit_label: "Değişiklikleri kaydet", helpers: self) %>
+<% presenter = ::EventFormPresenter.new(model: event, mode: :edit, submit_label: "Değişiklikleri kaydet", helpers: self) %>
 
 <%= form_with model: [:admin, event], class: "admin-edit-form" do |form| %>
   <% if event.errors.any? %>
