@@ -9,26 +9,26 @@
     <div class="event-form-field md:col-span-2">
       <%= form.label :title, "Etkinlik adı", class: "event-form-label" %>
       <%= form.text_field :title,
-            class: event_form_control_classes(model, :title),
+            class: presenter.control_classes(:title),
             placeholder: "Gece yarısı çatı konseri",
-            aria: event_form_aria(model, :title, describedby: "event-title-hint"),
+            aria: presenter.aria(:title, describedby: "event-title-hint"),
             data: { event_preview_target: "title", wizard_required: "true" } %>
       <p id="event-title-hint" class="event-form-hint">Başlık, etkinliğinin ilk dikkat çeken alanıdır; sade ve güçlü olsun.</p>
-      <% if event_form_field_error?(model, :title) %>
-        <p id="<%= event_form_field_error_id(:title) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :title) %></p>
+      <% if presenter.field_error?(:title) %>
+        <p id="<%= presenter.field_error_id(:title) %>" class="event-form-field-error"><%= presenter.field_error_message(:title) %></p>
       <% end %>
     </div>
 
     <div class="event-form-field">
       <%= form.label :category, "Kategori", class: "event-form-label" %>
       <%= form.select :category,
-            Event.categories.keys.map { |category| [event_category_title(category), category] },
+            presenter.category_options,
             {},
-            class: event_form_control_classes(model, :category),
-            aria: event_form_aria(model, :category),
+            class: presenter.control_classes(:category),
+            aria: presenter.aria(:category),
             data: { event_preview_target: "category", wizard_required: "true" } %>
-      <% if event_form_field_error?(model, :category) %>
-        <p id="<%= event_form_field_error_id(:category) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :category) %></p>
+      <% if presenter.field_error?(:category) %>
+        <p id="<%= presenter.field_error_id(:category) %>" class="event-form-field-error"><%= presenter.field_error_message(:category) %></p>
       <% end %>
     </div>
 

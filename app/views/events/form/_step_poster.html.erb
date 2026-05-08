@@ -8,18 +8,18 @@
   <div class="event-form-grid">
     <div class="event-form-field md:col-span-2">
       <%= form.label :image, "Afiş görseli", class: "event-form-label" %>
-      <div class="event-form-upload <%= "is-invalid" if event_form_field_error?(model, :image) %>">
+      <div class="event-form-upload <%= "is-invalid" if presenter.field_error?(:image) %>">
         <%= form.file_field :image,
               accept: "image/png,image/jpeg,image/jpg,image/webp",
-              class: event_form_control_classes(model, :image, base: "event-form-file"),
-              aria: event_form_aria(model, :image, describedby: "event-image-hint"),
-              data: { event_preview_target: "imageInput", existing: (model.image.attached? && model.image.attachment&.persisted?) ? "true" : "false" } %>
+              class: presenter.control_classes(:image, base: "event-form-file"),
+              aria: presenter.aria(:image, describedby: "event-image-hint"),
+              data: { event_preview_target: "imageInput", existing: presenter.existing_image_data_value } %>
         <p id="event-image-hint">PNG, JPG veya WebP, en fazla 5 MB.</p>
       </div>
-      <% if event_form_field_error?(model, :image) %>
-        <p id="<%= event_form_field_error_id(:image) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :image) %></p>
+      <% if presenter.field_error?(:image) %>
+        <p id="<%= presenter.field_error_id(:image) %>" class="event-form-field-error"><%= presenter.field_error_message(:image) %></p>
       <% end %>
-      <% if model.persisted? && model.image.attached? && model.image.attachment&.persisted? %>
+      <% if presenter.show_remove_image_control? %>
         <label class="event-form-remove-image">
           <%= form.check_box :remove_image, { class: "event-form-remove-image-checkbox" }, "1", "0" %>
           <span>

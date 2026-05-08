@@ -1,21 +1,14 @@
 <%
   mode = local_assigns.fetch(:mode, :new).to_sym
-  form_title = local_assigns.fetch(:form_title, mode == :edit ? "Etkinliği düzenle" : "Etkinlik stüdyosu")
-  form_description = local_assigns.fetch(:form_description, "Detayları adım adım netleştir.")
-  steps = [
-    { label: "Temel Bilgiler", title: "Başlık ve Kategori", summary: "İnsanların akışta ilk göreceği sinyali netleştir.", icon: "edit" },
-    { label: "Tarih ve Konum", title: "Tarih ve Konum", summary: "Katılımcıların plan yapabilmesi için zaman, mekan ve kontenjan bilgilerini netleştir.", icon: "calendar" },
-    { label: "Etkinlik Hikayesi", title: "Etkinlik hikayesi", summary: "Katılımcıların ne bekleyeceğini açık, kısa ve ikna edici şekilde anlat.", icon: "ticket" },
-    { label: "Afiş Görseli", title: "Afiş ve Son Kontrol", summary: "Görselini ekle, bilgileri kontrol et ve etkinliğini incelemeye gönder.", icon: "check_circle" }
-  ]
-  preview_date = model.date.present? ? l(model.date, format: :long) : "Tarih Seçilmedi"
-  preview_month = model.date.present? ? model.date.strftime("%b") : "Ay"
-  preview_day = model.date.present? ? model.date.strftime("%-d") : "--"
-  preview_price = event_price_text(model)
-  preview_capacity = model.capacity.present? ? "#{model.capacity} kişi" : "Kontenjan açık"
-  preview_ticket = model.ticket_url.present? ? "Dış Kayıt / Bilet Buton Önizlemesi" : "Katılım Butonu Önizlemesi"
-  preview_city = model.city.presence || "Şehir Seçilmedi"
-  preview_description = model.description.presence || "Etkinliğin atmosferi, akışı ve katılımcıların ne bekleyebileceği burada canlanacak."
+  presenter = EventFormPresenter.new(
+    model: model,
+    mode: mode,
+    submit_label: submit_label,
+    cancel_path: local_assigns[:cancel_path],
+    form_title: local_assigns[:form_title],
+    form_description: local_assigns[:form_description],
+    helpers: self
+  )
 %>
 
 <%= form_with model: model,
@@ -28,17 +21,8 @@
   <%= render "events/form/errors", model: model %>
 
   <div class="event-form-layout">
-    <%= render "events/form/step_rail", steps: steps, mode: mode, form_title: form_title, form_description: form_description %>
-    <%= render "events/form/workspace", form: form, model: model, steps: steps, submit_label: submit_label, cancel_path: local_assigns[:cancel_path] %>
-    <%= render "events/form/preview",
-          model: model,
-          preview_month: preview_month,
-          preview_day: preview_day,
-          preview_description: preview_description,
-          preview_date: preview_date,
-          preview_city: preview_city,
-          preview_price: preview_price,
-          preview_capacity: preview_capacity,
-          preview_ticket: preview_ticket %>
+    <%= render "events/form/step_rail", presenter: presenter %>
+    <%= render "events/form/workspace", form: form, presenter: presenter %>
+    <%= render "events/form/preview", presenter: presenter %>
   </div>
 <% end %>
