@@ -93,6 +93,7 @@ module Events
     end
 
     def event_decision_registration_signal_copy(event, ticket_url)
+      return "Ücretsiz katılım adımına kaynak sayfadan devam edebilirsin; gitmeden önce güncel detayları oradan kontrol et." if event.free? && event.imported? && ticket_url.present?
       return "Kararını verdiğinde bilet veya kayıt adımına doğrudan kaynak sayfadan devam edebilirsin." if event.imported? && ticket_url.present?
       return "Detay ve kayıt bilgileri kaynak sayfada güncellenebilir; son kontrolü oradan yapabilirsin." if event.imported?
       return event_ticket_help_text(event) if ticket_url.present?

@@ -77,6 +77,20 @@ class EventsHelperTest < ActionView::TestCase
     assert_equal "Biletli", event_card_price_text(event)
   end
 
+  test "free imported ticket links avoid paid ticket copy" do
+    event = events(:published_event)
+    event.external_source = "etkinlik_io"
+    event.external_is_free = true
+    event.price = 0
+    event.ticket_url = "https://tickets.example.test/free-event"
+    event.ticket_url_kind = "external_ticket"
+
+    assert_equal "Ücretsiz", event_price_text(event)
+    assert_equal "Ücretsiz Katıl", event_external_action_label(event)
+    assert_equal "Ücretsiz Katıl", event_registration_label(event)
+    assert_includes event_decision_registration_signal_copy(event, event.ticket_url), "Ücretsiz katılım"
+  end
+
   test "short location keeps venue and district without full address" do
     assert_equal "Mask Beach · Beylikdüzü, İstanbul",
                  short_location_text("Mask Beach, Beylikdüzü, Marmara Mahallesi, Ulusum Caddesi No:34/6 G İç Kapı:0, İstanbul", "İstanbul")

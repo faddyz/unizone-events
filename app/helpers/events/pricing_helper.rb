@@ -42,10 +42,13 @@ module Events
     end
 
     def event_external_action_label(event)
+      return "Ücretsiz Katıl" if event.imported? && event.free? && event_real_ticket_link?(event)
+
       event_real_ticket_link?(event) ? "Bilet Al" : "Etkinlik Detayı"
     end
 
     def event_registration_label(event)
+      return "Ücretsiz Katıl" if event.imported? && event.free? && event_external_action_url(event).present?
       return "Bilet Al" if event_real_ticket_link?(event)
       return "Etkinlik Detayı" if event_source_link_url(event).present?
       return "Bilet bilgisi dış kaynakta" if event.imported?

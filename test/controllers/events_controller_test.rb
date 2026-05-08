@@ -328,6 +328,33 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, imported_event.remote_poster_url
   end
 
+  test "event show uses free registration copy for free imported ticket links" do
+    imported_event = Event.create!(
+      user: @member,
+      title: "Imported Free Ticket Event",
+      description: "Imported free event description",
+      category: "technology",
+      date: 1.week.from_now,
+      city: "Online",
+      location: "Online",
+      status: "published",
+      external_source: "etkinlik_io",
+      external_id: "imported-free-ticket-event",
+      external_url: "https://etkinlik.io/event/imported-free-ticket-event",
+      ticket_url: "https://tickets.example.test/imported-free-ticket-event",
+      ticket_url_kind: "external_ticket",
+      external_is_free: true
+    )
+
+    get event_path(imported_event)
+
+    assert_response :success
+    assert_select "a.event-cta-primary", text: "Ücretsiz Katıl"
+    assert_select "a.event-cta-primary", text: "Bilet Al", count: 0
+    assert_select ".event-signal-card.is-mint h3", text: "Ücretsiz Katıl"
+    assert_includes response.body, "Ücretsiz katılım adımına"
+  end
+
   test "event show invites guests to sign in before choosing attendance" do
     internal_event = Event.create!(
       user: @member,
