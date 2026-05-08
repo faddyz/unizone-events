@@ -1,0 +1,138 @@
+<% event = attendance.event %>
+<% going_count = event_attendance_count(event) %>
+<% attendee_preview = event_attendee_preview(event, limit: 3) %>
+
+<article class="plans-card">
+  <%= link_to event_path(event), class: "plans-card-poster #{event_poster_background_classes(event)} focus-ring", aria: { label: "#{event.title} detayına git" } do %>
+    <div class="poster-art absolute inset-0 opacity-100"></div>
+    <% if event_has_poster?(event) %>
+      <%= event_poster_image_tag event,
+            :thumb,
+            alt: "",
+            loading: "lazy",
+            sizes: "(min-width: 1024px) 8rem, 6rem",
+            class_name: "plans-poster-image",
+            aria: { hidden: true } %>
+    <% else %>
+      <span class="plans-poster-title"><%= event.title %></span>
+    <% end %>
+    <div class="poster-noise absolute inset-0"></div>
+    <div class="poster-chrome absolute inset-0"></div>
+    <div class="poster-spotlight absolute inset-0"></div>
+  <% end %>
+
+  <time class="plans-date-card" datetime="<%= event.date.iso8601 %>">
+    <span><%= l(event.date, format: "%b") %></span>
+    <strong><%= event.date.strftime("%-d") %></strong>
+    <small><%= l(event.date, format: "%a") %></small>
+  </time>
+
+  <div class="plans-card-body">
+    <div class="plans-card-topline">
+      <span class="plans-card-category <%= event_category_tone_class(event) %>"><%= event_category_title(event) %></span>
+      <span class="<%= attendance_status_badge_classes(attendance.status) %> plans-status-badge"><%= attendance_status_label(attendance.status) %></span>
+    </div>
+
+    <h3><%= link_to event.title, event_path(event), class: "focus-ring" %></h3>
+
+    <div class="plans-card-meta">
+      <span>
+        <%= render "icons/clock", class: "size-4" %>
+        <%= l(event.date, format: "%H:%M") %>
+      </span>
+      <span>
+        <%= render "icons/location", class: "size-4" %>
+        <%= event_place_text(event) %>
+      </span>
+    </div>
+
+    <div class="plans-card-signal">
+      <% if attendee_preview.any? %>
+        <span class="plans-avatar-stack" aria-hidden="true">
+          <% attendee_preview.each_with_index do |user, avatar_index| %>
+            <% avatar_name = user.name.presence || user.email %>
+            <span class="plans-avatar" style="--avatar-hue: <%= (avatar_name.to_s.sum + avatar_index * 37) % 360 %>">
+              <%= avatar_name.to_s.first.upcase %>
+            </span>
+          <% end %>
+        </span>
+      <% else %>
+        <span class="plans-signal-dot" aria-hidden="true"></span>
+      <% end %>
+
+      <span class="plans-signal-copy">
+        <% if attendance.going? %>
+          <%= going_count.positive? ? safe_join([ tag.strong(going_count), " kişi gidiyor" ]) : "Planına eklendi" %>
+        <% else %>
+          Karar vermek için kaydedildi
+        <% end %>
+      </span>
+    </div>
+  </div>
+
+  <%= link_to event_path(event), class: "plans-card-open focus-ring", aria: { label: "#{event.title} detayını aç" } do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+      <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  <% end %>
+</article>
+
+<article class="plans-mobile-card">
+  <%= link_to event_path(event), class: "plans-mobile-poster #{event_poster_background_classes(event)} focus-ring", aria: { label: "#{event.title} detayına git" } do %>
+    <div class="poster-art absolute inset-0 opacity-100"></div>
+    <% if event_has_poster?(event) %>
+      <%= event_poster_image_tag event,
+            :thumb,
+            alt: "",
+            loading: "lazy",
+            sizes: "40vw",
+            class_name: "plans-poster-image",
+            aria: { hidden: true } %>
+    <% else %>
+      <span class="plans-poster-title plans-mobile-poster-title"><%= event.title %></span>
+    <% end %>
+    <div class="poster-noise absolute inset-0"></div>
+    <div class="poster-chrome absolute inset-0"></div>
+    <div class="poster-spotlight absolute inset-0"></div>
+
+    <span class="plans-mobile-date">
+      <small><%= l(event.date, format: "%b") %></small>
+      <strong><%= event.date.strftime("%-d") %></strong>
+    </span>
+
+    <span class="plans-mobile-signal">
+      <span></span>
+      <% if attendance.going? %>
+        <%= going_count.positive? ? "#{going_count} gidiyor" : "Planına eklendi" %>
+      <% else %>
+        Kaydedildi
+      <% end %>
+    </span>
+  <% end %>
+
+  <div class="plans-mobile-content">
+    <div class="plans-mobile-topline">
+      <span class="plans-mobile-category <%= event_category_tone_class(event) %>"><%= event_category_title(event) %></span>
+      <%= link_to event_path(event), class: "plans-mobile-open focus-ring", aria: { label: "#{event.title} detayını aç" } do %>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      <% end %>
+    </div>
+
+    <h3><%= link_to event.title, event_path(event), class: "focus-ring" %></h3>
+
+    <div class="plans-mobile-meta">
+      <span>
+        <%= render "icons/clock", class: "size-4" %>
+        <%= l(event.date, format: "%H:%M") %>
+      </span>
+      <span>
+        <%= render "icons/location", class: "size-4" %>
+        <%= truncate(event_place_text(event), length: 40) %>
+      </span>
+    </div>
+
+    <span class="<%= attendance_status_badge_classes(attendance.status) %> plans-status-badge plans-mobile-status"><%= attendance_status_label(attendance.status) %></span>
+  </div>
+</article>

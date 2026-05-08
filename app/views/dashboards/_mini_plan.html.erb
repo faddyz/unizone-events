@@ -1,0 +1,24 @@
+<% event = attendance.event %>
+
+<article class="plans-mini-card">
+  <%= link_to event_path(event), class: "plans-mini-poster #{event_poster_background_classes(event)} focus-ring", aria: { label: "#{event.title} detayına git" } do %>
+    <% if event_has_poster?(event) %>
+      <%= event_poster_image_tag event,
+            :thumb,
+            alt: "",
+            loading: "lazy",
+            sizes: "4rem",
+            class_name: "plans-poster-image",
+            aria: { hidden: true } %>
+    <% else %>
+      <%= render "icons/book_open", class: "size-4" %>
+    <% end %>
+  <% end %>
+
+  <div>
+    <h3><%= link_to event.title, event_path(event), class: "focus-ring" %></h3>
+    <p><%= l(event.date, format: :short) %> · <%= event_place_text(event) %></p>
+  </div>
+
+  <%= render "icons/bookmark", class: "plans-mini-bookmark" %>
+</article>

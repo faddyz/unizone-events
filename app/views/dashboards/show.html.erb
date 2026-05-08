@@ -1,176 +1,177 @@
 <% content_for :title, "Planlarım" %>
 <% content_for :stylesheets, page_stylesheet_tags("pages/member-workbench") %>
 
-<% user_label = current_user.name.presence || current_user.email %>
-<% next_event = @next_plan&.event %>
+<%
+  next_event = @next_plan&.event
+  filters = DashboardsController::PLAN_FILTERS
+  filtered_title = case @plan_filter
+                   when "week" then "Bu Haftaki Planların"
+                   when "going" then "Gidiyorum Dediklerin"
+                   when "interested" then "Kaydettiklerin"
+                   else "Yaklaşan Planların"
+                   end
+  filtered_empty_title = case @plan_filter
+                         when "week" then "Bu hafta için plan görünmüyor."
+                         when "going" then "Henüz gidiyorum dediğin plan yok."
+                         when "interested" then "Henüz kaydettiğin etkinlik yok."
+                         else "Henüz görünür plan yok."
+                         end
+  month_start = Date.current.beginning_of_month
+  calendar_start = month_start.beginning_of_week(:monday)
+  calendar_end = month_start.end_of_month.end_of_week(:monday)
+  calendar_days = (calendar_start..calendar_end).to_a
+  calendar_rsvps_by_day = @calendar_rsvps.group_by { |attendance| attendance.event.date.to_date }
+%>
 
 <section class="member-workbench dashboard-page page-shell">
-  <header class="workbench-hero dashboard-hero">
-    <div class="soft-grid absolute inset-0 opacity-35"></div>
-    <div class="workbench-hero-copy">
-      <p class="section-eyebrow text-citron">Planlarım</p>
-      <h1>Hoş geldin, <span><%= user_label %></span></h1>
-      <p>Katıldığın etkinlikleri, yaklaşan planlarını ve oluşturduğun organizasyonları tek panelden yönet.</p>
-
-      <div class="workbench-hero-actions">
-        <%= link_to explore_events_path, class: "workbench-primary-action focus-ring" do %>
-          <%= render "icons/calendar", class: "size-4" %>
-          <span>Etkinlik bul</span>
-        <% end %>
-        <%= link_to new_organizer_event_path, class: "workbench-secondary-action focus-ring" do %>
-          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-          <span>Etkinlik oluştur</span>
-        <% end %>
-      </div>
+  <header class="plans-overview" aria-labelledby="plans-title">
+    <div class="plans-overview-copy">
+      <h1 id="plans-title">Planlarım</h1>
+      <p>Gideceğin ve aklında tuttuğun etkinlikleri tek, sade bir akışta takip et.</p>
     </div>
 
-    <aside class="dashboard-next">
-      <p class="section-eyebrow text-white/42">Sıradaki Plan</p>
+    <aside class="plans-next-card" aria-label="Sıradaki plan">
       <% if next_event.present? %>
-        <div class="dashboard-next-date">
-          <span><%= next_event.date.strftime("%b") %></span>
-          <strong><%= next_event.date.strftime("%-d") %></strong>
-        </div>
-        <h2><%= link_to next_event.title, event_path(next_event), class: "focus-ring" %></h2>
-        <p><%= l(next_event.date, format: :long) %> · <%= event_place_text(next_event) %></p>
-        <span class="<%= attendance_status_badge_classes(@next_plan.status) %>"><%= attendance_status_label(@next_plan.status) %></span>
+        <%= link_to event_path(next_event), class: "plans-next-link focus-ring", aria: { label: "#{next_event.title} detayına git" } do %>
+          <time class="plans-date-card plans-next-date" datetime="<%= next_event.date.iso8601 %>">
+            <span><%= l(next_event.date, format: "%b") %></span>
+            <strong><%= next_event.date.strftime("%-d") %></strong>
+            <small><%= l(next_event.date, format: "%a") %></small>
+          </time>
+
+          <div class="plans-next-copy">
+            <span>Sıradaki Plan</span>
+            <h2><%= next_event.title %></h2>
+            <p><%= l(next_event.date, format: "%H:%M") %> · <%= event_place_text(next_event) %></p>
+          </div>
+
+          <span class="<%= attendance_status_badge_classes(@next_plan.status) %> plans-status-badge"><%= attendance_status_label(@next_plan.status) %></span>
+
+          <svg class="plans-next-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        <% end %>
       <% else %>
-        <div class="dashboard-next-empty">
+        <div class="plans-next-empty">
           <span class="dashboard-empty-dot"></span>
-          <h2>Takvimin seni bekliyor.</h2>
-          <p>İlk etkinliğini seç, planını oluştur ve Unizone akışına dahil ol.</p>
-          <%= link_to "Etkinlikleri Keşfet", explore_events_path, class: "btn-electric focus-ring" %>
+          <div>
+            <span>Sıradaki Plan</span>
+            <h2>Takvimin seni bekliyor.</h2>
+            <p>Şehirdeki yeni etkinlikleri keşfet, ilgini çekenleri buraya taşı.</p>
+          </div>
+          <%= link_to "Etkinlik keşfet", explore_events_path, class: "btn-electric focus-ring" %>
         </div>
       <% end %>
     </aside>
   </header>
 
-  <div class="workbench-signal-grid">
-    <% [
-      [ "Yaklaşan Planların", @upcoming_rsvps.count, "Katılım verdiğin aktif etkinlikler" ],
-      [ "Toplam Katılım", @rsvps.count, "İşaretlediğin etkinlikler" ],
-      [ "Organizasyonların", @owned_events.count, "Oluşturduğun etkinlik taslakları" ],
-      [ "Yayındaki etkinlikler", @live_events_count, "Herkese açık aktif organizasyonlar" ]
-    ].each_with_index do |(label, value, hint), index| %>
-      <article class="workbench-signal-card is-tone-<%= index + 1 %>">
-        <span class="workbench-signal-dot"></span>
-        <p><%= label %></p>
-        <strong><%= value %></strong>
-        <small><%= hint %></small>
-      </article>
+  <nav class="plans-filter-bar" aria-label="Plan filtreleri">
+    <% filters.each do |key, label| %>
+      <% active = key == @plan_filter %>
+      <%= link_to dashboard_path(filter: key),
+            class: "plans-filter-chip #{active ? "is-active" : ""} is-#{key} focus-ring",
+            aria: { current: (active ? "page" : nil) } do %>
+        <span class="plans-filter-dot"></span>
+        <span><%= label %></span>
+        <strong><%= @plan_filter_counts.fetch(key, 0) %></strong>
+      <% end %>
     <% end %>
-  </div>
+  </nav>
 
-  <div class="dashboard-grid">
-    <section class="workbench-panel dashboard-timeline-panel">
-      <div class="workbench-section-head">
+  <div class="plans-layout">
+    <section class="workbench-panel plans-list-panel">
+      <div class="workbench-section-head plans-section-head">
         <div>
-          <p class="section-eyebrow text-coral">Takvim</p>
-          <h2>Yaklaşan Planların</h2>
+          <p class="section-eyebrow text-coral">Plan Akışı</p>
+          <h2><%= filtered_title %></h2>
         </div>
-        <%= link_to "Etkinlik Bul", explore_events_path, class: "workbench-link focus-ring" %>
+        <%= link_to explore_events_path, class: "workbench-link plans-discover-link focus-ring" do %>
+          <%= render "icons/search", class: "size-4" %>
+          <span>Etkinlik keşfet</span>
+        <% end %>
       </div>
 
-      <% if @upcoming_rsvps.any? %>
-        <div class="dashboard-timeline">
-          <% @upcoming_rsvps.each do |attendance| %>
-            <% event = attendance.event %>
-            <article class="dashboard-timeline-item">
-              <time datetime="<%= event.date.iso8601 %>">
-                <span><%= event.date.strftime("%b") %></span>
-                <strong><%= event.date.strftime("%-d") %></strong>
-              </time>
-              <div>
-                <div class="dashboard-item-kicker">
-                  <span><%= event.date.strftime("%H:%M") %></span>
-                  <span class="<%= attendance_status_badge_classes(attendance.status) %>"><%= attendance_status_label(attendance.status) %></span>
-                </div>
-                <h3><%= link_to event.title, event_path(event), class: "focus-ring" %></h3>
-                <p><%= event_place_text(event) %></p>
-              </div>
-            </article>
-          <% end %>
+      <% if @filtered_rsvps.any? %>
+        <div class="plans-list">
+          <%= render partial: "dashboards/plan_card", collection: @filtered_rsvps, as: :attendance %>
         </div>
+
+        <% if @filtered_plan_count > @filtered_rsvps.size %>
+          <div class="plans-load-more">
+            <p><%= @filtered_rsvps.size %>/<%= @filtered_plan_count %> plan gösteriliyor</p>
+            <%= link_to dashboard_path(filter: @plan_filter, plans_limit: @next_plan_display_limit),
+                  class: "plans-load-more-button focus-ring" do %>
+              <span>Daha fazla plan göster</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="M12 5v14M5 12l7 7 7-7" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            <% end %>
+          </div>
+        <% end %>
       <% else %>
         <div class="workbench-empty-state">
           <span class="dashboard-empty-dot"></span>
-          <h3>Takvimin henüz boş.</h3>
-          <p>Şehirdeki etkinlikleri keşfet, ilgini çekenlere katılım ver ve takvimini doldur.</p>
+          <h3><%= filtered_empty_title %></h3>
+          <p>Keşfet akışından bir etkinlik seçtiğinde planların burada düzenli şekilde görünür.</p>
           <%= link_to "Etkinlik keşfet", explore_events_path, class: "btn-void focus-ring" %>
         </div>
       <% end %>
     </section>
 
-    <aside class="dashboard-side-stack">
-      <section class="workbench-panel">
-        <div class="workbench-section-head">
+    <aside class="plans-side-stack">
+      <section class="workbench-panel plans-calendar-card" aria-labelledby="plans-calendar-title">
+        <div class="plans-side-head">
           <div>
-            <p class="section-eyebrow text-coral">Organizatör</p>
-            <h2>Etkinlik Yönetimi</h2>
+            <p class="section-eyebrow text-coral">Takvim</p>
+            <h2 id="plans-calendar-title"><%= l(month_start, format: "%B %Y") %></h2>
           </div>
-          <%= link_to "Tümünü Aç", organizer_events_path, class: "workbench-link focus-ring" %>
+          <span><%= @calendar_rsvps.count %> plan</span>
         </div>
 
-        <% if @owned_events.any? %>
-          <div class="dashboard-mini-list">
-            <% @owned_events.limit(4).each do |event| %>
-              <article class="dashboard-mini-event">
-                <div class="dashboard-mini-poster <%= event_poster_background_classes(event) %>">
-                  <% if event.image.attached? %>
-                    <%= event_image_tag event,
-                          :thumb,
-                          alt: "",
-                          loading: "lazy",
-                          sizes: "4rem",
-                          class_name: "",
-                          aria: { hidden: true } %>
-                  <% else %>
-                    <div class="poster-noise absolute inset-0"></div>
-                  <% end %>
-                </div>
-                <div>
-                  <span class="<%= event_status_badge_classes(event) %>"><%= event_status_label(event) %></span>
-                  <h3><%= link_to event.title, organizer_event_path(event), class: "focus-ring" %></h3>
-                  <p><%= event_lifecycle_hint(event) %></p>
-                </div>
-              </article>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="workbench-empty-state is-compact">
-            <h3>Henüz bir etkinlik oluşturmadın.</h3>
-            <p>Fikrini taslağa dönüştür, detayları ekle ve yayına çıkmak için incelemeye gönder.</p>
-            <%= link_to "İlk Etkinliğini Oluştur", new_organizer_event_path, class: "btn-void focus-ring" %>
-          </div>
-        <% end %>
+        <div class="plans-calendar-grid" aria-label="<%= l(month_start, format: "%B %Y") %> plan takvimi">
+          <% %w[Pzt Sal Çar Per Cum Cmt Paz].each do |day_name| %>
+            <span class="plans-calendar-weekday"><%= day_name %></span>
+          <% end %>
+
+          <% calendar_days.each do |day| %>
+            <% day_rsvps = calendar_rsvps_by_day.fetch(day, []) %>
+            <% day_classes = [
+              "plans-calendar-day",
+              ("is-muted" unless day.month == month_start.month),
+              ("is-today" if day == Date.current),
+              ("has-plan" if day_rsvps.any?),
+              ("is-going" if day_rsvps.any?(&:going?)),
+              ("is-interested" if day_rsvps.any? && day_rsvps.none?(&:going?))
+            ].compact.join(" ") %>
+            <span class="<%= day_classes %>" title="<%= day_rsvps.map { |attendance| attendance.event.title }.join(", ") %>">
+              <span><%= day.day %></span>
+            </span>
+          <% end %>
+        </div>
+
+        <div class="plans-calendar-legend">
+          <span><i class="is-going"></i> Gidiyorum</span>
+          <span><i class="is-interested"></i> İlgileniyorum</span>
+        </div>
       </section>
 
-      <section class="workbench-panel">
-        <div class="workbench-section-head">
+      <section class="workbench-panel plans-saved-card" aria-labelledby="plans-saved-title">
+        <div class="plans-side-head">
           <div>
-            <p class="section-eyebrow text-coral">Hareket</p>
-            <h2>Son Katılımlar</h2>
+            <p class="section-eyebrow text-coral">Kaydettiklerim</p>
+            <h2 id="plans-saved-title">İlgileniyorum</h2>
           </div>
+          <span><%= @saved_rsvps.count %> kayıt</span>
         </div>
 
-        <% if @recent_rsvps.any? %>
-          <div class="dashboard-activity-list">
-            <% @recent_rsvps.each do |attendance| %>
-              <article>
-                <span class="dashboard-activity-dot"></span>
-                <div>
-                  <h3><%= link_to attendance.event.title, event_path(attendance.event), class: "focus-ring" %></h3>
-                  <p><%= attendance_status_label(attendance.status) %> · <%= l(attendance.updated_at, format: :short) %></p>
-                </div>
-              </article>
-            <% end %>
+        <% if @saved_rsvps.any? %>
+          <div class="plans-mini-list">
+            <%= render partial: "dashboards/mini_plan", collection: @saved_rsvps, as: :attendance %>
           </div>
         <% else %>
           <div class="workbench-empty-state is-compact">
-            <h3>Henüz hareket yok</h3>
-            <p>RSVP verdiğinde güncel durumların burada görünür.</p>
+            <h3>Aklında duran etkinlik yok.</h3>
+            <p>Karar vermek istediğin etkinlikleri “İlgileniyorum” olarak işaretleyebilirsin.</p>
           </div>
         <% end %>
       </section>

@@ -23,18 +23,59 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_session_path
   end
 
-  test "member dashboard shows owned events and RSVP history" do
+  test "member dashboard shows upcoming RSVP plans" do
     Attendance.create!(user: @member, event: @published_event, status: "interested")
     sign_in @member
 
     get dashboard_path
 
     assert_response :success
-    assert_includes response.body, @draft_event.title
     assert_includes response.body, @published_event.title
     assert_includes response.body, "İlgileniyorum"
-    assert_includes response.body, "Etkinlik bul"
-    assert_includes response.body, "Son Katılımlar"
+    assert_includes response.body, "Kaydettiklerim"
+    assert_includes response.body, "Etkinlik keşfet"
+    assert_includes response.body, "Takvim"
+    refute_includes response.body, @draft_event.title
+  end
+
+  test "member dashboard limits plans and can show more" do
+    plan_events = 7.times.map do |index|
+      Event.create!(
+        user: @member,
+        title: "Dashboard Plan #{index + 1}",
+        description: "A future dashboard plan used to verify the member workbench limit.",
+        category: "technology",
+        date: (index + 1).days.from_now,
+        city: "İstanbul",
+        location: "Plan Studio #{index + 1}",
+        price: 0,
+        status: "published",
+        approved: true,
+        published_at: 1.day.ago
+      )
+    end
+
+    plan_events.each do |event|
+      Attendance.create!(user: @member, event: event, status: "going")
+    end
+
+    sign_in @member
+
+    get dashboard_path
+
+    assert_response :success
+    initial_plan_list = Nokogiri::HTML(response.body).at_css(".plans-list").to_html
+    assert_includes initial_plan_list, "Dashboard Plan 6"
+    refute_includes initial_plan_list, "Dashboard Plan 7"
+    assert_includes response.body, "6/7 plan gösteriliyor"
+    assert_includes response.body, "Daha fazla plan göster"
+
+    get dashboard_path(plans_limit: 12)
+
+    assert_response :success
+    expanded_plan_list = Nokogiri::HTML(response.body).at_css(".plans-list").to_html
+    assert_includes expanded_plan_list, "Dashboard Plan 7"
+    refute_includes response.body, "Daha fazla plan göster"
   end
 
   test "organizer workbench filters searches and surfaces key actions" do
