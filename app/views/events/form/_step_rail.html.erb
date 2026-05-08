@@ -1,12 +1,12 @@
     <nav class="event-form-step-rail" aria-label="Etkinlik oluşturma adımları">
       <div class="event-form-rail-head">
-        <p class="section-eyebrow text-coral"><%= mode == :edit ? "Düzenleme" : "Yeni etkinlik" %></p>
-        <h2><%= form_title %></h2>
-        <p><%= form_description %></p>
+        <p class="section-eyebrow text-coral"><%= presenter.rail_eyebrow %></p>
+        <h2><%= presenter.form_title %></h2>
+        <p><%= presenter.form_description %></p>
       </div>
 
       <div class="event-form-steps">
-        <% steps.each_with_index do |step, index| %>
+        <% presenter.steps.each_with_index do |step, index| %>
           <button type="button"
                   class="event-form-step-tab focus-ring"
                   data-wizard-target="tab"

@@ -1,3 +1,5 @@
+require_dependency Rails.root.join("app/presenters/event_form_presenter").to_s
+
 class Organizer::EventsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_event, only: [ :show, :edit, :update, :destroy, :submit ]

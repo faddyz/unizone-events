@@ -9,36 +9,36 @@
     <div class="event-form-field">
       <%= form.label :date, "Tarih ve saat", class: "event-form-label" %>
       <%= form.datetime_local_field :date,
-            class: event_form_control_classes(model, :date),
-            aria: event_form_aria(model, :date),
+            class: presenter.control_classes(:date),
+            aria: presenter.aria(:date),
             data: { event_preview_target: "date", wizard_required: "true" } %>
-      <% if event_form_field_error?(model, :date) %>
-        <p id="<%= event_form_field_error_id(:date) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :date) %></p>
+      <% if presenter.field_error?(:date) %>
+        <p id="<%= presenter.field_error_id(:date) %>" class="event-form-field-error"><%= presenter.field_error_message(:date) %></p>
       <% end %>
     </div>
 
     <div class="event-form-field">
       <%= form.label :city, "Şehir", class: "event-form-label" %>
       <%= form.select :city,
-            Event::CITY_OPTIONS,
+            presenter.city_options,
             {},
-            class: event_form_control_classes(model, :city),
-            aria: event_form_aria(model, :city),
+            class: presenter.control_classes(:city),
+            aria: presenter.aria(:city),
             data: { event_preview_target: "city", wizard_required: "true" } %>
-      <% if event_form_field_error?(model, :city) %>
-        <p id="<%= event_form_field_error_id(:city) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :city) %></p>
+      <% if presenter.field_error?(:city) %>
+        <p id="<%= presenter.field_error_id(:city) %>" class="event-form-field-error"><%= presenter.field_error_message(:city) %></p>
       <% end %>
     </div>
 
     <div class="event-form-field">
       <%= form.label :location, "Mekan", class: "event-form-label" %>
       <%= form.text_field :location,
-            class: event_form_control_classes(model, :location),
+            class: presenter.control_classes(:location),
             placeholder: "Salon, kampüs, semt veya çevrim içi bağlantı",
-            aria: event_form_aria(model, :location),
+            aria: presenter.aria(:location),
             data: { event_preview_target: "location", wizard_required: "true" } %>
-      <% if event_form_field_error?(model, :location) %>
-        <p id="<%= event_form_field_error_id(:location) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :location) %></p>
+      <% if presenter.field_error?(:location) %>
+        <p id="<%= presenter.field_error_id(:location) %>" class="event-form-field-error"><%= presenter.field_error_message(:location) %></p>
       <% end %>
     </div>
 
@@ -47,13 +47,13 @@
       <%= form.number_field :capacity,
             min: 1,
             step: 1,
-            class: event_form_control_classes(model, :capacity),
+            class: presenter.control_classes(:capacity),
             placeholder: "120",
-            aria: event_form_aria(model, :capacity, describedby: "event-capacity-hint"),
+            aria: presenter.aria(:capacity, describedby: "event-capacity-hint"),
             data: { event_preview_target: "capacity" } %>
       <p id="event-capacity-hint" class="event-form-hint">Boş bırakırsan etkinlik sayfasında kontenjan gösterilmez.</p>
-      <% if event_form_field_error?(model, :capacity) %>
-        <p id="<%= event_form_field_error_id(:capacity) %>" class="event-form-field-error"><%= event_form_field_error_message(model, :capacity) %></p>
+      <% if presenter.field_error?(:capacity) %>
+        <p id="<%= presenter.field_error_id(:capacity) %>" class="event-form-field-error"><%= presenter.field_error_message(:capacity) %></p>
       <% end %>
     </div>
 
