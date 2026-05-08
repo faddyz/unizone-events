@@ -113,7 +113,7 @@
         <% end %>
       </div>
       <div class="flex items-center justify-between gap-3">
-        <div class="event-attendance min-w-0">
+        <div class="event-attendance <%= "is-empty" unless going_count.positive? %> min-w-0">
           <% if attendee_preview.any? %>
             <div class="event-avatar-stack" aria-hidden="true">
               <% attendee_preview.each_with_index do |user, avatar_index| %>
@@ -124,13 +124,14 @@
               <% end %>
             </div>
           <% else %>
+            <span class="event-attendance-empty-mark" aria-hidden="true"></span>
             <%= render "icons/users", class: "event-attendance-icon size-4" %>
           <% end %>
           <span class="event-attendance-copy truncate">
             <% if going_count.positive? %>
               <strong><%= going_count %></strong> kişi katılıyor!
             <% else %>
-              İlk katılanlardan ol!
+              &#x0130;lk katılanlardan ol!
             <% end %>
           </span>
         </div>
