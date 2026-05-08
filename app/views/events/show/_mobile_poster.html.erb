@@ -1,4 +1,4 @@
-  <% if event_has_poster?(show.event) %>
+  <% if show.poster? %>
     <section class="event-mobile-poster-shell page-shell relative z-20 lg:hidden">
       <button type="button"
               class="event-mobile-poster-card <%= event_poster_background_classes(show.event) %> focus-ring"

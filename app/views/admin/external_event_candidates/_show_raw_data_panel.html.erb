@@ -1,0 +1,12 @@
+<section class="admin-panel">
+  <div class="admin-section-head">
+    <div>
+      <p class="section-eyebrow text-coral">Raw data</p>
+      <h2>Admin-only</h2>
+    </div>
+  </div>
+  <details class="admin-candidate-details">
+    <summary class="focus-ring">Raw JSON göster</summary>
+    <pre class="admin-candidate-raw"><%= JSON.pretty_generate(@candidate.raw_data) %></pre>
+  </details>
+</section>

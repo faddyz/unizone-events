@@ -71,8 +71,37 @@ class EventShowPresenter
     @ticket_url ||= helpers.event_external_action_url(event)
   end
 
+  def external_action_label
+    @external_action_label ||= helpers.event_external_action_label(event)
+  end
+
+  def poster?
+    @poster = helpers.event_has_poster?(event) if @poster.nil?
+    @poster
+  end
+
   def selected_status
     preview_mode ? nil : attendance&.status
+  end
+
+  def status_selected?(status)
+    selected_status == status.to_s
+  end
+
+  def going_selected?
+    status_selected?("going")
+  end
+
+  def interested_selected?
+    status_selected?("interested")
+  end
+
+  def not_going_selected?
+    status_selected?("not_going")
+  end
+
+  def rsvp_label(option)
+    status_selected?(option[:status]) ? option[:active_label] : option[:label]
   end
 
   def share_text
@@ -84,7 +113,7 @@ class EventShowPresenter
       values = []
       values << "attendance" unless preview_mode
       values << "share" unless preview_mode
-      values << "poster-lightbox" if helpers.event_has_poster?(event)
+      values << "poster-lightbox" if poster?
       values << "external-redirect" if ticket_url && !preview_mode
       values << "event-show-motion"
       values

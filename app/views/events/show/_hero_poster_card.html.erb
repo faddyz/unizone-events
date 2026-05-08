@@ -1,0 +1,39 @@
+<aside class="event-show-poster-card hidden lg:block" <%= tag.attributes(data: { controller: "poster-palette" }) if show.poster? %>>
+  <div class="event-show-date-ticket">
+    <span><%= show.event.date.strftime("%b") %></span>
+    <strong><%= show.event.date.strftime("%-d") %></strong>
+  </div>
+  <% if show.poster? %>
+    <button type="button"
+            class="event-show-poster-frame event-show-poster-button <%= event_poster_background_classes(show.event) %> focus-ring"
+            data-action="poster-lightbox#open"
+            aria-haspopup="dialog"
+            aria-controls="event-poster-lightbox"
+            aria-label="<%= show.display_title %> afişini büyüt">
+      <div class="poster-art absolute inset-0 opacity-35"></div>
+      <%= event_poster_image_tag show.event,
+            :detail,
+            alt: show.display_title,
+            loading: "eager",
+            fetchpriority: "high",
+            sizes: "(min-width: 1024px) 25rem, 92vw",
+            class_name: "relative z-10 h-full w-full object-contain p-3 drop-shadow-2xl",
+            data: { poster_palette_target: "image" } %>
+      <span class="event-show-poster-zoom">
+        <%= render "icons/image", class: "size-4" %>
+        <span>Afişi büyüt</span>
+      </span>
+      <div class="poster-chrome absolute inset-0"></div>
+      <div class="poster-spotlight absolute inset-0"></div>
+    </button>
+  <% else %>
+    <div class="event-show-poster-frame <%= event_poster_background_classes(show.event) %>">
+      <div class="poster-art absolute inset-0 opacity-100"></div>
+      <div class="relative z-10 grid h-full place-items-center p-8 text-center">
+        <p class="font-display text-4xl font-extrabold leading-none"><%= show.display_title %></p>
+      </div>
+      <div class="poster-chrome absolute inset-0"></div>
+      <div class="poster-spotlight absolute inset-0"></div>
+    </div>
+  <% end %>
+</aside>

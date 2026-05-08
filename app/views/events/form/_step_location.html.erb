@@ -12,9 +12,7 @@
             class: presenter.control_classes(:date),
             aria: presenter.aria(:date),
             data: { event_preview_target: "date", wizard_required: "true" } %>
-      <% if presenter.field_error?(:date) %>
-        <p id="<%= presenter.field_error_id(:date) %>" class="event-form-field-error"><%= presenter.field_error_message(:date) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :date %>
     </div>
 
     <div class="event-form-field">
@@ -25,9 +23,7 @@
             class: presenter.control_classes(:city),
             aria: presenter.aria(:city),
             data: { event_preview_target: "city", wizard_required: "true" } %>
-      <% if presenter.field_error?(:city) %>
-        <p id="<%= presenter.field_error_id(:city) %>" class="event-form-field-error"><%= presenter.field_error_message(:city) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :city %>
     </div>
 
     <div class="event-form-field">
@@ -37,9 +33,7 @@
             placeholder: "Salon, kampüs, semt veya çevrim içi bağlantı",
             aria: presenter.aria(:location),
             data: { event_preview_target: "location", wizard_required: "true" } %>
-      <% if presenter.field_error?(:location) %>
-        <p id="<%= presenter.field_error_id(:location) %>" class="event-form-field-error"><%= presenter.field_error_message(:location) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :location %>
     </div>
 
     <div class="event-form-field">
@@ -52,9 +46,7 @@
             aria: presenter.aria(:capacity, describedby: "event-capacity-hint"),
             data: { event_preview_target: "capacity" } %>
       <p id="event-capacity-hint" class="event-form-hint">Boş bırakırsan etkinlik sayfasında kontenjan gösterilmez.</p>
-      <% if presenter.field_error?(:capacity) %>
-        <p id="<%= presenter.field_error_id(:capacity) %>" class="event-form-field-error"><%= presenter.field_error_message(:capacity) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :capacity %>
     </div>
 
     <div class="event-form-note is-blue">

@@ -1,0 +1,28 @@
+<section class="admin-review-controls admin-candidate-filter-controls">
+  <div class="admin-filter-tabs" aria-label="Aday presetleri">
+    <% @preset_tabs.each do |value, label| %>
+      <%= link_to admin_external_event_candidates_path(preset: value, query: @query.presence, per_page: @per_page),
+            class: "admin-filter-tab #{value == @preset ? "is-active" : ""} focus-ring",
+            aria: (value == @preset ? { current: "page" } : {}) do %>
+        <span><%= label %></span>
+        <strong><%= value.in?(ExternalEventCandidate.statuses.keys) ? @stats.fetch(value, 0) : "" %></strong>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= form_with url: admin_external_event_candidates_path, method: :get, class: "admin-search-form", local: true do %>
+    <%= hidden_field_tag :preset, @preset %>
+    <%= hidden_field_tag :per_page, @per_page %>
+    <label class="sr-only" for="admin-candidate-query">Aday ara</label>
+    <div class="admin-search-field">
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-3.5-3.5"/>
+      </svg>
+      <%= text_field_tag :query, @query, id: "admin-candidate-query", placeholder: "Başlık, mekan, şehir ara", class: "focus-ring" %>
+    </div>
+    <%= submit_tag "Filtrele", class: "admin-search-submit focus-ring" %>
+    <%= select_tag :per_page, options_for_select([["20 / sayfa", 20], ["50 / sayfa", 50], ["100 / sayfa", 100]], @per_page), class: "admin-filter-select focus-ring", onchange: "this.form.requestSubmit()" %>
+    <%= link_to "Temizle", admin_external_event_candidates_path(preset: @preset, per_page: @per_page), class: "admin-clear-link focus-ring" if @query.present? %>
+  <% end %>
+</section>

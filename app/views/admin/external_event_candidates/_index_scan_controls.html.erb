@@ -1,0 +1,148 @@
+<details class="admin-review-controls admin-scan-controls admin-collapsible">
+  <summary class="admin-collapsible-summary focus-ring">
+    <span>Tarama ve Temizlik</span>
+    <small>Se?ili kapsam? tara, kaydet, temizle</small>
+  </summary>
+  <div class="admin-collapsible-body">
+  <div>
+    <div class="admin-section-head">
+      <div>
+        <p class="section-eyebrow text-coral">Tarama</p>
+        <h2>Seçili kapsamı tara</h2>
+      </div>
+    </div>
+
+    <%= form_with url: scan_admin_external_event_candidates_path,
+          method: :post,
+          class: "admin-candidate-scan-form",
+          local: true,
+          data: {
+            controller: "scan-scope",
+            action: "turbo:submit-start->scan-scope#scanStarted turbo:submit-end->scan-scope#scanEnded"
+          } do %>
+      <div class="admin-scan-preset-bar">
+        <button type="button" class="admin-scan-preset is-primary is-active focus-ring" data-scan-preset="default" data-action="scan-scope#defaultScope">
+          Varsayılan kapsam
+        </button>
+        <button type="button" class="admin-scan-preset focus-ring" data-scan-preset="growth" data-action="scan-scope#growthScope">
+          Geniş Potansiyel
+        </button>
+        <button type="button" class="admin-scan-preset focus-ring" data-scan-preset="all_cities" data-action="scan-scope#allCities">
+          Tüm şehirler
+        </button>
+        <button type="button" class="admin-scan-preset focus-ring" data-scan-preset="clear_cities" data-action="scan-scope#clearCities">
+          Şehirleri temizle
+        </button>
+        <button type="button" class="admin-scan-preset focus-ring" data-scan-preset="clear_taxonomy" data-action="scan-scope#clearTaxonomy">
+          Format/kategori temizle
+        </button>
+      </div>
+
+      <details class="admin-candidate-details admin-scan-picker" open>
+        <summary class="focus-ring">
+          <span>Şehirler</span>
+          <small><%= @scan_city_options.size %> şehir</small>
+        </summary>
+        <div class="admin-candidate-check-grid is-compact">
+          <% @scan_city_options.each do |label, _id, slug| %>
+            <% default_selected = EtkinlikIo::Catalog::DEFAULT_CITY_SLUGS.include?(slug.to_s) %>
+            <label class="admin-candidate-check">
+              <%= check_box_tag "city_slugs[]", slug, default_selected,
+                    data: { scan_scope_target: "city", default_selected: default_selected, city_slug: slug } %>
+              <span><%= label %></span>
+            </label>
+          <% end %>
+        </div>
+      </details>
+
+      <div class="admin-candidate-control-grid">
+        <label>
+          <span>Başlangıç</span>
+          <%= date_field_tag :start_date, Time.zone.today, class: "admin-filter-select focus-ring" %>
+        </label>
+        <label>
+          <span>Bitiş</span>
+          <%= date_field_tag :end_date, 45.days.from_now.to_date, class: "admin-filter-select focus-ring" %>
+        </label>
+        <label>
+          <span>Venue type</span>
+          <%= select_tag :venue_type, options_for_select([["Tümü", ""], ["VENUE", "VENUE"], ["MANUEL", "MANUEL"], ["ONLINE", "ONLINE"]]), class: "admin-filter-select focus-ring" %>
+        </label>
+        <label>
+          <span>Batch</span>
+          <%= number_field_tag :batch_size, EtkinlikIo::Scanner::DEFAULT_BATCH_SIZE, min: 1, max: 100, class: "admin-filter-select focus-ring" %>
+        </label>
+        <label>
+          <span>Limit</span>
+          <%= number_field_tag :max_scan_limit, EtkinlikIo::Scanner::DEFAULT_MAX_SCAN_LIMIT, min: 1, max: 3000, class: "admin-filter-select focus-ring" %>
+        </label>
+      </div>
+
+      <details class="admin-candidate-details admin-scan-picker">
+        <summary class="focus-ring">
+          <span>Format ve kategori</span>
+          <small>API kataloğu</small>
+        </summary>
+        <div class="admin-candidate-pick-grid">
+          <div>
+            <strong>Format</strong>
+            <% @scan_format_options.each do |label, id, slug| %>
+              <% default_selected = EtkinlikIo::Catalog::PRIORITY_FORMAT_IDS.include?(id.to_i) %>
+              <label class="admin-candidate-check">
+                <%= check_box_tag "format_ids[]", id, default_selected,
+                      data: { scan_scope_target: "format", default_selected: default_selected, format_slug: slug, format_id: id } %>
+                <span><%= label %> <small><%= slug %></small></span>
+              </label>
+            <% end %>
+          </div>
+          <div>
+            <strong>Kategori</strong>
+            <% @scan_category_options.each do |label, id, slug| %>
+              <label class="admin-candidate-check">
+                <%= check_box_tag "category_ids[]", id, false,
+                      data: { scan_scope_target: "category", default_selected: false, category_slug: slug, category_id: id } %>
+                <span><%= label %> <small><%= slug %></small></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      </details>
+
+      <label class="admin-candidate-check admin-low-priority-check">
+        <%= check_box_tag :include_low_priority, "1", false %>
+        <span>Düşük öncelik / tiyatro / çocuk kategorilerini dahil et</span>
+      </label>
+
+      <div class="admin-event-actions">
+        <%= button_tag "Dry-run", type: :submit, name: "dry_run", value: "1", class: "admin-search-submit focus-ring", data: { turbo_confirm: "Dry-run ba?lat?ls?n m?? Kay?t DB'ye yaz?lmaz.", scan_scope_target: "submitButton", scan_action_label: "Dry-run çalışıyor" } %>
+        <%= button_tag "Adayları Kaydet", type: :submit, name: "dry_run", value: "0", class: "admin-primary-action focus-ring", data: { turbo_confirm: "Tarama sonuclari aday havuzuna kaydedilecek. Devam edilsin mi?", scan_scope_target: "submitButton", scan_action_label: "Adaylar kaydediliyor" } %>
+      </div>
+      <div class="admin-scan-progress hidden" role="status" aria-live="polite" data-scan-scope-target="progress">
+        <div>
+          <strong data-scan-scope-target="progressTitle">Tarama çalışıyor</strong>
+          <span data-scan-scope-target="progressStatus">API taranıyor. Sekmeyi açık bırak.</span>
+        </div>
+        <div class="admin-scan-progress-track" aria-hidden="true">
+          <span></span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <div class="admin-section-head">
+      <div>
+        <p class="section-eyebrow text-coral">Temizlik</p>
+        <h2>Retansiyon</h2>
+      </div>
+    </div>
+    <p class="admin-muted-copy">Tarihi geçmiş pending/skipped/hidden kayıtlar expired olur. Eski rejected/skipped/hidden ve expired kayıtlar temizlenir; eski approved kayıtların ağır JSON alanları boşaltılır.</p>
+    <%= button_to "Cleanup Çalıştır", cleanup_admin_external_event_candidates_path, method: :post, class: "admin-danger-submit focus-ring", data: { turbo_confirm: "Cleanup calisacak: expired/old kayitlar temizlenecek. Devam edilsin mi?" } %>
+    <p class="admin-muted-copy">Yanlış preset ile import yaptıysan, yayınlanan veya karar verilmiş (skip/reject) adaylar hariç tüm havuzu silebilirsin.</p>
+    <%= button_to "Karar Verilmeyenleri Sil", reset_import_pool_admin_external_event_candidates_path,
+          method: :delete,
+          class: "admin-danger-submit focus-ring",
+          data: { turbo_confirm: "Yayınlanan, skip ve reject dışındaki tüm adaylar silinecek. Devam edilsin mi?" } %>
+  </div>
+  </div>
+</details>

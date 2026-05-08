@@ -1,0 +1,3 @@
+<% if presenter.field_error?(attribute) %>
+  <p id="<%= presenter.field_error_id(attribute) %>" class="event-form-field-error"><%= presenter.field_error_message(attribute) %></p>
+<% end %>

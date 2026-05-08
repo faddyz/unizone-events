@@ -1,0 +1,23 @@
+<div class="event-preview-action-note">
+  <strong>Önizleme kilidi</strong>
+  <p>Etkinlik yayına alınmadan katılım, paylaşım ve dış kayıt aksiyonları çalışmaz.</p>
+</div>
+
+<% if show.ticket_url %>
+  <button type="button" class="event-side-ticket is-preview-disabled" disabled aria-disabled="true">
+    <span><%= show.external_action_label %></span>
+    <%= render "icons/ticket", class: "size-5" %>
+  </button>
+<% end %>
+
+<div class="mt-5 grid gap-2">
+  <% show.rsvp_options.each do |option| %>
+    <button type="button" class="event-rsvp-choice is-preview-disabled" disabled aria-disabled="true">
+      <span>
+        <strong><%= option[:label] %></strong>
+        <small><%= option[:note] %></small>
+      </span>
+      <span class="event-rsvp-choice-dot"></span>
+    </button>
+  <% end %>
+</div>

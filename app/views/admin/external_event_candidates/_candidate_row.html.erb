@@ -1,0 +1,56 @@
+<article class="admin-candidate-row" data-candidate-bulk-target="row" data-action="click->candidate-bulk#toggleRow">
+  <div class="admin-candidate-thumb <%= event_poster_background_classes(candidate.category.presence || "community") %>">
+    <label class="admin-candidate-select-wrap" aria-label="<%= candidate_display_title(candidate) %> seç">
+      <%= check_box_tag "candidate_ids[]", candidate.id, false,
+            class: "admin-candidate-select",
+            data: { candidate_bulk_target: "checkbox", action: "click->candidate-bulk#update" } %>
+      <span></span>
+    </label>
+    <% if candidate.poster_url.present? %>
+      <%= image_tag candidate.poster_url, alt: candidate_display_title(candidate), loading: "lazy" %>
+    <% else %>
+      <div class="poster-noise absolute inset-0"></div>
+      <span>Poster yok</span>
+    <% end %>
+  </div>
+
+  <div class="admin-candidate-row-main">
+    <div class="admin-candidate-row-head">
+      <div>
+        <div class="admin-event-tags">
+          <span class="candidate-status candidate-status-<%= candidate.status %>"><%= candidate_status_label(candidate) %></span>
+          <span class="<%= event_category_badge_classes(candidate.category.presence || "community") %>"><%= event_category_title(candidate.category.presence || "community") %></span>
+          <span class="candidate-status"><%= candidate_price_label(candidate) %></span>
+        </div>
+        <h3><%= link_to candidate_display_title(candidate), admin_external_event_candidate_path(candidate), class: "focus-ring", data: { turbo_frame: "_top" } %></h3>
+      </div>
+
+      <div class="admin-candidate-row-actions">
+        <%= link_to "Önizle", admin_external_event_candidate_path(candidate), class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring", data: { turbo_frame: "_top" } %>
+        <% unless candidate.approved? %>
+          <%= link_to "Yayına Al", approve_admin_external_event_candidate_path(candidate), data: { turbo_method: :patch }, class: "btn-electric min-h-9 px-3 py-1.5 text-xs focus-ring" %>
+        <% end %>
+        <%= link_to "Geç", skip_admin_external_event_candidate_path(candidate), data: { turbo_method: :patch }, class: "btn-outline min-h-9 px-3 py-1.5 text-xs focus-ring" unless candidate.skipped? %>
+        <%= link_to "Reddet", reject_admin_external_event_candidate_path(candidate), data: { turbo_method: :patch }, class: "admin-danger-action focus-ring" unless candidate.rejected? %>
+      </div>
+    </div>
+
+    <div class="admin-candidate-meta-line">
+      <span><%= candidate.starts_at ? l(candidate.starts_at, format: :short) : "Tarih eksik" %></span>
+      <span><%= candidate_city_label(candidate) %></span>
+      <span><%= candidate_short_location(candidate) %></span>
+      <span><%= candidate_ticket_kind_label(candidate) %></span>
+    </div>
+
+    <p class="admin-event-description"><%= candidate_description_snippet(candidate) %></p>
+
+    <div class="admin-candidate-warning-row">
+      <% candidate_warning_badges(candidate).each do |label, tone| %>
+        <span class="candidate-warning is-<%= tone %>"><%= label %></span>
+      <% end %>
+      <% if candidate_source_action_url(candidate).present? %>
+        <%= link_to candidate_source_action_label(candidate), candidate_source_action_url(candidate), target: "_blank", rel: "noopener", class: "candidate-source-link focus-ring" %>
+      <% end %>
+    </div>
+  </div>
+</article>

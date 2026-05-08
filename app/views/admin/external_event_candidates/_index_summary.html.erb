@@ -1,0 +1,38 @@
+<%
+  status_labels = {
+    "pending" => "Bekleyen",
+    "approved" => "Onaylanan",
+    "skipped" => "Geçilen",
+    "rejected" => "Reddedilen",
+    "hidden" => "Gizli",
+    "expired" => "Süresi Geçmiş"
+  }
+  last_scan_parts = if @last_run
+    [
+      "Son tarama: #{admin_relative_time(@last_run.started_at || @last_run.created_at)}",
+      "#{@last_run.fetched_count} aday",
+      "#{@last_run.duplicate_count} duplicate",
+      "#{@last_run.new_candidate_count} yeni",
+      "#{@last_run.hidden_count} gizli",
+      "#{@last_run.skipped_count} geçilen",
+      "#{@last_run.failed_count} failed"
+    ]
+  else
+    [ "Son tarama yok" ]
+  end
+%>
+
+<section class="admin-candidate-summary" aria-label="Aday havuzu özeti">
+  <div class="admin-summary-chip-row">
+    <% status_labels.each do |status, label| %>
+      <span class="admin-summary-chip is-<%= candidate_summary_tone(status) %>">
+        <%= label %> <strong><%= @stats.fetch(status, 0) %></strong>
+      </span>
+    <% end %>
+  </div>
+  <div class="admin-last-scan-strip">
+    <% last_scan_parts.each do |part| %>
+      <span><%= part %></span>
+    <% end %>
+  </div>
+</section>

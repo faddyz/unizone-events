@@ -14,9 +14,7 @@
             placeholder: "Atmosferi, akışı ve katılımcıların neler bekleyebileceğini anlat.",
             aria: presenter.aria(:description),
             data: { event_preview_target: "description", wizard_required: "true" } %>
-      <% if presenter.field_error?(:description) %>
-        <p id="<%= presenter.field_error_id(:description) %>" class="event-form-field-error"><%= presenter.field_error_message(:description) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :description %>
     </div>
 
     <div class="event-form-field">
@@ -29,9 +27,7 @@
             aria: presenter.aria(:price, describedby: "event-price-hint"),
             data: { event_preview_target: "price" } %>
       <p id="event-price-hint" class="event-form-hint">Ücretsiz etkinlik için 0 yaz veya boş bırak.</p>
-      <% if presenter.field_error?(:price) %>
-        <p id="<%= presenter.field_error_id(:price) %>" class="event-form-field-error"><%= presenter.field_error_message(:price) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :price %>
     </div>
 
     <div class="event-form-field">
@@ -42,9 +38,7 @@
             aria: presenter.aria(:ticket_url, describedby: "event-ticket-url-hint"),
             data: { event_preview_target: "ticketUrl" } %>
       <p id="event-ticket-url-hint" class="event-form-hint">Varsa ana aksiyon bu bağlantıya yönlendirilir.</p>
-      <% if presenter.field_error?(:ticket_url) %>
-        <p id="<%= presenter.field_error_id(:ticket_url) %>" class="event-form-field-error"><%= presenter.field_error_message(:ticket_url) %></p>
-      <% end %>
+      <%= render "events/form/field_error", presenter: presenter, attribute: :ticket_url %>
     </div>
   </div>
 </section>
