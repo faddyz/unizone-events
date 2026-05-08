@@ -1,0 +1,23 @@
+    <section class="event-form-workspace">
+      <header class="event-form-workspace-head">
+        <div>
+          <p class="section-eyebrow text-coral">Adım <span data-wizard-target="current">1</span>/<span data-wizard-target="total"><%= steps.length %></span></p>
+          <h2 data-wizard-target="stepTitle"><%= steps.first[:title] %></h2>
+          <p data-wizard-target="stepSummary"><%= steps.first[:summary] %></p>
+        </div>
+        <div class="event-form-progress" aria-hidden="true">
+          <span data-wizard-target="progress"></span>
+        </div>
+      </header>
+
+      <%= render "events/form_fields", form: form, model: model %>
+
+      <footer class="event-form-actions">
+        <button type="button" class="btn-outline focus-ring" data-wizard-target="previous" data-action="wizard#previous">Geri</button>
+        <button type="button" class="btn-void focus-ring" data-wizard-target="next" data-action="wizard#next">Devam Et</button>
+        <%= form.submit submit_label, class: "btn-electric cursor-pointer border-0 focus-ring", data: { wizard_target: "submit" } %>
+        <% if local_assigns[:cancel_path] %>
+          <%= link_to "İptal", cancel_path, class: "btn-outline focus-ring" %>
+        <% end %>
+      </footer>
+    </section>

@@ -1,0 +1,20 @@
+  <section class="page-shell relative z-20 -mt-12">
+    <dl class="event-essentials-grid">
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 40ms">
+        <dt>Ne zaman</dt>
+        <dd><%= event_show_datetime_label(@event) %></dd>
+      </div>
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 100ms">
+        <dt>Mekan / Şehir</dt>
+        <dd><%= event_place_text(@event) %></dd>
+      </div>
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 160ms">
+        <dt>Ücret</dt>
+        <dd><%= event_price_text(@event) %></dd>
+      </div>
+      <div class="event-essential-card animate-rise-in" style="animation-delay: 220ms">
+        <dt><%= capacity ? "Kontenjan" : (@event.imported? ? "Kaynak" : "Ev sahibi / Organizatör") %></dt>
+        <dd><%= capacity ? "#{going_count}/#{capacity} dolu" : (@event.imported? ? source_name : organizer_name) %></dd>
+      </div>
+    </dl>
+  </section>

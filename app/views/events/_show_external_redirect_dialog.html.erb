@@ -1,0 +1,29 @@
+  <% if ticket_url && !preview_mode %>
+    <dialog class="event-external-redirect-dialog"
+            id="event-external-redirect-dialog"
+            aria-labelledby="event-external-redirect-title"
+            data-external-redirect-target="dialog"
+            data-action="click->external-redirect#closeFromBackdrop">
+      <div class="event-external-redirect-panel">
+        <p class="section-eyebrow text-coral">Dış bağlantı</p>
+        <h2 id="event-external-redirect-title">Dış siteye geçiyorsunuz</h2>
+        <p>
+          Bilet veya kayıt işlemi Unizone dışında tamamlanacak.
+          Devam ederseniz <strong data-external-redirect-target="destination">dış site</strong> adresi yeni sekmede açılır.
+        </p>
+        <div class="event-external-redirect-actions">
+          <button type="button"
+                  class="event-external-redirect-secondary focus-ring"
+                  data-action="external-redirect#close">
+            Vazgeç
+          </button>
+          <button type="button"
+                  class="event-external-redirect-primary focus-ring"
+                  data-external-redirect-target="continueButton"
+                  data-action="external-redirect#continue">
+            Devam et
+          </button>
+        </div>
+      </div>
+    </dialog>
+  <% end %>

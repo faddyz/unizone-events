@@ -1,0 +1,104 @@
+    <article class="event-detail-content space-y-8">
+      <section class="event-story-card">
+        <div class="event-story-orb"></div>
+        <p class="section-eyebrow text-coral">Hikaye</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950 lg:text-5xl">Oraya gittiğinde ne hissedeceksin?</h2>
+        <p class="mt-6 whitespace-pre-line text-lg font-medium leading-8 text-stone-700"><%= display_description %></p>
+      </section>
+
+      <section class="event-practical-card">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="section-eyebrow text-coral">Pratik bilgiler</p>
+            <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Planı netleştir.</h2>
+          </div>
+          <% if ticket_url %>
+            <%= link_to(ticket_url,
+                  target: "_blank",
+                  rel: "noopener",
+                  class: "section-cta focus-ring",
+                  data: {
+                    action: "external-redirect#open",
+                    external_redirect_url_param: ticket_url
+                  },
+                  aria: {
+                    haspopup: "dialog",
+                    controls: "event-external-redirect-dialog"
+                  }) do %>
+              <span><%= event_external_action_label(@event) %></span>
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <% end %>
+          <% end %>
+        </div>
+
+        <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div>
+            <dt><%= render "icons/calendar", class: "size-4" %> Tarih</dt>
+            <dd><%= event_show_datetime_label(@event) %></dd>
+          </div>
+          <div>
+            <dt><%= render "icons/location", class: "size-4" %> Mekan / Şehir</dt>
+            <dd><%= event_place_text(@event) %></dd>
+          </div>
+          <div>
+            <dt><%= render "icons/ticket", class: "size-4" %> Ücret</dt>
+            <dd><%= event_price_text(@event) %></dd>
+          </div>
+          <div>
+            <dt><%= render "icons/users", class: "size-4" %> <%= @event.imported? ? "Kaynak" : "Ev sahibi / Organizatör" %></dt>
+            <dd><%= @event.imported? ? event_source_attribution_text(@event) : organizer_name %></dd>
+          </div>
+        </dl>
+      </section>
+
+      <% if @event.imported? %>
+        <section class="event-attribution-card">
+          <strong>Kaynak: Etkinlik.io</strong>
+          <p>Bu etkinlik bilgileri dış kaynaktan alınmıştır.</p>
+        </section>
+      <% end %>
+
+      <% if @similar_events.any? || @organizer_other_events.any? %>
+        <div class="event-discovery-divider" aria-hidden="true">
+          <span></span>
+          <i></i>
+          <span></span>
+        </div>
+      <% end %>
+
+      <% if @similar_events.any? %>
+        <section class="event-compact-section space-y-4">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="section-eyebrow text-coral">Benzer akışlar</p>
+              <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Bu moda yakın etkinlikler</h2>
+              <p class="mt-2 max-w-xl text-sm font-semibold leading-6 text-stone-500">Aynı enerjiye yakın birkaç kısa öneri.</p>
+            </div>
+            <%= link_to explore_events_path(category: @event.category), class: "section-cta focus-ring" do %>
+              <span>Kategoriyi aç</span>
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <% end %>
+          </div>
+
+          <div class="event-compact-grid">
+            <% @similar_events.each_with_index do |event, index| %>
+              <%= render "events/event_card", event: event, compact: true, index: index %>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+
+      <% if @organizer_other_events.any? %>
+        <section class="event-compact-section space-y-4">
+          <div>
+            <p class="section-eyebrow text-emerald-700">Organizatörden</p>
+            <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Aynı ekibin diğer etkinlikleri</h2>
+          </div>
+          <div class="event-compact-grid">
+            <% @organizer_other_events.each_with_index do |event, index| %>
+              <%= render "events/event_card", event: event, compact: true, index: index %>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+    </article>

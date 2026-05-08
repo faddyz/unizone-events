@@ -1,0 +1,141 @@
+    <aside class="event-rsvp-aside space-y-4 lg:sticky lg:top-28">
+      <section class="event-action-card">
+        <p class="section-eyebrow text-coral">Aksiyon</p>
+        <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Bu etkinlikte var mısın?</h2>
+        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500"><%= preview_mode ? "Bu alan yayındaki sayfanın aksiyon düzenini gösterir." : (current_user.present? ? "Katılacağını netleştir, ilgini göster ya da sana uygun değilse pas geç." : "Katılımını bildirmek ve etkinliği hesabında takip etmek için giriş yap.") %></p>
+
+        <% if preview_mode %>
+          <div class="event-preview-action-note">
+            <strong>Önizleme kilidi</strong>
+            <p>Etkinlik yayına alınmadan katılım, paylaşım ve dış kayıt aksiyonları çalışmaz.</p>
+          </div>
+
+          <% if ticket_url %>
+            <button type="button" class="event-side-ticket is-preview-disabled" disabled aria-disabled="true">
+              <span><%= event_external_action_label(@event) %></span>
+              <%= render "icons/ticket", class: "size-5" %>
+            </button>
+          <% end %>
+
+          <div class="mt-5 grid gap-2">
+            <% rsvp_options.each do |option| %>
+              <button type="button" class="event-rsvp-choice is-preview-disabled" disabled aria-disabled="true">
+                <span>
+                  <strong><%= option[:label] %></strong>
+                  <small><%= option[:note] %></small>
+                </span>
+                <span class="event-rsvp-choice-dot"></span>
+              </button>
+            <% end %>
+          </div>
+        <% else %>
+        <% unless current_user.present? %>
+          <div class="event-rsvp-auth-card">
+            <strong>Katılmak için giriş yap</strong>
+            <p>Giriş yaptıktan sonra katılım durumunu seçebilir ve daha sonra dilediğin an değiştirebilirsin.</p>
+            <div>
+              <%= link_to "Giriş yap", new_user_session_path, class: "event-rsvp-auth-primary focus-ring" %>
+              <%= link_to "Hesap oluştur", new_user_registration_path, class: "event-rsvp-auth-secondary focus-ring" %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if ticket_url %>
+          <%= link_to(ticket_url,
+                target: "_blank",
+                rel: "noopener",
+                class: "event-side-ticket focus-ring",
+                data: {
+                  action: "external-redirect#open",
+                  external_redirect_url_param: ticket_url
+                },
+                aria: {
+                  haspopup: "dialog",
+                  controls: "event-external-redirect-dialog"
+                }) do %>
+            <span><%= event_external_action_label(@event) %></span>
+            <%= render "icons/ticket", class: "size-5" %>
+          <% end %>
+        <% end %>
+
+        <% if current_user.present? %>
+          <div class="mt-5 grid gap-2">
+            <% rsvp_options.each do |option| %>
+              <% selected = selected_status == option[:status] %>
+              <button type="button"
+                      class="event-rsvp-choice <%= selected ? "is-active" : "" %> focus-ring"
+                      data-attendance-status="<%= option[:status] %>"
+                      data-attendance-target="button"
+                      data-attendance-active-class="is-active"
+                      data-attendance-inactive-class=""
+                      data-attendance-default-label="<%= option[:label] %>"
+                      data-attendance-selected-label="<%= option[:active_label] %>"
+                      data-action="click->attendance#update"
+                      aria-pressed="<%= selected %>">
+                <span>
+                  <strong data-attendance-state><%= selected ? option[:active_label] : option[:label] %></strong>
+                  <small><%= option[:note] %></small>
+                </span>
+                <span class="event-rsvp-choice-dot"></span>
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="mt-5 grid grid-cols-3 gap-2 text-center">
+          <div class="event-rsvp-stat">
+            <strong data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
+            <span>Katılıyor</span>
+          </div>
+          <div class="event-rsvp-stat">
+            <strong data-attendance-target="count" data-attendance-count-key="interested_attendees_count"><%= interested_count %></strong>
+            <span>İlgileniyor</span>
+          </div>
+          <div class="event-rsvp-stat">
+            <strong data-attendance-target="count" data-attendance-count-key="not_going_attendees_count"><%= not_going_count %></strong>
+            <span>Pas Geçti</span>
+          </div>
+        </div>
+
+        <% if capacity %>
+          <div class="mt-5 rounded-2xl bg-stone-950 p-4 text-white">
+            <div class="flex items-center justify-between gap-3 text-sm font-bold">
+              <span>Doluluk</span>
+              <span><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı</span>
+            </div>
+            <div class="event-capacity-track mt-3 bg-white/12">
+              <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
+            </div>
+          </div>
+        <% end %>
+
+        <button type="button"
+                class="event-share-button focus-ring"
+                data-share-target="trigger"
+                data-action="share#share"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                aria-controls="event-share-panel">
+          <%= render "icons/link", class: "size-4" %>
+          <span data-share-target="label">Paylaş</span>
+        </button>
+        <div class="event-share-toast hidden" role="status" aria-live="polite" data-share-target="toast"></div>
+        <div data-attendance-target="toast" class="hidden" role="status" aria-live="polite"></div>
+        <% end %>
+      </section>
+
+      <% if policy(@event).edit? %>
+        <section class="cinema-panel rounded-[1.25rem] p-5">
+          <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Yönet</h2>
+          <p class="mt-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(@event) %></p>
+          <div class="mt-4 flex flex-col gap-2">
+            <% if current_user == @event.user %>
+              <%= link_to "Etkinliklerimde aç", organizer_event_path(@event), class: "btn-void flex w-full focus-ring" %>
+            <% end %>
+            <% if current_user&.admin? %>
+              <%= link_to "İncelemede aç", admin_event_path(@event), class: "btn-outline flex w-full focus-ring" %>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+    </aside>

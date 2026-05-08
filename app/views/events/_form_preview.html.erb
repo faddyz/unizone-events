@@ -1,0 +1,74 @@
+    <aside class="event-form-preview-shell" aria-label="Etkinlik önizlemesi">
+      <div class="event-form-preview-card">
+        <div class="event-form-preview-poster <%= event_poster_background_classes(model) %>" data-event-preview-target="poster">
+          <div class="poster-noise absolute inset-0"></div>
+          <div class="event-form-preview-date">
+            <span data-event-preview-target="previewMonth"><%= preview_month %></span>
+            <strong data-event-preview-target="previewDay"><%= preview_day %></strong>
+          </div>
+          <% if model.image.attached? && model.image.attachment&.persisted? %>
+            <%= event_image_tag model,
+                  :detail,
+                  alt: "",
+                  loading: "lazy",
+                  sizes: "(min-width: 1024px) 22rem, 92vw",
+                  class_name: "event-form-preview-image",
+                  data: { event_preview_target: "previewImage" } %>
+          <% else %>
+            <img alt="" class="event-form-preview-image hidden" data-event-preview-target="previewImage">
+          <% end %>
+          <div class="event-form-preview-fallback <%= (model.image.attached? && model.image.attachment&.persisted?) ? "hidden" : "" %>" data-event-preview-target="previewFallback">
+            <span class="section-eyebrow">Afiş önizlemesi</span>
+            <strong data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı" %></strong>
+          </div>
+        </div>
+
+        <div class="event-form-preview-body">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="event-form-preview-category" data-event-preview-target="previewCategory"><%= event_category_title(model) %></span>
+            <span class="event-form-preview-status"><%= model.persisted? ? event_status_label(model) : "İncelemeye gidecek" %></span>
+          </div>
+
+          <h3 data-event-preview-target="previewTitle"><%= model.title.presence || "Etkinlik adı burada parlayacak." %></h3>
+          <p data-event-preview-target="previewDescription"><%= truncate(preview_description, length: 130) %></p>
+
+          <dl class="event-form-preview-facts">
+            <div>
+              <dt>Ne zaman</dt>
+              <dd data-event-preview-target="previewDate"><%= preview_date %></dd>
+            </div>
+            <div>
+              <dt>Şehir</dt>
+              <dd data-event-preview-target="previewCity"><%= preview_city %></dd>
+            </div>
+            <div>
+              <dt>Mekan</dt>
+              <dd data-event-preview-target="previewLocation"><%= model.location.presence || "Konum seçilmedi" %></dd>
+            </div>
+            <div>
+              <dt>Ücret</dt>
+              <dd data-event-preview-target="previewPrice"><%= preview_price %></dd>
+            </div>
+            <div>
+              <dt>Kontenjan</dt>
+              <dd data-event-preview-target="previewCapacity"><%= preview_capacity %></dd>
+            </div>
+          </dl>
+
+          <div class="event-form-preview-ticket">
+            <span data-event-preview-target="previewTicket"><%= preview_ticket %></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-form-checklist">
+        <p class="section-eyebrow text-coral">Yayın kontrolü</p>
+        <ul>
+          <li data-event-preview-target="checkItem" data-check="title">Başlık ve Kategori Tamamlandı.</li>
+          <li data-event-preview-target="checkItem" data-check="date">Tarih ve Saat Netleşti.</li>
+          <li data-event-preview-target="checkItem" data-check="location">Şehir ve Mekan Bilgileri Hazır.</li>
+          <li data-event-preview-target="checkItem" data-check="story">Açıklama yeterince açık.</li>
+          <li data-event-preview-target="checkItem" data-check="image">Afiş görseli eklendi.</li>
+        </ul>
+      </div>
+    </aside>

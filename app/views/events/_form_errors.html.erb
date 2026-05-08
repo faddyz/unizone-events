@@ -1,0 +1,11 @@
+  <% if model.errors.any? %>
+    <div id="event-form-errors" class="event-form-error" role="alert" tabindex="-1">
+      <strong>Form kaydedilemedi.</strong>
+      <p>Devam etmeden önce işaretli alanları kontrol et.</p>
+      <ul>
+        <% model.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
