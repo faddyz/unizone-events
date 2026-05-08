@@ -1,3 +1,5 @@
+require_dependency Rails.root.join("app/presenters/event_show_presenter").to_s
+
 class EventsController < ApplicationController
   HOME_UPCOMING_EVENTS_LIMIT = 12
   HOME_FEATURED_EVENTS_LIMIT = 12
@@ -38,6 +40,17 @@ class EventsController < ApplicationController
     @attendance = current_user&.attendances&.find_by(event: @event)
     prepare_event_card_data([ @event ] + @similar_events + @organizer_other_events, preview_limit: 5)
     @attendee_preview = @event_attendee_previews.fetch(@event.id, [])
+    @event_show = EventShowPresenter.new(
+      event: @event,
+      current_user: current_user,
+      attendance: @attendance,
+      attendee_preview: @attendee_preview,
+      preview_mode: @preview_mode,
+      going_count: @event_attendance_counts.fetch(@event.id) { @event.attendees_count },
+      similar_events: @similar_events,
+      organizer_other_events: @organizer_other_events,
+      helpers: view_context
+    )
   end
 
   private

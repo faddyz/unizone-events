@@ -1,4 +1,4 @@
-  <% if event_has_poster?(@event) %>
+  <% if event_has_poster?(show.event) %>
     <dialog class="event-poster-lightbox"
             id="event-poster-lightbox"
             aria-labelledby="event-poster-lightbox-title"
@@ -8,7 +8,7 @@
         <header class="event-poster-lightbox-head">
           <div>
             <p class="section-eyebrow text-citron">Afiş</p>
-            <h2 id="event-poster-lightbox-title"><%= display_title %></h2>
+            <h2 id="event-poster-lightbox-title"><%= show.display_title %></h2>
           </div>
           <button type="button"
                   class="event-poster-lightbox-close focus-ring"
@@ -19,11 +19,11 @@
             </svg>
           </button>
         </header>
-        <div class="event-poster-lightbox-media <%= event_poster_background_classes(@event) %>" data-controller="poster-palette">
+        <div class="event-poster-lightbox-media <%= event_poster_background_classes(show.event) %>" data-controller="poster-palette">
           <div class="poster-art absolute inset-0 opacity-35"></div>
-          <%= event_poster_image_tag @event,
+          <%= event_poster_image_tag show.event,
                 :lightbox,
-                alt: display_title,
+                alt: show.display_title,
                 loading: "lazy",
                 sizes: "min(64rem, 100vw)",
                 class_name: "event-poster-lightbox-image",

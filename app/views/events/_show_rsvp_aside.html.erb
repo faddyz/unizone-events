@@ -2,23 +2,23 @@
       <section class="event-action-card">
         <p class="section-eyebrow text-coral">Aksiyon</p>
         <h2 class="font-display mt-2 text-3xl font-extrabold tracking-tight text-stone-950">Bu etkinlikte var mısın?</h2>
-        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500"><%= preview_mode ? "Bu alan yayındaki sayfanın aksiyon düzenini gösterir." : (current_user.present? ? "Katılacağını netleştir, ilgini göster ya da sana uygun değilse pas geç." : "Katılımını bildirmek ve etkinliği hesabında takip etmek için giriş yap.") %></p>
+        <p class="mt-2 text-sm font-semibold leading-6 text-stone-500"><%= show.preview_mode ? "Bu alan yayındaki sayfanın aksiyon düzenini gösterir." : (show.signed_in? ? "Katılacağını netleştir, ilgini göster ya da sana uygun değilse pas geç." : "Katılımını bildirmek ve etkinliği hesabında takip etmek için giriş yap.") %></p>
 
-        <% if preview_mode %>
+        <% if show.preview_mode %>
           <div class="event-preview-action-note">
             <strong>Önizleme kilidi</strong>
             <p>Etkinlik yayına alınmadan katılım, paylaşım ve dış kayıt aksiyonları çalışmaz.</p>
           </div>
 
-          <% if ticket_url %>
+          <% if show.ticket_url %>
             <button type="button" class="event-side-ticket is-preview-disabled" disabled aria-disabled="true">
-              <span><%= event_external_action_label(@event) %></span>
+              <span><%= event_external_action_label(show.event) %></span>
               <%= render "icons/ticket", class: "size-5" %>
             </button>
           <% end %>
 
           <div class="mt-5 grid gap-2">
-            <% rsvp_options.each do |option| %>
+            <% show.rsvp_options.each do |option| %>
               <button type="button" class="event-rsvp-choice is-preview-disabled" disabled aria-disabled="true">
                 <span>
                   <strong><%= option[:label] %></strong>
@@ -29,7 +29,7 @@
             <% end %>
           </div>
         <% else %>
-        <% unless current_user.present? %>
+        <% unless show.signed_in? %>
           <div class="event-rsvp-auth-card">
             <strong>Katılmak için giriş yap</strong>
             <p>Giriş yaptıktan sonra katılım durumunu seçebilir ve daha sonra dilediğin an değiştirebilirsin.</p>
@@ -40,28 +40,28 @@
           </div>
         <% end %>
 
-        <% if ticket_url %>
-          <%= link_to(ticket_url,
+        <% if show.ticket_url %>
+          <%= link_to(show.ticket_url,
                 target: "_blank",
                 rel: "noopener",
                 class: "event-side-ticket focus-ring",
                 data: {
                   action: "external-redirect#open",
-                  external_redirect_url_param: ticket_url
+                  external_redirect_url_param: show.ticket_url
                 },
                 aria: {
                   haspopup: "dialog",
                   controls: "event-external-redirect-dialog"
                 }) do %>
-            <span><%= event_external_action_label(@event) %></span>
+            <span><%= event_external_action_label(show.event) %></span>
             <%= render "icons/ticket", class: "size-5" %>
           <% end %>
         <% end %>
 
-        <% if current_user.present? %>
+        <% if show.signed_in? %>
           <div class="mt-5 grid gap-2">
-            <% rsvp_options.each do |option| %>
-              <% selected = selected_status == option[:status] %>
+            <% show.rsvp_options.each do |option| %>
+              <% selected = show.selected_status == option[:status] %>
               <button type="button"
                       class="event-rsvp-choice <%= selected ? "is-active" : "" %> focus-ring"
                       data-attendance-status="<%= option[:status] %>"
@@ -84,27 +84,27 @@
 
         <div class="mt-5 grid grid-cols-3 gap-2 text-center">
           <div class="event-rsvp-stat">
-            <strong data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></strong>
+            <strong data-attendance-target="count" data-attendance-count-key="attendees_count"><%= show.going_count %></strong>
             <span>Katılıyor</span>
           </div>
           <div class="event-rsvp-stat">
-            <strong data-attendance-target="count" data-attendance-count-key="interested_attendees_count"><%= interested_count %></strong>
+            <strong data-attendance-target="count" data-attendance-count-key="interested_attendees_count"><%= show.interested_count %></strong>
             <span>İlgileniyor</span>
           </div>
           <div class="event-rsvp-stat">
-            <strong data-attendance-target="count" data-attendance-count-key="not_going_attendees_count"><%= not_going_count %></strong>
+            <strong data-attendance-target="count" data-attendance-count-key="not_going_attendees_count"><%= show.not_going_count %></strong>
             <span>Pas Geçti</span>
           </div>
         </div>
 
-        <% if capacity %>
+        <% if show.capacity %>
           <div class="mt-5 rounded-2xl bg-stone-950 p-4 text-white">
             <div class="flex items-center justify-between gap-3 text-sm font-bold">
               <span>Doluluk</span>
-              <span><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı</span>
+              <span><span data-attendance-target="spots"><%= show.spots_left %></span> yer kaldı</span>
             </div>
             <div class="event-capacity-track mt-3 bg-white/12">
-              <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
+              <div class="event-capacity-fill" style="width: <%= show.capacity_percent %>%" data-attendance-target="meter"></div>
             </div>
           </div>
         <% end %>
@@ -124,16 +124,16 @@
         <% end %>
       </section>
 
-      <% if policy(@event).edit? %>
+      <% if policy(show.event).edit? %>
         <section class="cinema-panel rounded-[1.25rem] p-5">
           <h2 class="font-display text-xl font-extrabold tracking-tight text-stone-950">Yönet</h2>
-          <p class="mt-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(@event) %></p>
+          <p class="mt-2 text-sm font-medium leading-6 text-stone-600"><%= event_lifecycle_hint(show.event) %></p>
           <div class="mt-4 flex flex-col gap-2">
-            <% if current_user == @event.user %>
-              <%= link_to "Etkinliklerimde aç", organizer_event_path(@event), class: "btn-void flex w-full focus-ring" %>
+            <% if show.current_user == show.event.user %>
+              <%= link_to "Etkinliklerimde aç", organizer_event_path(show.event), class: "btn-void flex w-full focus-ring" %>
             <% end %>
-            <% if current_user&.admin? %>
-              <%= link_to "İncelemede aç", admin_event_path(@event), class: "btn-outline flex w-full focus-ring" %>
+            <% if show.current_user&.admin? %>
+              <%= link_to "İncelemede aç", admin_event_path(show.event), class: "btn-outline flex w-full focus-ring" %>
             <% end %>
           </div>
         </section>

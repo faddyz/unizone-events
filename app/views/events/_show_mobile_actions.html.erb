@@ -1,20 +1,20 @@
   <div class="event-mobile-actions lg:hidden">
-    <% if preview_mode %>
+    <% if show.preview_mode %>
       <button type="button" class="event-mobile-primary is-preview-disabled" disabled aria-disabled="true">
-        <%= public_action_label %>
+        <%= show.public_action_label %>
       </button>
-      <%= link_to preview_back_path, class: "event-mobile-icon focus-ring", aria: { label: preview_back_label } do %>
+      <%= link_to show.preview_back_path, class: "event-mobile-icon focus-ring", aria: { label: show.preview_back_label } do %>
         <%= render "icons/arrow_left", class: "size-5" %>
       <% end %>
-    <% elsif ticket_url %>
-      <%= link_to event_external_action_label(@event),
-            ticket_url,
+    <% elsif show.ticket_url %>
+      <%= link_to event_external_action_label(show.event),
+            show.ticket_url,
             target: "_blank",
             rel: "noopener",
             class: "event-mobile-primary focus-ring",
             data: {
               action: "external-redirect#open",
-              external_redirect_url_param: ticket_url
+              external_redirect_url_param: show.ticket_url
             },
             aria: {
               haspopup: "dialog",
@@ -30,10 +30,10 @@
               aria-controls="event-share-panel">
         <%= render "icons/link", class: "size-5" %>
       </button>
-    <% elsif current_user.present? %>
-      <% going_selected = selected_status == "going" %>
-      <% interested_selected = selected_status == "interested" %>
-      <% not_going_selected = selected_status == "not_going" %>
+    <% elsif show.signed_in? %>
+      <% going_selected = show.selected_status == "going" %>
+      <% interested_selected = show.selected_status == "interested" %>
+      <% not_going_selected = show.selected_status == "not_going" %>
       <button type="button"
               class="event-mobile-primary <%= going_selected ? "is-active" : "" %> focus-ring"
               data-attendance-status="going"

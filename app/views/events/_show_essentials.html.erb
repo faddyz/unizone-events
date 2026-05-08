@@ -2,19 +2,19 @@
     <dl class="event-essentials-grid">
       <div class="event-essential-card animate-rise-in" style="animation-delay: 40ms">
         <dt>Ne zaman</dt>
-        <dd><%= event_show_datetime_label(@event) %></dd>
+        <dd><%= event_show_datetime_label(show.event) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 100ms">
         <dt>Mekan / Şehir</dt>
-        <dd><%= event_place_text(@event) %></dd>
+        <dd><%= event_place_text(show.event) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 160ms">
         <dt>Ücret</dt>
-        <dd><%= event_price_text(@event) %></dd>
+        <dd><%= event_price_text(show.event) %></dd>
       </div>
       <div class="event-essential-card animate-rise-in" style="animation-delay: 220ms">
-        <dt><%= capacity ? "Kontenjan" : (@event.imported? ? "Kaynak" : "Ev sahibi / Organizatör") %></dt>
-        <dd><%= capacity ? "#{going_count}/#{capacity} dolu" : (@event.imported? ? source_name : organizer_name) %></dd>
+        <dt><%= show.capacity ? "Kontenjan" : (show.event.imported? ? "Kaynak" : "Ev sahibi / Organizatör") %></dt>
+        <dd><%= show.capacity ? "#{show.going_count}/#{show.capacity} dolu" : (show.event.imported? ? show.source_name : show.organizer_name) %></dd>
       </div>
     </dl>
   </section>

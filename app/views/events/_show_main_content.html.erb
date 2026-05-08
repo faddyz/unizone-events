@@ -7,33 +7,33 @@
       <div class="grid gap-4 md:grid-cols-2">
         <div class="event-signal-card is-citron">
           <p class="section-eyebrow">Mod</p>
-          <h3><%= event_category_title(@event) %></h3>
-          <p><%= event_category_signal_copy(@event) %></p>
+          <h3><%= event_category_title(show.event) %></h3>
+          <p><%= event_category_signal_copy(show.event) %></p>
         </div>
         <div class="event-signal-card is-blue">
-          <p class="section-eyebrow"><%= event_decision_crowd_signal_label(@event, going_count) %></p>
-          <% if @event.imported? && going_count.zero? %>
-            <h3><%= event_decision_crowd_signal_title(@event, going_count) %></h3>
+          <p class="section-eyebrow"><%= event_decision_crowd_signal_label(show.event, show.going_count) %></p>
+          <% if show.event.imported? && show.going_count.zero? %>
+            <h3><%= event_decision_crowd_signal_title(show.event, show.going_count) %></h3>
           <% else %>
-            <h3><span data-attendance-target="count" data-attendance-count-key="attendees_count"><%= going_count %></span> kişi katılıyor!</h3>
+            <h3><span data-attendance-target="count" data-attendance-count-key="attendees_count"><%= show.going_count %></span> kişi katılıyor!</h3>
           <% end %>
-          <p><%= event_decision_crowd_signal_copy(@event, going_count) %></p>
+          <p><%= event_decision_crowd_signal_copy(show.event, show.going_count) %></p>
         </div>
         <div class="event-signal-card is-coral">
           <p class="section-eyebrow">Ücret</p>
-          <h3><%= event_decision_price_signal_title(@event) %></h3>
-          <p><%= event_decision_price_signal_copy(@event) %></p>
+          <h3><%= event_decision_price_signal_title(show.event) %></h3>
+          <p><%= event_decision_price_signal_copy(show.event) %></p>
         </div>
         <div class="event-signal-card is-mint">
-          <p class="section-eyebrow"><%= capacity ? "Doluluk" : "Kayıt" %></p>
-          <h3><%= capacity ? "%#{capacity_percent}" : (ticket_url || @event.imported? ? event_registration_label(@event) : "Katılımını belirt!") %></h3>
-          <% if capacity %>
+          <p class="section-eyebrow"><%= show.capacity ? "Doluluk" : "Kayıt" %></p>
+          <h3><%= show.capacity ? "%#{show.capacity_percent}" : (show.ticket_url || show.event.imported? ? event_registration_label(show.event) : "Katılımını belirt!") %></h3>
+          <% if show.capacity %>
             <div class="event-capacity-track mt-4">
-              <div class="event-capacity-fill" style="width: <%= capacity_percent %>%" data-attendance-target="meter"></div>
+              <div class="event-capacity-fill" style="width: <%= show.capacity_percent %>%" data-attendance-target="meter"></div>
             </div>
-            <p class="mt-3"><span data-attendance-target="spots"><%= spots_left %></span> yer kaldı; kontenjan dolmadan kararını netleştir.</p>
+            <p class="mt-3"><span data-attendance-target="spots"><%= show.spots_left %></span> yer kaldı; kontenjan dolmadan kararını netleştir.</p>
           <% else %>
-            <p><%= event_decision_registration_signal_copy(@event, ticket_url) %></p>
+            <p><%= event_decision_registration_signal_copy(show.event, show.ticket_url) %></p>
           <% end %>
         </div>
       </div>
