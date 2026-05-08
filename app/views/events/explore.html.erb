@@ -61,14 +61,14 @@
   </section>
 
   <section class="page-shell explore-workbench">
-    <%= render "filters" %>
+    <%= render "events/explore/filters" %>
 
     <% if @events.any? %>
       <div id="explore_events_results" class="explore-results explore-results-<%= view_mode %>" data-view-mode="<%= view_mode %>">
-        <%= render "events/explore_event_items", events: @events, view_mode: view_mode %>
+        <%= render "events/explore/event_items", events: @events, view_mode: view_mode %>
       </div>
 
-      <%= render "events/explore_load_more", events: @events %>
+      <%= render "events/explore/load_more", events: @events %>
     <% else %>
       <% action = capture do %>
         <div class="explore-empty-actions">

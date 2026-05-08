@@ -18,18 +18,18 @@
      data-share-title-value="<%= show.display_title %>"
      data-share-text-value="<%= show.share_text %>"
      data-share-url-value="<%= request.original_url %>">
-  <%= render "events/show_hero", show: show %>
-  <%= render "events/show_mobile_poster", show: show %>
-  <%= render "events/show_essentials", show: show %>
+  <%= render "events/show/hero", show: show %>
+  <%= render "events/show/mobile_poster", show: show %>
+  <%= render "events/show/essentials", show: show %>
 
   <section class="page-shell mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
-    <%= render "events/show_main_content", show: show %>
-    <%= render "events/show_detail_content", show: show %>
-    <%= render "events/show_rsvp_aside", show: show %>
+    <%= render "events/show/main_content", show: show %>
+    <%= render "events/show/detail_content", show: show %>
+    <%= render "events/show/rsvp_aside", show: show %>
   </section>
 
   <%= render "shared/share_panel", dom_id: "event-share-panel" unless show.preview_mode %>
-  <%= render "events/show_external_redirect_dialog", show: show %>
-  <%= render "events/show_poster_lightbox", show: show %>
-  <%= render "events/show_mobile_actions", show: show %>
+  <%= render "events/show/external_redirect_dialog", show: show %>
+  <%= render "events/show/poster_lightbox", show: show %>
+  <%= render "events/show/mobile_actions", show: show %>
 </div>

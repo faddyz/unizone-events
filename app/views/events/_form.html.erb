@@ -25,12 +25,12 @@
         controller: "wizard event-preview",
         action: "input->event-preview#refresh change->event-preview#refresh input->wizard#refresh change->wizard#refresh"
       } do |form| %>
-  <%= render "events/form_errors", model: model %>
+  <%= render "events/form/errors", model: model %>
 
   <div class="event-form-layout">
-    <%= render "events/form_step_rail", steps: steps, mode: mode, form_title: form_title, form_description: form_description %>
-    <%= render "events/form_workspace", form: form, model: model, steps: steps, submit_label: submit_label, cancel_path: local_assigns[:cancel_path] %>
-    <%= render "events/form_preview",
+    <%= render "events/form/step_rail", steps: steps, mode: mode, form_title: form_title, form_description: form_description %>
+    <%= render "events/form/workspace", form: form, model: model, steps: steps, submit_label: submit_label, cancel_path: local_assigns[:cancel_path] %>
+    <%= render "events/form/preview",
           model: model,
           preview_month: preview_month,
           preview_day: preview_day,

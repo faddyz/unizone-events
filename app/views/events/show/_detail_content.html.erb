@@ -82,7 +82,7 @@
 
           <div class="event-compact-grid">
             <% show.similar_events.each_with_index do |event, index| %>
-              <%= render "events/event_card", event: event, compact: true, index: index %>
+              <%= render "events/cards/event_card", event: event, compact: true, index: index %>
             <% end %>
           </div>
         </section>
@@ -96,7 +96,7 @@
           </div>
           <div class="event-compact-grid">
             <% show.organizer_other_events.each_with_index do |event, index| %>
-              <%= render "events/event_card", event: event, compact: true, index: index %>
+              <%= render "events/cards/event_card", event: event, compact: true, index: index %>
             <% end %>
           </div>
         </section>
