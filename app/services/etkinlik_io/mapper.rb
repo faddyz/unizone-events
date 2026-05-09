@@ -18,8 +18,44 @@ module EtkinlikIo
     WORKSHOP_TOPIC_KEYWORDS = %w[
       atölye atolye workshop
     ].freeze
+    TECHNOLOGY_CATEGORY_SLUGS = %w[bilim-teknoloji bilisim uretim-ve-muhendislik].freeze
+    BUSINESS_CATEGORY_SLUGS = %w[
+      finans-ekonomi gayrimenkul-insaat girisimcilik hukuk insan-kaynaklari is-dunyasi
+      medya-ve-iletisim pazarlama tedarik-zinciri-ve-lojistik yonetim-ve-liderlik
+    ].freeze
+    CULTURE_CATEGORY_SLUGS = %w[
+      dil-ve-edebiyat kultur-din sinema-film siyaset-politika sosyal-bilimler tarih
+    ].freeze
+    ART_CATEGORY_SLUGS = %w[
+      fotografcilik sanat
+    ].freeze
+    FOOD_LIFESTYLE_CATEGORY_SLUGS = %w[
+      ascilik-ve-mutfak gida hobi-yasam-tarzi seyahat tekstil-moda turizm
+    ].freeze
+    COMMUNITY_CATEGORY_SLUGS = %w[
+      enerji-ve-cevre hayvancilik tarim
+    ].freeze
 
     attr_reader :payload, :include_low_priority
+
+    def self.category_for_slug(category_slug)
+      category_slug = category_slug.to_s
+
+      return "music" if MUSIC_CATEGORY_SLUGS.include?(category_slug)
+      return "art_exhibition" if ART_CATEGORY_SLUGS.include?(category_slug)
+      return "technology" if TECHNOLOGY_CATEGORY_SLUGS.include?(category_slug)
+      return "business" if BUSINESS_CATEGORY_SLUGS.include?(category_slug)
+      return "career" if category_slug == "kariyer"
+      return "education" if %w[egitim-ogretim kisisel-gelisim yabanci-dil].include?(category_slug)
+      return "food_lifestyle" if FOOD_LIFESTYLE_CATEGORY_SLUGS.include?(category_slug)
+      return "sports_wellness" if %w[saglik-tip spor].include?(category_slug)
+      return "culture" if CULTURE_CATEGORY_SLUGS.include?(category_slug)
+      return "family" if %w[cocuk-gelisimi cocuk-tiyatrosu].include?(category_slug)
+      return "theater" if %w[dans-ve-muzikal-gosteriler tiyatro-ve-gosteriler].include?(category_slug)
+      return "community" if COMMUNITY_CATEGORY_SLUGS.include?(category_slug)
+
+      "community"
+    end
 
     def initialize(payload, include_low_priority: false)
       @payload = payload.to_h
@@ -99,20 +135,13 @@ module EtkinlikIo
       return "community" if low_priority_format_slug?(format_slug) || low_priority_tag_slug?
       return "music" if format_slug == "konser" || MUSIC_CATEGORY_SLUGS.include?(category_slug)
       return "festival" if format_slug == "festival"
-      return "art_exhibition" if format_slug == "sergi" || category_slug == "sanat"
+      return "art_exhibition" if format_slug == "sergi" || ART_CATEGORY_SLUGS.include?(category_slug)
       return "conference" if %w[konferans kongre panel seminer sempozyum soylesi zirve].include?(format_slug)
       return "community" if format_slug == "egitim" && category_slug == "diger" && niche_education_topic?
       return "workshop" if %w[atolye calistay egitim].include?(format_slug)
-      return "technology" if %w[bilim-teknoloji bilisim uretim-ve-muhendislik].include?(category_slug)
-      return "business" if %w[is-dunyasi girisimcilik finans-ekonomi pazarlama yonetim-ve-liderlik].include?(category_slug)
-      return "career" if category_slug == "kariyer"
-      return "education" if %w[egitim-ogretim kisisel-gelisim yabanci-dil].include?(category_slug)
-      return "food_lifestyle" if %w[ascilik-ve-mutfak hobi-yasam-tarzi].include?(category_slug)
-      return "sports_wellness" if category_slug == "spor"
-      return "family" if %w[cocuk-gelisimi cocuk-tiyatrosu].include?(category_slug)
-      return "theater" if category_slug == "tiyatro-ve-gosteriler" || format_slug == "sahne-sanatlari"
+      return "theater" if format_slug == "sahne-sanatlari"
 
-      "community"
+      self.class.category_for_slug(category_slug)
     end
 
     def hidden?(mapped)

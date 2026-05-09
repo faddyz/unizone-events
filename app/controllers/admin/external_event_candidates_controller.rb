@@ -89,6 +89,7 @@ class Admin::ExternalEventCandidatesController < ApplicationController
     @scan_city_options = @candidate_index.scan_city_options
     @scan_format_options = @candidate_index.scan_format_options
     @scan_category_options = @candidate_index.scan_category_options
+    @scan_unizone_category_options = @candidate_index.scan_unizone_category_options
     @candidates = @candidate_index.candidates
   end
 

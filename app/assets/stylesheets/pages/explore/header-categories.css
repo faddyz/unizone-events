@@ -196,6 +196,7 @@
 .explore-category-pill.is-networking { --category-pill-accent: #059669; }
 .explore-category-pill.is-community { --category-pill-accent: var(--citron); }
 .explore-category-pill.is-art-exhibition { --category-pill-accent: var(--grape); }
+.explore-category-pill.is-culture { --category-pill-accent: #b45309; }
 .explore-category-pill.is-sports-wellness { --category-pill-accent: #65a30d; }
 .explore-category-pill.is-nightlife { --category-pill-accent: #db2777; }
 .explore-category-pill.is-business { --category-pill-accent: #0f172a; }

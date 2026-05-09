@@ -144,6 +144,42 @@ class EtkinlikIo::MapperTest < ActiveSupport::TestCase
     assert_nil mapped[:hidden_reason]
   end
 
+  test "maps broader api category slugs to unizone categories" do
+    expectations = {
+      "dil-ve-edebiyat" => "culture",
+      "fotografcilik" => "art_exhibition",
+      "gida" => "food_lifestyle",
+      "hukuk" => "business",
+      "saglik-tip" => "sports_wellness",
+      "dans-ve-muzikal-gosteriler" => "theater",
+      "enerji-ve-cevre" => "community"
+    }
+
+    expectations.each do |slug, category|
+      payload = sample_payload.merge(
+        "id" => "category-#{slug}",
+        "format" => { "slug" => "etkinlik", "name" => "Etkinlik" },
+        "category" => { "slug" => slug, "name" => slug.titleize }
+      )
+
+      mapped = EtkinlikIo::Mapper.new(payload, include_low_priority: true).call
+
+      assert_equal category, mapped[:category], "Expected #{slug} to map to #{category}"
+    end
+  end
+
+  test "format priority still wins over broader category slug mapping" do
+    payload = sample_payload.merge(
+      "id" => 132,
+      "format" => { "slug" => "konser", "name" => "Konser" },
+      "category" => { "slug" => "tarih", "name" => "Tarih" }
+    )
+
+    mapped = EtkinlikIo::Mapper.new(payload).call
+
+    assert_equal "music", mapped[:category]
+  end
+
   test "sanat tag is low priority" do
     payload = sample_payload.merge(
       "id" => 130,

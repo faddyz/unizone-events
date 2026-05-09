@@ -48,6 +48,19 @@ class Admin::ExternalEventCandidateIndexPresenter
     @scan_category_options ||= EtkinlikIo::Catalog.category_options
   end
 
+  def scan_category_groups
+    @scan_category_groups ||= scan_category_options
+      .map { |label, id, slug| { label: label, id: id, slug: slug, unizone_category: EtkinlikIo::Mapper.category_for_slug(slug) } }
+      .group_by { |option| option[:unizone_category] }
+  end
+
+  def scan_unizone_category_options
+    @scan_unizone_category_options ||= Event.categories.keys.filter_map do |category|
+      options = scan_category_groups[category]
+      [ category, options ] if options.present?
+    end
+  end
+
   def candidates
     @candidates ||= filtered_candidates.page(params[:page]).per(per_page)
   end

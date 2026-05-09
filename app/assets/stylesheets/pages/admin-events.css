@@ -1138,6 +1138,11 @@
   font-weight: 700;
 }
 
+.admin-candidate-check em {
+  margin-top: 0.35rem;
+  font-style: normal;
+}
+
 .admin-candidate-details {
   border-radius: 0.95rem;
   background: rgba(15, 15, 18, 0.04);
@@ -1168,6 +1173,7 @@
   min-height: 2.15rem;
   align-items: center;
   justify-content: center;
+  gap: 0.35rem;
   border-radius: var(--radius-pill);
   background: var(--card-bg-strong);
   padding: 0.45rem 0.7rem;
@@ -1194,6 +1200,16 @@
 .admin-scan-preset.is-active {
   background: var(--page-text);
   color: white;
+}
+
+.admin-scan-preset small {
+  display: inline-grid;
+  min-width: 1.15rem;
+  min-height: 1.15rem;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(15, 15, 18, 0.08);
+  font-size: 0.64rem;
 }
 
 .admin-scan-progress {

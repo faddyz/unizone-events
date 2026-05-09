@@ -4,6 +4,7 @@ export default class extends Controller {
   static targets = ["city", "format", "category", "progress", "progressTitle", "progressStatus", "submitButton"]
   static growthCitySlugs = ["istanbul", "ankara", "izmir", "antalya", "bursa", "eskisehir", "balikesir", "adana", "mugla", "mersin", "kocaeli", "konya", "gaziantep"]
   static growthFormatSlugs = ["konser", "festival", "konferans", "kongre", "panel", "seminer", "soylesi", "zirve", "fuar", "webinar", "egitim", "atolye", "calistay", "sergi"]
+  static growthUnizoneCategories = ["music", "festival", "art_exhibition", "culture", "conference", "workshop", "networking", "technology", "education", "business", "career", "food_lifestyle", "nightlife", "sports_wellness"]
 
   disconnect() {
     this.disableUnloadWarning()
@@ -60,7 +61,7 @@ export default class extends Controller {
   growthScope() {
     this.setChecked(this.cityTargets, (checkbox) => this.inList(checkbox.dataset.citySlug, this.constructor.growthCitySlugs))
     this.setChecked(this.formatTargets, (checkbox) => this.inList(checkbox.dataset.formatSlug, this.constructor.growthFormatSlugs))
-    this.setChecked(this.categoryTargets, false)
+    this.setChecked(this.categoryTargets, (checkbox) => this.inList(checkbox.dataset.unizoneCategory, this.constructor.growthUnizoneCategories))
     this.markActive("growth")
   }
 
@@ -80,6 +81,21 @@ export default class extends Controller {
     this.markActive("clear_taxonomy")
   }
 
+  categoryScope(event) {
+    const category = event.currentTarget.dataset.unizoneCategory
+    if (!category) return
+
+    const matchingCategories = this.categoryTargets.filter((checkbox) => checkbox.dataset.unizoneCategory === category)
+    const shouldSelect = matchingCategories.some((checkbox) => !checkbox.checked)
+
+    this.setChecked(matchingCategories, shouldSelect)
+    event.currentTarget.classList.toggle("is-active", shouldSelect)
+  }
+
+  categoryChanged() {
+    this.syncCategoryPresetStates()
+  }
+
   setChecked(targets, valueOrCallback) {
     targets.forEach((checkbox) => {
       checkbox.checked = typeof valueOrCallback === "function" ? valueOrCallback(checkbox) : valueOrCallback
@@ -93,6 +109,16 @@ export default class extends Controller {
   markActive(mode) {
     this.element.querySelectorAll("[data-scan-preset]").forEach((button) => {
       button.classList.toggle("is-active", button.dataset.scanPreset === mode)
+    })
+
+    this.syncCategoryPresetStates()
+  }
+
+  syncCategoryPresetStates() {
+    this.element.querySelectorAll("[data-unizone-category]").forEach((button) => {
+      const category = button.dataset.unizoneCategory
+      const matchingCategories = this.categoryTargets.filter((checkbox) => checkbox.dataset.unizoneCategory === category)
+      button.classList.toggle("is-active", matchingCategories.length > 0 && matchingCategories.every((checkbox) => checkbox.checked))
     })
   }
 

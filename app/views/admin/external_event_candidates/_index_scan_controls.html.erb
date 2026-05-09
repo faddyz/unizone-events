@@ -83,6 +83,18 @@
           <span>Format ve kategori</span>
           <small>API kataloğu</small>
         </summary>
+        <div class="admin-scan-preset-bar">
+          <% @scan_unizone_category_options.each do |category, options| %>
+            <button type="button"
+                    class="admin-scan-preset focus-ring"
+                    data-scan-preset="category_<%= category %>"
+                    data-unizone-category="<%= category %>"
+                    data-action="scan-scope#categoryScope">
+              <%= event_category_title(category) %>
+              <small><%= options.size %></small>
+            </button>
+          <% end %>
+        </div>
         <div class="admin-candidate-pick-grid">
           <div>
             <strong>Format</strong>
@@ -98,10 +110,15 @@
           <div>
             <strong>Kategori</strong>
             <% @scan_category_options.each do |label, id, slug| %>
+              <% unizone_category = EtkinlikIo::Mapper.category_for_slug(slug) %>
               <label class="admin-candidate-check">
                 <%= check_box_tag "category_ids[]", id, false,
-                      data: { scan_scope_target: "category", default_selected: false, category_slug: slug, category_id: id } %>
-                <span><%= label %> <small><%= slug %></small></span>
+                      data: { scan_scope_target: "category", default_selected: false, category_slug: slug, category_id: id, unizone_category: unizone_category, action: "change->scan-scope#categoryChanged" } %>
+                <span>
+                  <%= label %>
+                  <small><%= slug %></small>
+                  <em class="<%= event_category_badge_classes(unizone_category) %>"><%= event_category_title(unizone_category) %></em>
+                </span>
               </label>
             <% end %>
           </div>

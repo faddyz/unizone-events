@@ -4,6 +4,7 @@ module Events
       "music" => "bg-fuchsia-700 text-fuchsia-100",
       "festival" => "bg-orange-500 text-white",
       "art_exhibition" => "bg-violet-700 text-violet-100",
+      "culture" => "bg-amber-800 text-amber-100",
       "conference" => "bg-blue-700 text-blue-100",
       "workshop" => "bg-teal-500 text-stone-950",
       "networking" => "bg-emerald-600 text-white",
@@ -23,6 +24,7 @@ module Events
       "music" => "from-fuchsia-800 via-pink-600 to-ember",
       "festival" => "from-orange-600 via-pink-600 to-citron",
       "art_exhibition" => "from-violet-900 via-[#2b174d] to-[#d8c0ff]",
+      "culture" => "from-amber-900 via-rose-800 to-[#f8d77a]",
       "conference" => "from-blue-900 via-blue-700 to-[#c8e6ff]",
       "workshop" => "from-teal-600 via-cyan-500 to-stone-950",
       "networking" => "from-emerald-700 via-teal-500 to-stone-950",
@@ -56,6 +58,7 @@ module Events
       "music" => "music",
       "festival" => "sparkles",
       "art_exhibition" => "image",
+      "culture" => "book_open",
       "conference" => "calendar",
       "workshop" => "edit",
       "networking" => "users",
@@ -73,6 +76,7 @@ module Events
 
     CATEGORY_SIGNAL_COPY = {
       "art_exhibition" => "Görsel kültür, üretim ve ilham odağı yüksek; keşfetmek için sakin ama güçlü bir seçenek.",
+      "culture" => "Hikaye, fikir ve kent hafızası etrafında daha derin bir keşif alanı açıyor.",
       "business" => "İş, girişim ve sektör bağlantıları için net bir profesyonel buluşma alanı.",
       "career" => "Kariyer rotanı netleştirmek ve yeni fırsatlarla temas etmek için pratik bir durak.",
       "food_lifestyle" => "Yemek, üretim ve yaşam tarzı çevresinde sosyal ve hafif bir keşif planı.",

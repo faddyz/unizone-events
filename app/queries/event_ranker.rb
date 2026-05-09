@@ -8,6 +8,7 @@ class EventRanker
   ].freeze
   MEDIUM_PRIORITY_CATEGORIES = %w[
     art_exhibition
+    culture
     education
     career
     business
