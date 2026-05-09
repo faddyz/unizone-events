@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { registrations: "users/registrations" }
 
   root "events#index"
 
@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   end
 
   get "faq", to: "pages#faq", as: :faq
+  get "kullanim-kosullari", to: "pages#terms", as: :terms
   get "gizlilik-politikasi", to: "pages#privacy", as: :privacy_policy
   get "iletisim", to: "pages#contact", as: :contact
   get "up" => "rails/health#show", as: :rails_health_check

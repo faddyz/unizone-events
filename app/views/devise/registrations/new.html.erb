@@ -6,6 +6,7 @@
   email_error = resource.errors[:email].any?
   password_error = resource.errors[:password].any?
   confirmation_error = resource.errors[:password_confirmation].any?
+  terms_error = resource.errors[:terms_of_service].any?
   password_describedby = [("user_password_hint" if @minimum_password_length), ("user_password_error" if password_error)].compact.join(" ").presence
 %>
 
@@ -24,7 +25,7 @@
               { title: "Etkinlik stüdyosu", meta: "Taslak oluştur", label: "Stüdyo", tone: "is-coral" }
             ] %>
 
-      <section class="auth-card" aria-labelledby="auth-title">
+      <section class="auth-card" aria-labelledby="auth-title" data-controller="legal-dialog">
         <div class="auth-card-head">
           <p class="section-eyebrow text-coral">Yeni hesap</p>
           <h1 id="auth-title">Unizone’a katıl</h1>
@@ -41,13 +42,21 @@
 
           <div class="auth-field">
             <%= f.label :name, "Ad Soyad", class: "auth-label" %>
-            <%= f.text_field :name,
-                  autofocus: true,
-                  autocomplete: "name",
-                  required: true,
-                  class: "auth-input #{name_error ? "is-invalid" : ""}",
-                  placeholder: "Adın Soyadın",
-                  aria: { invalid: name_error ? "true" : "false", describedby: name_error ? "user_name_error" : nil } %>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21a8 8 0 0 0-16 0"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <%= f.text_field :name,
+                    autofocus: true,
+                    autocomplete: "name",
+                    required: true,
+                    class: "auth-input #{name_error ? "is-invalid" : ""}",
+                    placeholder: "Adın Soyadın",
+                    aria: { invalid: name_error ? "true" : "false", describedby: name_error ? "user_name_error" : nil } %>
+            </div>
             <% if name_error %>
               <p id="user_name_error" class="auth-field-error"><%= resource.errors.full_messages_for(:name).first %></p>
             <% end %>
@@ -55,12 +64,17 @@
 
           <div class="auth-field">
             <%= f.label :email, "E-posta", class: "auth-label" %>
-            <%= f.email_field :email,
-                  autocomplete: "email",
-                  required: true,
-                  class: "auth-input #{email_error ? "is-invalid" : ""}",
-                  placeholder: "ornek@unizone.com",
-                  aria: { invalid: email_error ? "true" : "false", describedby: email_error ? "user_email_error" : nil } %>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">
+                <%= render "icons/mail", class: "size-5" %>
+              </span>
+              <%= f.email_field :email,
+                    autocomplete: "email",
+                    required: true,
+                    class: "auth-input #{email_error ? "is-invalid" : ""}",
+                    placeholder: "ornek@unizone.com",
+                    aria: { invalid: email_error ? "true" : "false", describedby: email_error ? "user_email_error" : nil } %>
+            </div>
             <% if email_error %>
               <p id="user_email_error" class="auth-field-error"><%= resource.errors.full_messages_for(:email).first %></p>
             <% end %>
@@ -68,12 +82,20 @@
 
           <div class="auth-field">
             <%= f.label :password, "Şifre", class: "auth-label" %>
-            <%= f.password_field :password,
-                  autocomplete: "new-password",
-                  required: true,
-                  class: "auth-input #{password_error ? "is-invalid" : ""}",
-                  placeholder: "En az #{@minimum_password_length || 6} karakter.",
-                  aria: { invalid: password_error ? "true" : "false", describedby: password_describedby } %>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="10" width="16" height="10" rx="2"/>
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                </svg>
+              </span>
+              <%= f.password_field :password,
+                    autocomplete: "new-password",
+                    required: true,
+                    class: "auth-input #{password_error ? "is-invalid" : ""}",
+                    placeholder: "En az #{@minimum_password_length || 6} karakter",
+                    aria: { invalid: password_error ? "true" : "false", describedby: password_describedby } %>
+            </div>
             <% if @minimum_password_length %>
               <p id="user_password_hint" class="auth-field-hint">En az <%= @minimum_password_length %> karakter.</p>
             <% end %>
@@ -84,16 +106,42 @@
 
           <div class="auth-field">
             <%= f.label :password_confirmation, "Şifre tekrarı", class: "auth-label" %>
-            <%= f.password_field :password_confirmation,
-                  autocomplete: "new-password",
-                  required: true,
-                  class: "auth-input #{confirmation_error ? "is-invalid" : ""}",
-                  placeholder: "Şifreni tekrar gir.",
-                  aria: { invalid: confirmation_error ? "true" : "false", describedby: confirmation_error ? "user_password_confirmation_error" : nil } %>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 7 10 17l-5-5"/>
+                  <path d="M4 21h16"/>
+                </svg>
+              </span>
+              <%= f.password_field :password_confirmation,
+                    autocomplete: "new-password",
+                    required: true,
+                    class: "auth-input #{confirmation_error ? "is-invalid" : ""}",
+                    placeholder: "Şifreni tekrar gir",
+                    aria: { invalid: confirmation_error ? "true" : "false", describedby: confirmation_error ? "user_password_confirmation_error" : nil } %>
+            </div>
             <% if confirmation_error %>
               <p id="user_password_confirmation_error" class="auth-field-error"><%= resource.errors.full_messages_for(:password_confirmation).first %></p>
             <% end %>
           </div>
+
+          <div class="auth-check-row">
+            <%= f.check_box :terms_of_service,
+                  { required: true,
+                    class: "auth-checkbox #{terms_error ? "is-invalid" : ""}",
+                    aria: { invalid: terms_error ? "true" : "false", describedby: terms_error ? "user_terms_error" : nil } },
+                  "1",
+                  "0" %>
+            <span>
+              <button type="button" class="auth-legal-link focus-ring" data-action="legal-dialog#openTerms">Kullanım koşullarını</button>
+              ve
+              <button type="button" class="auth-legal-link focus-ring" data-action="legal-dialog#openPrivacy">gizlilik politikasını</button>
+              kabul ediyorum.
+            </span>
+          </div>
+          <% if terms_error %>
+            <p id="user_terms_error" class="auth-field-error"><%= resource.errors.full_messages_for(:terms_of_service).first %></p>
+          <% end %>
 
           <button type="submit" class="auth-submit btn-electric focus-ring">
             <span>Hesap oluştur</span>
@@ -102,6 +150,44 @@
             </svg>
           </button>
         <% end %>
+
+        <dialog class="auth-legal-dialog" data-legal-dialog-target="terms" data-action="click->legal-dialog#closeOnBackdrop">
+          <div class="auth-legal-panel">
+            <header class="auth-legal-head">
+              <div>
+                <p class="section-eyebrow text-coral">Unizone</p>
+                <h2>Kullanım Koşulları</h2>
+              </div>
+              <button type="button" class="auth-legal-close focus-ring" data-action="legal-dialog#close" aria-label="Kullanım koşullarını kapat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </header>
+            <div class="auth-legal-body">
+              <%= render "pages/terms_content" %>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog class="auth-legal-dialog" data-legal-dialog-target="privacy" data-action="click->legal-dialog#closeOnBackdrop">
+          <div class="auth-legal-panel">
+            <header class="auth-legal-head">
+              <div>
+                <p class="section-eyebrow text-coral">Unizone</p>
+                <h2>Gizlilik Politikası ve KVKK Aydınlatma Metni</h2>
+              </div>
+              <button type="button" class="auth-legal-close focus-ring" data-action="legal-dialog#close" aria-label="Gizlilik politikasını kapat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </header>
+            <div class="auth-legal-body">
+              <%= render "pages/privacy_content" %>
+            </div>
+          </div>
+        </dialog>
 
         <div class="auth-card-footer">
           <span>Zaten hesabın var mı?</span>

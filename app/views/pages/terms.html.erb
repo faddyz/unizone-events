@@ -1,0 +1,45 @@
+<% content_for :title, "Kullanım Koşulları" %>
+<% content_for :stylesheets, page_stylesheet_tags("pages/static-pages") %>
+
+<% terms_nav = [
+  ["Platformun amacı", "#terms-platform-amaci"],
+  ["Hesap güvenliği", "#terms-hesap"],
+  ["Katılım bildirimi", "#terms-katilim"],
+  ["Etkinlik bilgileri", "#terms-etkinlik-bilgileri"],
+  ["Organizatör sorumluluğu", "#terms-organizator"],
+  ["Yasaklı kullanım", "#terms-yasakli-kullanim"],
+  ["İletişim", "#terms-iletisim"]
+] %>
+
+<main class="static-page legal-page">
+  <div class="page-shell static-page-shell">
+    <header class="static-hero">
+      <p class="section-eyebrow text-coral">Kullanım koşulları</p>
+      <h1 class="mt-3">Kullanım Koşulları</h1>
+      <p class="mt-4">
+        Unizone’u kullanırken geçerli olan hesap, etkinlik, organizatör, üçüncü taraf bağlantı ve içerik kurallarını bu metinde bulabilirsin.
+      </p>
+      <div class="static-hero-actions">
+        <%= link_to "Gizlilik politikası", privacy_policy_path, class: "static-pill-link is-primary focus-ring" %>
+        <%= link_to "İletişime geç", contact_path, class: "static-pill-link focus-ring" %>
+      </div>
+    </header>
+
+    <div class="static-layout">
+      <aside class="static-side-card is-dark" aria-label="Kullanım koşulları başlıkları">
+        <p class="section-eyebrow text-citron">Başlıklar</p>
+        <nav class="static-nav-list mt-4">
+          <% terms_nav.each do |label, href| %>
+            <a href="<%= href %>" class="focus-ring"><%= label %></a>
+          <% end %>
+        </nav>
+      </aside>
+
+      <div class="static-content-stack">
+        <section class="static-content-card legal-content-card">
+          <%= render "pages/terms_content" %>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>

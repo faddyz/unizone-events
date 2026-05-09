@@ -19,9 +19,18 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     get privacy_policy_path
 
     assert_response :success
-    assert_select "h1", "Gizlilik Politikası"
-    assert_includes response.body, "formal hukuki görüş"
-    assert_includes response.body, "support@unizone.app"
+    assert_select "h1", "Gizlilik Politikası ve KVKK Aydınlatma Metni"
+    assert_includes response.body, "Veri Sorumlusu"
+    assert_includes response.body, "thefaddyz@gmail.com"
+  end
+
+  test "terms page renders successfully" do
+    get terms_path
+
+    assert_response :success
+    assert_select "h1", "Kullanım Koşulları"
+    assert_includes response.body, "Platformun Amacı"
+    assert_includes response.body, "Etkinlik.io API"
   end
 
   test "contact page renders successfully" do
@@ -77,12 +86,30 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
           name: "New Member",
           email: "new-member@example.com",
           password: "password123",
-          password_confirmation: "password123"
+          password_confirmation: "password123",
+          terms_of_service: "1"
         }
       }
     end
 
     assert_redirected_to dashboard_path
+  end
+
+  test "guest must accept terms when registering" do
+    assert_no_difference "User.count" do
+      post user_registration_path, params: {
+        user: {
+          name: "No Terms",
+          email: "no-terms@example.com",
+          password: "password123",
+          password_confirmation: "password123",
+          terms_of_service: "0"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select "#user_terms_error"
   end
 
   test "password reset request page renders" do

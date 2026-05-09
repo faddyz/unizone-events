@@ -69,6 +69,7 @@
         <h3 class="footer-heading">Unizone</h3>
         <div class="footer-link-list">
           <%= link_to "SSS", faq_path, class: "footer-link focus-ring" %>
+          <%= link_to "Kullanım Koşulları", terms_path, class: "footer-link focus-ring" %>
           <%= link_to "Gizlilik", privacy_policy_path, class: "footer-link focus-ring" %>
           <%= link_to "Topluluk Kuralları", faq_path(anchor: "topluluk"), class: "footer-link focus-ring" %>
           <%= link_to "İletişim", contact_path, class: "footer-link focus-ring" %>
@@ -91,6 +92,7 @@
     <span>© <%= Time.current.year %> Unizone. Tüm hakları saklıdır.</span>
     <div class="footer-bottom-meta">
       <%= link_to "SSS", faq_path, class: "footer-bottom-link focus-ring" %>
+      <%= link_to "Koşullar", terms_path, class: "footer-bottom-link focus-ring" %>
       <%= link_to "Gizlilik", privacy_policy_path, class: "footer-bottom-link focus-ring" %>
       <%= link_to "Topluluk", faq_path(anchor: "topluluk"), class: "footer-bottom-link focus-ring" %>
       <%= link_to "İletişim", contact_path, class: "footer-bottom-link focus-ring" %>

@@ -1,6 +1,12 @@
 class User < ApplicationRecord
+  attr_accessor :terms_of_service, :terms_acceptance_required
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  validates :terms_of_service,
+            acceptance: { accept: "1" },
+            if: :terms_acceptance_required?
 
   has_many :events, dependent: :destroy
   has_many :attendances, dependent: :destroy
@@ -35,5 +41,9 @@ class User < ApplicationRecord
 
   def admin?
     admin
+  end
+
+  def terms_acceptance_required?
+    ActiveModel::Type::Boolean.new.cast(terms_acceptance_required)
   end
 end
