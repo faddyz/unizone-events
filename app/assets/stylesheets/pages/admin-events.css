@@ -395,7 +395,8 @@
 
 .admin-summary-chip strong {
   margin-left: 0.28rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 0.78rem;
   font-weight: 950;
 }
@@ -475,7 +476,8 @@
   border-radius: var(--radius-pill);
   background: var(--card-bg-strong);
   color: var(--page-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 0.68rem;
   font-weight: 950;
 }
@@ -668,7 +670,8 @@
 
 .admin-date-ticket strong {
   margin-top: 0.2rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 1.72rem;
   font-weight: 950;
   line-height: 1;

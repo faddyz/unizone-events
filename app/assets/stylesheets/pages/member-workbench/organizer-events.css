@@ -197,6 +197,11 @@
 .organizer-filter-chip.is-rejected .plans-filter-dot { background: var(--coral); }
 .organizer-filter-chip.is-active .plans-filter-dot { background: var(--citron); }
 
+.organizer-filter-chip strong {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+}
+
 .organizer-desk-layout {
   display: grid;
   gap: 1rem;
@@ -404,7 +409,8 @@
 .organizer-desk-stats strong {
   display: block;
   color: var(--page-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 0.88rem;
   font-weight: 950;
   line-height: 1;
@@ -671,7 +677,8 @@
 }
 
 .organizer-schedule-item time strong {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 1.18rem;
   font-weight: 950;
   line-height: 1;
@@ -774,7 +781,8 @@
   border-radius: var(--radius-pill);
   background: var(--card-bg-strong);
   color: var(--page-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 0.68rem;
   font-weight: 950;
 }

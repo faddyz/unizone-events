@@ -591,7 +591,8 @@
 
 .explore-list-date strong {
   margin-top: 0.16rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 1.35rem;
   font-weight: 950;
   line-height: 1;
@@ -1200,7 +1201,8 @@
 
   .explore-mobile-date strong {
     margin-top: 0.12rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
     font-size: 1.25rem;
     font-weight: 950;
     line-height: 1;

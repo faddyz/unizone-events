@@ -46,7 +46,7 @@
 
       <div class="event-date-ticket absolute left-3 top-3 rounded-lg bg-white px-3 py-2 text-center shadow-lg">
         <p class="font-mono text-[0.63rem] font-black uppercase tracking-[0.12em] text-stone-500"><%= event_card_month_label(event.date) %></p>
-        <p class="font-mono text-2xl font-black leading-none text-stone-950"><%= event.date.strftime("%-d") %></p>
+        <p class="font-body text-2xl font-black leading-none text-stone-950 [font-variant-numeric:tabular-nums]"><%= event.date.strftime("%-d") %></p>
       </div>
 
       <div class="absolute right-3 top-3">

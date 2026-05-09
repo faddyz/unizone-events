@@ -163,7 +163,8 @@
 .dashboard-next-date strong,
 .organizer-date-ticket strong {
   margin-top: 0.2rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 1.72rem;
   font-weight: 950;
   line-height: 1;
@@ -426,7 +427,8 @@
 }
 
 .dashboard-timeline-item time strong {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 1.45rem;
   font-weight: 950;
   line-height: 1;
