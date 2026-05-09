@@ -15,6 +15,9 @@ module EtkinlikIo
     TECHNOLOGY_EDUCATION_KEYWORDS = %w[
       yapay zeka ai artificial intelligence prompt yazilim software kodlama teknoloji veri data
     ].freeze
+    WORKSHOP_TOPIC_KEYWORDS = %w[
+      atölye atolye workshop
+    ].freeze
 
     attr_reader :payload, :include_low_priority
 
@@ -92,6 +95,7 @@ module EtkinlikIo
       category_slug = payload.dig("category", "slug").to_s
 
       return "technology" if low_priority_format_slug?(format_slug) && technology_education_topic?
+      return "workshop" if low_priority_format_slug?(format_slug) && workshop_topic?
       return "community" if low_priority_format_slug?(format_slug) || low_priority_tag_slug?
       return "music" if format_slug == "konser" || MUSIC_CATEGORY_SLUGS.include?(category_slug)
       return "festival" if format_slug == "festival"
@@ -158,13 +162,24 @@ module EtkinlikIo
     end
 
     def niche_education_topic?
-      text = [ payload["name"], payload["content"] ].join(" ").downcase
-      BROAD_EDUCATION_KEYWORDS.none? { |keyword| text.include?(keyword) }
+      BROAD_EDUCATION_KEYWORDS.none? { |keyword| keyword_in_topic_text?(keyword) }
     end
 
     def technology_education_topic?
-      text = [ payload["name"], payload["content"] ].join(" ").downcase
-      TECHNOLOGY_EDUCATION_KEYWORDS.any? { |keyword| text.include?(keyword) }
+      TECHNOLOGY_EDUCATION_KEYWORDS.any? { |keyword| keyword_in_topic_text?(keyword) }
+    end
+
+    def workshop_topic?
+      text = topic_text
+      WORKSHOP_TOPIC_KEYWORDS.any? { |keyword| text.include?(keyword) }
+    end
+
+    def keyword_in_topic_text?(keyword)
+      topic_text.match?(/(?<![[:alnum:]])#{Regexp.escape(keyword)}(?![[:alnum:]])/i)
+    end
+
+    def topic_text
+      @topic_text ||= [ payload["name"], plain_description ].join(" ").downcase
     end
 
     def priority_for(category)

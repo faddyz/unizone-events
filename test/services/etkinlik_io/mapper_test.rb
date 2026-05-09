@@ -110,6 +110,40 @@ class EtkinlikIo::MapperTest < ActiveSupport::TestCase
     assert_nil mapped[:hidden_reason]
   end
 
+  test "workshop style education is not technology because ai appears inside another word" do
+    payload = sample_payload.merge(
+      "id" => 284196,
+      "name" => "Eskişehir Dokulu Tablo",
+      "content" => "Kendi dokulu tablonuzu tasarlamaya ne dersiniz? Atölyemizde tüm malzemeler ücrete dahildir.",
+      "format" => { "slug" => "egitim", "name" => "Eğitim" },
+      "category" => { "slug" => "diger", "name" => "Diğer" },
+      "tags" => [
+        { "id" => 3820, "name" => "Diğer", "slug" => "diger" }
+      ]
+    )
+
+    mapped = EtkinlikIo::Mapper.new(payload).call
+
+    assert_equal "workshop", mapped[:category]
+    assert_equal "hidden", mapped[:status]
+    assert_equal "low_priority_category", mapped[:hidden_reason]
+  end
+
+  test "ai education still maps to technology when ai is its own word" do
+    payload = sample_payload.merge(
+      "id" => 131,
+      "name" => "AI ile Veri Analizi Eğitimi",
+      "format" => { "slug" => "egitim", "name" => "Eğitim" },
+      "category" => { "slug" => "diger", "name" => "Diğer" }
+    )
+
+    mapped = EtkinlikIo::Mapper.new(payload).call
+
+    assert_equal "technology", mapped[:category]
+    assert_equal "pending", mapped[:status]
+    assert_nil mapped[:hidden_reason]
+  end
+
   test "sanat tag is low priority" do
     payload = sample_payload.merge(
       "id" => 130,

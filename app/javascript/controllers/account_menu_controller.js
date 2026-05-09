@@ -9,13 +9,18 @@ export default class extends Controller {
     this.dragMobile = this.dragMobile.bind(this)
     this.endMobileDrag = this.endMobileDrag.bind(this)
     this.cancelMobileDrag = this.cancelMobileDrag.bind(this)
+    this.closeMenus = this.closeMenus.bind(this)
     document.addEventListener("click", this.closeOnOutsideClick)
     document.addEventListener("keydown", this.closeOnEscape)
+    document.addEventListener("turbo:before-cache", this.closeMenus)
+    document.addEventListener("turbo:before-visit", this.closeMenus)
   }
 
   disconnect() {
     document.removeEventListener("click", this.closeOnOutsideClick)
     document.removeEventListener("keydown", this.closeOnEscape)
+    document.removeEventListener("turbo:before-cache", this.closeMenus)
+    document.removeEventListener("turbo:before-visit", this.closeMenus)
     window.removeEventListener("pointermove", this.dragMobile)
     window.removeEventListener("pointerup", this.endMobileDrag)
     window.removeEventListener("pointercancel", this.cancelMobileDrag)
