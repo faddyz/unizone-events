@@ -942,6 +942,12 @@
     padding-block: 1.55rem;
   }
 
+  .explore-header h1 {
+    max-width: none;
+    white-space: nowrap;
+    font-size: clamp(3.05rem, 4vw, 4.35rem);
+  }
+
   .explore-category-actions {
     display: none;
   }

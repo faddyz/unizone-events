@@ -208,15 +208,68 @@
 }
 
 .hero-fade {
-  height: 11rem;
+  height: 5.75rem;
   background:
-    radial-gradient(ellipse 100% 62% at 48% 48%, color-mix(in srgb, var(--page-bg) 18%, transparent), transparent 58%),
-    linear-gradient(180deg, rgba(8, 8, 10, 0) 0%, color-mix(in srgb, var(--page-bg) 10%, transparent) 34%, color-mix(in srgb, var(--page-bg) 68%, transparent) 76%, var(--page-bg) 100%);
+    radial-gradient(ellipse 92% 50% at 50% 42%, rgba(8, 8, 10, 0.56), transparent 64%),
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 10, 0) 0%,
+      rgba(8, 8, 10, 0.86) 12%,
+      color-mix(in srgb, var(--page-bg) 12%, rgba(8, 8, 10, 0.78)) 32%,
+      color-mix(in srgb, var(--page-bg) 78%, transparent) 72%,
+      var(--page-bg) 100%
+    );
 }
 
 @media (min-width: 1024px) {
   .hero-fade {
-    height: 13rem;
+    height: 6rem;
+  }
+}
+
+.hero-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 3.35rem;
+  z-index: 12;
+  display: grid;
+  width: 2.25rem;
+  height: 1.75rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--citron);
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.32));
+  transform: translateX(-50%);
+  animation: heroScrollCueFloat 1.7s ease-in-out infinite;
+  transition:
+    color var(--transition-fast),
+    filter var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.hero-scroll-cue:hover {
+  color: white;
+  filter: drop-shadow(0 10px 22px rgba(215, 255, 57, 0.18));
+  transform: translateX(-50%) translateY(-1px);
+}
+
+@media (max-width: 767px) {
+  .hero-scroll-cue {
+    bottom: 2.45rem;
+    width: 2rem;
+    height: 1.55rem;
+  }
+}
+
+@keyframes heroScrollCueFloat {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(0.38rem);
   }
 }
 

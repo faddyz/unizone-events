@@ -1,15 +1,32 @@
-<% profile_path = user_signed_in? ? account_profile_path : new_user_session_path %>
 <% account_active = controller_path.start_with?("account/") %>
-<% items = [
-  { label: "Ana Sayfa", path: root_path, icon: "home", active: current_page?(root_path) },
-  { label: "Keşfet", path: explore_events_path, icon: "compass", active: current_page?(explore_events_path) },
-  { label: "Oluştur", path: new_organizer_event_path, icon: "plus", active: current_page?(new_organizer_event_path), accent: true }
-] %>
+<% explore_active = current_page?(explore_events_path) || (controller_path == "events" && action_name == "explore") %>
+<% dashboard_active = current_page?(dashboard_path) || controller_path == "dashboards" %>
+<% organizer_active = current_page?(organizer_events_path) || controller_path.start_with?("organizer/") %>
+<% auth_active = current_page?(new_user_session_path) %>
+<% items = if user_signed_in?
+  [
+    { label: "Ana Sayfa", path: root_path, icon: "home", active: current_page?(root_path) },
+    { label: "Keşfet", path: explore_events_path, icon: "compass", active: explore_active },
+    { label: "Oluştur", path: new_organizer_event_path, icon: "plus", active: current_page?(new_organizer_event_path), accent: true },
+    { label: "Planlarım", path: dashboard_path, icon: "calendar", active: dashboard_active },
+    { label: "Etkinliklerim", path: organizer_events_path, icon: "ticket", active: organizer_active }
+  ]
+else
+  [
+    { label: "Ana Sayfa", path: root_path, icon: "home", active: current_page?(root_path) },
+    { label: "Keşfet", path: explore_events_path, icon: "compass", active: explore_active },
+    { label: "Oluştur", path: new_organizer_event_path, icon: "plus", active: current_page?(new_organizer_event_path), accent: true },
+    { label: "Giriş", path: new_user_session_path, icon: "user", active: auth_active, auth: true }
+  ]
+end %>
 
-<nav class="mobile-bottom-nav fixed inset-x-0 bottom-0 z-50 border-t border-stone-950/10 bg-page/95 backdrop-blur-xl lg:hidden" aria-label="Mobil gezinme">
-  <div class="grid grid-cols-4">
+<nav class="mobile-bottom-nav fixed inset-x-0 bottom-0 z-50 border-t border-stone-950/10 bg-page/95 backdrop-blur-xl lg:hidden"
+     aria-label="Mobil gezinme"
+     data-controller="bottom-nav"
+     data-bottom-nav-threshold-value="12">
+  <div class="mobile-bottom-nav-grid <%= user_signed_in? ? "is-signed-in" : "is-guest" %>">
     <% items.each do |item| %>
-      <%= link_to item[:path], class: "mobile-nav-item #{item[:active] ? "is-active" : ""} #{item[:accent] ? "is-accent" : ""} flex flex-col items-center gap-1 px-2 py-2 text-[0.68rem] font-black focus-ring" do %>
+      <%= link_to item[:path], class: "mobile-nav-item #{item[:active] ? "is-active" : ""} #{item[:accent] ? "is-accent" : ""} #{item[:auth] ? "is-auth" : ""} flex flex-col items-center gap-1 px-1.5 py-2 text-[0.68rem] font-black focus-ring" do %>
         <span class="mobile-nav-icon grid size-8 place-items-center rounded-full">
           <% case item[:icon] %>
           <% when "home" %>
@@ -18,31 +35,15 @@
             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.1 5-5 2.1 2.1-5 5-2.1Z"/></svg>
           <% when "plus" %>
             <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          <% when "calendar" %>
+            <%= render "icons/calendar", class: "size-5" %>
+          <% when "ticket" %>
+            <%= render "icons/ticket", class: "size-5" %>
+          <% when "user" %>
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
           <% end %>
         </span>
         <span class="truncate"><%= item[:label] %></span>
-      <% end %>
-    <% end %>
-
-    <% if user_signed_in? %>
-      <button type="button"
-              class="mobile-nav-item <%= account_active ? "is-active" : "" %> flex flex-col items-center gap-1 px-2 py-2 text-[0.68rem] font-black focus-ring"
-              aria-label="Hesap menüsünü aç"
-              aria-controls="mobile-account-sheet"
-              aria-expanded="false"
-              data-account-menu-target="mobileTrigger"
-              data-action="account-menu#openMobile">
-        <span class="mobile-nav-icon grid size-8 place-items-center rounded-full">
-          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
-        </span>
-        <span class="truncate">Hesap</span>
-      </button>
-    <% else %>
-      <%= link_to profile_path, class: "mobile-nav-item #{current_page?(profile_path) ? "is-active" : ""} flex flex-col items-center gap-1 px-2 py-2 text-[0.68rem] font-black focus-ring" do %>
-        <span class="mobile-nav-icon grid size-8 place-items-center rounded-full">
-          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/></svg>
-        </span>
-        <span class="truncate">Hesap</span>
       <% end %>
     <% end %>
   </div>
@@ -51,8 +52,6 @@
 <% if user_signed_in? %>
   <% mobile_account_name = current_user.name.presence || "Unizone hesabı" %>
   <% mobile_account_initial = (current_user.name.presence || current_user.email).first.upcase %>
-  <% dashboard_active = controller_path == "dashboards" %>
-  <% organizer_active = controller_path.start_with?("organizer/") %>
   <% admin_active = controller_path.start_with?("admin/") %>
   <% admin_candidates_active = controller_path == "admin/external_event_candidates" %>
   <% admin_users_active = controller_path == "admin/users" %>

@@ -4,11 +4,11 @@
   <div class="page-shell footer-shell py-14 lg:py-16">
     <div class="footer-brand-block">
       <div class="footer-brand-lockup">
-        <%= render "shared/brand_mark", size: "md", tagline: "Şehrin ritmini yakala!" %>
+        <%= render "shared/brand_mark", size: "nav", tagline: nil %>
       </div>
 
       <p class="footer-brand-copy">
-        Konserlerden atölyelere, sergilerden gece planlarına kadar şehirde gerçekten gitmek isteyeceğin etkinlikleri tek yerde toplar.
+        Şehrin etkinlik akışını tek yerde yakala.
       </p>
 
       <div class="footer-brand-meta" aria-label="Unizone öne çıkanları">
@@ -78,24 +78,22 @@
 
     <aside class="newsletter-shell" aria-labelledby="footer-newsletter-title">
       <p class="section-eyebrow text-citron">Bülten</p>
-      <h3 id="footer-newsletter-title" class="footer-newsletter-title">Haftanın iyi planları yakında kutunda.</h3>
+      <h3 id="footer-newsletter-title" class="footer-newsletter-title">Haftanın iyi planları için kısa özet yakında.</h3>
       <p class="footer-newsletter-copy">
-        Şehirde konuşulan etkinlikleri, yeni kategorileri ve organizatör duyurularını tek özetle al.
+        Şehirde konuşulan etkinlikler, yeni kategoriler ve organizatör duyuruları tek akışta toplanacak.
       </p>
 
-      <div class="footer-newsletter-form">
-        <label class="footer-newsletter-label" for="footer-newsletter-email">Bülten e-posta adresi</label>
-        <input id="footer-newsletter-email" type="email" disabled placeholder="mail@ornek.com" class="footer-newsletter-input">
-        <button type="button" disabled class="footer-newsletter-button">Yakında</button>
-      </div>
+      <span class="footer-newsletter-badge">Yakında açılıyor</span>
     </aside>
   </div>
 
   <div class="page-shell footer-bottom">
     <span>© <%= Time.current.year %> Unizone. Tüm hakları saklıdır.</span>
     <div class="footer-bottom-meta">
+      <%= link_to "SSS", faq_path, class: "footer-bottom-link focus-ring" %>
       <%= link_to "Gizlilik", privacy_policy_path, class: "footer-bottom-link focus-ring" %>
       <%= link_to "Topluluk", faq_path(anchor: "topluluk"), class: "footer-bottom-link focus-ring" %>
+      <%= link_to "İletişim", contact_path, class: "footer-bottom-link focus-ring" %>
     </div>
   </div>
 </footer>

@@ -81,5 +81,14 @@
     </div>
   </div>
 
+  <%= link_to "#featured-events",
+        class: "hero-scroll-cue focus-ring",
+        aria: { label: "Öne çıkanlara kaydır" },
+        data: { turbo: false } do %>
+    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
+  <% end %>
+
   <div class="hero-fade absolute inset-x-0 bottom-0 pointer-events-none"></div>
 </section>

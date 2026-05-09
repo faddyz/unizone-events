@@ -10,9 +10,10 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.25rem;
   background:
-    radial-gradient(circle at 10% 20%, rgba(215, 255, 57, 0.14), transparent 23rem),
-    radial-gradient(circle at 82% 0%, rgba(93, 168, 255, 0.13), transparent 24rem),
-    linear-gradient(135deg, rgba(8, 8, 10, 0.97), rgba(17, 18, 23, 0.94));
+    radial-gradient(ellipse 58% 95% at 4% 18%, rgba(215, 255, 57, 0.2), transparent 58%),
+    radial-gradient(ellipse 62% 105% at 96% 4%, rgba(47, 107, 255, 0.2), transparent 62%),
+    radial-gradient(ellipse 48% 56% at 62% 104%, rgba(255, 77, 61, 0.1), transparent 68%),
+    linear-gradient(125deg, rgba(8, 8, 10, 0.98), rgba(15, 16, 21, 0.96) 48%, rgba(21, 29, 42, 0.94));
   padding: 1.35rem;
   color: white;
   box-shadow:
@@ -32,9 +33,25 @@
   pointer-events: none;
 }
 
+.explore-header::after {
+  content: "";
+  position: absolute;
+  inset: -42% -8% auto auto;
+  width: 54rem;
+  height: 24rem;
+  border: 1px solid rgba(93, 168, 255, 0.16);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 24px 44px rgba(47, 107, 255, 0.1),
+    0 0 42px rgba(93, 168, 255, 0.08);
+  pointer-events: none;
+  transform: rotate(-7deg);
+}
+
 .explore-header-copy {
   position: relative;
-  max-width: 46rem;
+  z-index: 1;
+  max-width: 100%;
 }
 
 .explore-header h1 {

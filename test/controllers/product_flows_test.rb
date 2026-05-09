@@ -38,6 +38,20 @@ class ProductFlowsTest < ActionDispatch::IntegrationTest
     refute_includes response.body, @draft_event.title
   end
 
+  test "mobile bottom navigation points member links to their intended pages" do
+    sign_in @member
+
+    get root_path
+
+    assert_response :success
+
+    nav = Nokogiri::HTML(response.body).at_css(".mobile-bottom-nav")
+    assert_equal explore_events_path, nav.at_xpath(".//a[.//span[normalize-space()='Keşfet']]")["href"]
+    assert_equal dashboard_path, nav.at_xpath(".//a[.//span[normalize-space()='Planlarım']]")["href"]
+    assert_equal organizer_events_path, nav.at_xpath(".//a[.//span[normalize-space()='Etkinliklerim']]")["href"]
+    assert_equal new_organizer_event_path, nav.at_xpath(".//a[.//span[normalize-space()='Oluştur']]")["href"]
+  end
+
   test "member dashboard limits plans and can show more" do
     plan_events = 7.times.map do |index|
       Event.create!(

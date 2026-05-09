@@ -147,16 +147,18 @@
     <div class="ml-auto lg:hidden">
       <% if user_signed_in? %>
         <button type="button"
-                class="mobile-account-avatar focus-ring"
+                class="mobile-account-trigger focus-ring"
                 aria-label="Hesap Menüsünü Aç"
                 aria-controls="mobile-account-sheet"
                 aria-expanded="false"
                 data-account-menu-target="mobileTrigger"
                 data-action="account-menu#openMobile">
-          <%= (current_user.name.presence || current_user.email).first.upcase %>
+          <span class="mobile-account-avatar"><%= (current_user.name.presence || current_user.email).first.upcase %></span>
+          <span>Hesabım</span>
+          <svg class="mobile-account-trigger-chevron size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
       <% else %>
-        <%= link_to "Giriş", new_user_session_path, class: "btn-void min-h-10 px-4 py-2 text-sm focus-ring" %>
+        <%= link_to "Katıl", new_user_registration_path, class: "btn-void min-h-10 px-4 py-2 text-sm focus-ring" %>
       <% end %>
     </div>
   </div>
