@@ -55,5 +55,6 @@ Rails.application.routes.draw do
   get "kullanim-kosullari", to: "pages#terms", as: :terms
   get "gizlilik-politikasi", to: "pages#privacy", as: :privacy_policy
   get "iletisim", to: "pages#contact", as: :contact
+  get "sitemap.xml", to: "sitemaps#show", defaults: { format: :xml }
   get "up" => "rails/health#show", as: :rails_health_check
 end

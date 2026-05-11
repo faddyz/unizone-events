@@ -41,10 +41,19 @@ class ApplicationController < ActionController::Base
     return if ids.blank?
 
     @event_attendance_counts ||= {}
+    @event_attendance_status_counts ||= {}
     @event_attendee_previews ||= {}
 
+    grouped_counts = Attendance.where(event_id: ids).group(:event_id, :status).count
+    ids.each do |event_id|
+      @event_attendance_status_counts[event_id] = default_attendance_status_counts
+    end
+    grouped_counts.each do |(event_id, status), count|
+      @event_attendance_status_counts[event_id][status.to_s] = count
+    end
+
     @event_attendance_counts.merge!(
-      Attendance.where(event_id: ids, status: "going").group(:event_id).count
+      @event_attendance_status_counts.slice(*ids).transform_values { |counts| counts.fetch("going", 0).to_i }
     )
 
     ranked_attendances = Attendance
@@ -65,6 +74,12 @@ class ApplicationController < ActionController::Base
     @event_attendee_previews.merge!(previews)
   end
 
+  def event_attendance_status_counts_for(event)
+    default_attendance_status_counts.merge(
+      (@event_attendance_status_counts || {}).fetch(event.id, {})
+    )
+  end
+
   def prepare_event_attendance_statuses(events)
     records = Array(events).compact
     ids = records.map(&:id).compact.uniq
@@ -76,5 +91,9 @@ class ApplicationController < ActionController::Base
                                   .where(event_id: ids)
                                   .pluck(:event_id, :status)
                                   .to_h
+  end
+
+  def default_attendance_status_counts
+    Attendance.statuses.keys.index_with(0)
   end
 end

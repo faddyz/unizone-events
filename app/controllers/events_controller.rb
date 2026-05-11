@@ -48,6 +48,7 @@ class EventsController < ApplicationController
       attendee_preview: @attendee_preview,
       preview_mode: @preview_mode,
       going_count: @event_attendance_counts.fetch(@event.id) { @event.attendees_count },
+      attendance_counts: event_attendance_status_counts_for(@event),
       similar_events: @similar_events,
       organizer_other_events: @organizer_other_events,
       helpers: view_context

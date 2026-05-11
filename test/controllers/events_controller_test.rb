@@ -290,6 +290,16 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select "img[src*='/rails/active_storage/blobs/redirect/']", count: 0
   end
 
+  test "sitemap lists public pages and published events" do
+    get "/sitemap.xml"
+
+    assert_response :success
+    assert_equal "application/xml", response.media_type
+    assert_includes response.body, root_url
+    assert_includes response.body, event_url(@published_event)
+    refute_includes response.body, event_url(@submitted_event)
+  end
+
   test "event show surfaces conversion details" do
     get event_path(@published_event)
 

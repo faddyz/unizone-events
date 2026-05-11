@@ -6,15 +6,16 @@ class EventShowPresenter
   ].freeze
 
   attr_reader :event, :current_user, :preview_mode, :attendee_preview,
-              :attendance, :going_count, :similar_events, :organizer_other_events
+              :attendance, :going_count, :attendance_counts, :similar_events, :organizer_other_events
 
-  def initialize(event:, current_user:, attendance:, attendee_preview:, preview_mode:, going_count:, similar_events:, organizer_other_events:, helpers:)
+  def initialize(event:, current_user:, attendance:, attendee_preview:, preview_mode:, going_count:, similar_events:, organizer_other_events:, helpers:, attendance_counts: nil)
     @event = event
     @current_user = current_user
     @attendance = attendance
     @attendee_preview = Array(attendee_preview)
     @preview_mode = preview_mode
     @going_count = going_count.to_i
+    @attendance_counts = attendance_counts&.transform_keys(&:to_s)
     @similar_events = Array(similar_events)
     @organizer_other_events = Array(organizer_other_events)
     @helpers = helpers
@@ -39,14 +40,16 @@ class EventShowPresenter
   end
 
   def interested_count
-    event.interested_attendees_count
+    attendance_count("interested") { event.interested_attendees_count }
   end
 
   def not_going_count
-    event.not_going_attendees_count
+    attendance_count("not_going") { event.not_going_attendees_count }
   end
 
   def total_responses
+    return attendance_counts.values.sum if attendance_counts
+
     event.total_responses_count
   end
 
@@ -58,13 +61,13 @@ class EventShowPresenter
   def capacity_percent
     return unless capacity
 
-    [[((going_count.to_f / capacity) * 100).round, 100].min, 0].max
+    [ [ ((going_count.to_f / capacity) * 100).round, 100 ].min, 0 ].max
   end
 
   def spots_left
     return unless capacity
 
-    [capacity - going_count, 0].max
+    [ capacity - going_count, 0 ].max
   end
 
   def ticket_url
@@ -187,4 +190,10 @@ class EventShowPresenter
   private
 
   attr_reader :helpers
+
+  def attendance_count(status)
+    return attendance_counts.fetch(status.to_s, 0).to_i if attendance_counts
+
+    yield
+  end
 end

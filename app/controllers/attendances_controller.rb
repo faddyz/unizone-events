@@ -69,13 +69,16 @@ class AttendancesController < ApplicationController
   end
 
   def attendance_counts
-    event = @event.reload
+    counts = default_attendance_status_counts
+    Attendance.where(event_id: @event.id).group(:status).count.each do |status, count|
+      counts[status.to_s] = count
+    end
 
     {
-      attendees_count: event.attendees_count,
-      interested_attendees_count: event.interested_attendees_count,
-      not_going_attendees_count: event.not_going_attendees_count,
-      total_responses_count: event.total_responses_count
+      attendees_count: counts.fetch("going", 0),
+      interested_attendees_count: counts.fetch("interested", 0),
+      not_going_attendees_count: counts.fetch("not_going", 0),
+      total_responses_count: counts.values.sum
     }
   end
 

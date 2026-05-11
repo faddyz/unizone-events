@@ -33,9 +33,21 @@ class EventShowPresenterTest < ActionView::TestCase
     assert_includes presenter.controllers, "external-redirect"
   end
 
+  test "uses preloaded attendance counts" do
+    presenter = build_presenter(attendance_counts: {
+      "going" => 2,
+      "interested" => 3,
+      "not_going" => 1
+    })
+
+    assert_equal 3, presenter.interested_count
+    assert_equal 1, presenter.not_going_count
+    assert_equal 6, presenter.total_responses
+  end
+
   private
 
-  def build_presenter(event: events(:published_event), attendance: nil, preview_mode: false)
+  def build_presenter(event: events(:published_event), attendance: nil, preview_mode: false, attendance_counts: nil)
     EventShowPresenter.new(
       event: event,
       current_user: users(:one),
@@ -43,6 +55,7 @@ class EventShowPresenterTest < ActionView::TestCase
       attendee_preview: [],
       preview_mode: preview_mode,
       going_count: 2,
+      attendance_counts: attendance_counts,
       similar_events: [],
       organizer_other_events: [],
       helpers: self
