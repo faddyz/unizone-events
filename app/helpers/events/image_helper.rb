@@ -89,6 +89,9 @@ module Events
   private
 
     def event_image_source(image, variant)
+      direct_url = supabase_public_image_url(image.blob)
+      return direct_url if direct_url.present?
+
       return rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN) unless image.variable?
 
       representation = image.variant(Event::IMAGE_VARIANTS.fetch(variant))
@@ -106,7 +109,8 @@ module Events
       merged = (data || {}).dup
       merged[:controller] = [ merged[:controller], "image-fallback" ].compact_blank.join(" ")
       merged[:action] = [ merged[:action], "error->image-fallback#recover" ].compact_blank.join(" ")
-      merged[:image_fallback_src_value] = rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
+      merged[:image_fallback_src_value] = supabase_public_image_url(image.blob) ||
+        rails_storage_redirect_path(image, expires_in: EVENT_IMAGE_PROXY_EXPIRES_IN)
       merged
     end
 
@@ -117,5 +121,26 @@ module Events
       data
     end
 
+    def supabase_public_image_url(blob)
+      return unless supabase_public_storage_enabled?
+
+      bucket = ENV.fetch("SUPABASE_STORAGE_BUCKET", "event-posters")
+      base_url = supabase_public_storage_base_url
+      return if base_url.blank?
+
+      "#{base_url}/storage/v1/object/public/#{bucket}/#{blob.key}"
+    end
+
+    def supabase_public_storage_enabled?
+      ENV["ACTIVE_STORAGE_SERVICE"] == "supabase"
+    end
+
+    def supabase_public_storage_base_url
+      explicit_url = ENV["SUPABASE_PUBLIC_STORAGE_URL"].presence
+      return explicit_url.delete_suffix("/") if explicit_url
+
+      endpoint = ENV["SUPABASE_S3_ENDPOINT"].to_s.delete_suffix("/")
+      endpoint.sub(%r{/storage/v1/s3\z}, "").presence
+    end
   end
 end

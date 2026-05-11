@@ -43,6 +43,38 @@ class EventsHelperTest < ActionView::TestCase
     assert_includes html, "height=\"540\""
   end
 
+  test "supabase storage uses public object url in production" do
+    event = events(:published_event)
+    attach_test_image(event)
+
+    with_env(
+      "ACTIVE_STORAGE_SERVICE" => "supabase",
+      "SUPABASE_PUBLIC_STORAGE_URL" => "https://project-ref.supabase.co",
+      "SUPABASE_STORAGE_BUCKET" => "event-posters"
+    ) do
+      html = event_poster_image_tag(event, :card, alt: "Supabase poster", class_name: "poster")
+
+      assert_includes html, "https://project-ref.supabase.co/storage/v1/object/public/event-posters/#{event.image.blob.key}"
+      refute_includes html, "/rails/active_storage/representations/proxy"
+    end
+  end
+
+  test "supabase public url can be derived from s3 endpoint" do
+    event = events(:published_event)
+    attach_test_image(event)
+
+    with_env(
+      "ACTIVE_STORAGE_SERVICE" => "supabase",
+      "SUPABASE_PUBLIC_STORAGE_URL" => nil,
+      "SUPABASE_S3_ENDPOINT" => "https://project-ref.supabase.co/storage/v1/s3",
+      "SUPABASE_STORAGE_BUCKET" => "event-posters"
+    ) do
+      html = event_poster_image_tag(event, :card, alt: "Supabase poster", class_name: "poster")
+
+      assert_includes html, "https://project-ref.supabase.co/storage/v1/object/public/event-posters/#{event.image.blob.key}"
+    end
+  end
+
   test "imported pricing labels do not invent prices" do
     event = events(:published_event)
     event.external_source = "etkinlik_io"
@@ -159,5 +191,24 @@ class EventsHelperTest < ActionView::TestCase
     end
 
     assert_empty queries
+  end
+
+  private
+
+  def attach_test_image(event)
+    event.image.attach(io: StringIO.new("image"), filename: "poster.png", content_type: "image/png")
+  end
+
+  def with_env(values)
+    previous_values = values.keys.index_with { |key| ENV[key] }
+    values.each do |key, value|
+      value.nil? ? ENV.delete(key) : ENV[key] = value
+    end
+
+    yield
+  ensure
+    previous_values.each do |key, value|
+      value.nil? ? ENV.delete(key) : ENV[key] = value
+    end
   end
 end

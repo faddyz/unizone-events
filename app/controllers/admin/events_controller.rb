@@ -104,8 +104,16 @@ class Admin::EventsController < ApplicationController
 
   def event_params
     permitted = params.require(:event).permit(:title, :description, :date, :location, :city, :category, :price, :ticket_url, :capacity, :editor_score, :image, :status, :review_note)
-    permitted.delete(:image) if permitted[:image].blank?
+    optimize_event_image(permitted)
     permitted
+  end
+
+  def optimize_event_image(permitted)
+    if permitted[:image].blank?
+      permitted.delete(:image)
+    else
+      permitted[:image] = EventImageOptimizer.optimize(permitted[:image])
+    end
   end
 
   def remove_image_requested?
