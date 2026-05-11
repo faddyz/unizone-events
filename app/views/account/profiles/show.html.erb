@@ -16,7 +16,7 @@
       <div>
         <p class="section-eyebrow text-coral">Hesap ayarları</p>
         <h1>Profil ve güvenlik</h1>
-        <p>Hesabının görünen bilgilerini ve giriş güvenliğini sade, kontrollü bir alanda yönet.</p>
+        <p>Profilini, iletişim bilgilerini ve şifreni tek ekranda hızlıca güncelle.</p>
       </div>
       <div class="account-status-pill" aria-label="Hesap durumu">
         <span></span>
@@ -26,16 +26,16 @@
 
     <div class="account-settings-layout">
       <aside class="account-summary-panel" aria-label="Hesap özeti">
-        <div class="account-summary-head">
+        <div class="account-profile-card">
           <div class="account-avatar"><%= account_initial %></div>
           <div>
-            <p class="section-eyebrow text-citron">Üye profili</p>
+            <p class="account-kicker">Üye profili</p>
             <h2><%= account_name %></h2>
             <p><%= @user.email %></p>
           </div>
         </div>
 
-        <dl class="account-summary-stats">
+        <dl class="account-summary-stats" aria-label="Hesap aktiviteleri">
           <div>
             <dt>Etkinlik</dt>
             <dd><%= owned_events_count %></dd>
@@ -57,18 +57,18 @@
           </a>
         </nav>
 
-        <div class="account-trust-list">
+        <div class="account-summary-meta">
           <div>
-            <span class="account-trust-dot"></span>
-            <p>E-posta kayıtlı</p>
+            <%= render "icons/mail", class: "size-4" %>
+            <span>E-posta kayıtlı</span>
           </div>
           <div>
-            <span class="account-trust-dot is-citron"></span>
-            <p>Şifre ile korunuyor</p>
+            <%= render "icons/check_circle", class: "size-4" %>
+            <span>Şifre koruması aktif</span>
           </div>
           <div>
-            <span class="account-trust-dot is-blue"></span>
-            <p>Son güncelleme <%= l(@user.updated_at.to_date, format: :long) %></p>
+            <%= render "icons/clock", class: "size-4" %>
+            <span>Son güncelleme <%= l(@user.updated_at.to_date, format: :long) %></span>
           </div>
         </div>
       </aside>
@@ -76,6 +76,9 @@
       <main class="account-settings-main">
         <section id="profile-settings" class="account-settings-card" aria-labelledby="profile-settings-title">
           <div class="account-card-head">
+            <div class="account-card-icon">
+              <%= render "icons/users", class: "size-5" %>
+            </div>
             <div>
               <p class="section-eyebrow text-coral">Profil</p>
               <h2 id="profile-settings-title">Görünen bilgilerin</h2>
@@ -98,10 +101,13 @@
             <div class="account-form-grid">
               <div class="account-field">
                 <%= form.label :name, "Ad", class: "account-label" %>
-                <%= form.text_field :name,
-                      autocomplete: "name",
-                      class: "account-input #{profile_form_failed && @user.errors[:name].any? ? "is-invalid" : ""}",
-                      aria: { describedby: profile_form_failed && @user.errors[:name].any? ? "profile-name-error" : "profile-name-hint" } %>
+                <div class="account-input-wrap">
+                  <%= render "icons/users", class: "size-4" %>
+                  <%= form.text_field :name,
+                        autocomplete: "name",
+                        class: "account-input #{profile_form_failed && @user.errors[:name].any? ? "is-invalid" : ""}",
+                        aria: { describedby: profile_form_failed && @user.errors[:name].any? ? "profile-name-error" : "profile-name-hint" } %>
+                </div>
                 <% if profile_form_failed && @user.errors[:name].any? %>
                   <p id="profile-name-error" class="account-field-error"><%= @user.errors.full_messages_for(:name).to_sentence %></p>
                 <% else %>
@@ -111,11 +117,14 @@
 
               <div class="account-field">
                 <%= form.label :email, "E-posta", class: "account-label" %>
-                <%= form.email_field :email,
-                      autocomplete: "email",
-                      required: true,
-                      class: "account-input #{profile_form_failed && @user.errors[:email].any? ? "is-invalid" : ""}",
-                      aria: { describedby: profile_form_failed && @user.errors[:email].any? ? "profile-email-error" : "profile-email-hint" } %>
+                <div class="account-input-wrap">
+                  <%= render "icons/mail", class: "size-4" %>
+                  <%= form.email_field :email,
+                        autocomplete: "email",
+                        required: true,
+                        class: "account-input #{profile_form_failed && @user.errors[:email].any? ? "is-invalid" : ""}",
+                        aria: { describedby: profile_form_failed && @user.errors[:email].any? ? "profile-email-error" : "profile-email-hint" } %>
+                </div>
                 <% if profile_form_failed && @user.errors[:email].any? %>
                   <p id="profile-email-error" class="account-field-error"><%= @user.errors.full_messages_for(:email).to_sentence %></p>
                 <% else %>
@@ -125,11 +134,14 @@
 
               <div class="account-field account-field-wide">
                 <%= form.label :current_password, "Mevcut şifre", for: "profile_current_password", class: "account-label" %>
-                <%= form.password_field :current_password,
-                      id: "profile_current_password",
-                      autocomplete: "current-password",
-                      class: "account-input #{profile_form_failed && @user.errors[:current_password].any? ? "is-invalid" : ""}",
-                      aria: { describedby: profile_form_failed && @user.errors[:current_password].any? ? "profile-current-password-error" : "profile-current-password-hint" } %>
+                <div class="account-input-wrap">
+                  <%= render "icons/check_circle", class: "size-4" %>
+                  <%= form.password_field :current_password,
+                        id: "profile_current_password",
+                        autocomplete: "current-password",
+                        class: "account-input #{profile_form_failed && @user.errors[:current_password].any? ? "is-invalid" : ""}",
+                        aria: { describedby: profile_form_failed && @user.errors[:current_password].any? ? "profile-current-password-error" : "profile-current-password-hint" } %>
+                </div>
                 <% if profile_form_failed && @user.errors[:current_password].any? %>
                   <p id="profile-current-password-error" class="account-field-error"><%= @user.errors.full_messages_for(:current_password).to_sentence %></p>
                 <% else %>
@@ -147,10 +159,13 @@
 
         <section id="security-settings" class="account-settings-card" aria-labelledby="security-settings-title">
           <div class="account-card-head">
+            <div class="account-card-icon">
+              <%= render "icons/check_circle", class: "size-5" %>
+            </div>
             <div>
               <p class="section-eyebrow text-coral">Güvenlik</p>
               <h2 id="security-settings-title">Şifreyi güncelle</h2>
-              <p>Şifre değişikliği ayrı tutulur; profil bilgilerini düzenlerken yanlışlıkla etkilenmez.</p>
+              <p>Şifre değişikliği ayrı tutulur; profilini düzenlerken yanlışlıkla etkilenmez.</p>
             </div>
           </div>
 
@@ -174,12 +189,15 @@
             <div class="account-form-grid">
               <div class="account-field">
                 <%= form.label :current_password, "Mevcut şifre", for: "security_current_password", class: "account-label" %>
-                <%= form.password_field :current_password,
-                      id: "security_current_password",
-                      autocomplete: "current-password",
-                      required: true,
-                      class: "account-input #{password_form_failed && @user.errors[:current_password].any? ? "is-invalid" : ""}",
-                      aria: { describedby: password_form_failed && @user.errors[:current_password].any? ? "security-current-password-error" : "security-current-password-hint" } %>
+                <div class="account-input-wrap">
+                  <%= render "icons/check_circle", class: "size-4" %>
+                  <%= form.password_field :current_password,
+                        id: "security_current_password",
+                        autocomplete: "current-password",
+                        required: true,
+                        class: "account-input #{password_form_failed && @user.errors[:current_password].any? ? "is-invalid" : ""}",
+                        aria: { describedby: password_form_failed && @user.errors[:current_password].any? ? "security-current-password-error" : "security-current-password-hint" } %>
+                </div>
                 <% if password_form_failed && @user.errors[:current_password].any? %>
                   <p id="security-current-password-error" class="account-field-error"><%= @user.errors.full_messages_for(:current_password).to_sentence %></p>
                 <% else %>
@@ -189,12 +207,15 @@
 
               <div class="account-field">
                 <%= form.label :password, "Yeni şifre", for: "security_password", class: "account-label" %>
-                <%= form.password_field :password,
-                      id: "security_password",
-                      autocomplete: "new-password",
-                      required: true,
-                      class: "account-input #{password_form_failed && @user.errors[:password].any? ? "is-invalid" : ""}",
-                      aria: { describedby: password_form_failed && @user.errors[:password].any? ? "security-password-error" : "security-password-hint" } %>
+                <div class="account-input-wrap">
+                  <%= render "icons/sparkles", class: "size-4" %>
+                  <%= form.password_field :password,
+                        id: "security_password",
+                        autocomplete: "new-password",
+                        required: true,
+                        class: "account-input #{password_form_failed && @user.errors[:password].any? ? "is-invalid" : ""}",
+                        aria: { describedby: password_form_failed && @user.errors[:password].any? ? "security-password-error" : "security-password-hint" } %>
+                </div>
                 <% if password_form_failed && @user.errors[:password].any? %>
                   <p id="security-password-error" class="account-field-error"><%= @user.errors.full_messages_for(:password).to_sentence %></p>
                 <% else %>
@@ -204,12 +225,15 @@
 
               <div class="account-field account-field-wide">
                 <%= form.label :password_confirmation, "Yeni şifre tekrarı", for: "security_password_confirmation", class: "account-label" %>
-                <%= form.password_field :password_confirmation,
-                      id: "security_password_confirmation",
-                      autocomplete: "new-password",
-                      required: true,
-                      class: "account-input #{password_form_failed && @user.errors[:password_confirmation].any? ? "is-invalid" : ""}",
-                      aria: { describedby: password_form_failed && @user.errors[:password_confirmation].any? ? "security-password-confirmation-error" : "security-password-confirmation-hint" } %>
+                <div class="account-input-wrap">
+                  <%= render "icons/check_circle", class: "size-4" %>
+                  <%= form.password_field :password_confirmation,
+                        id: "security_password_confirmation",
+                        autocomplete: "new-password",
+                        required: true,
+                        class: "account-input #{password_form_failed && @user.errors[:password_confirmation].any? ? "is-invalid" : ""}",
+                        aria: { describedby: password_form_failed && @user.errors[:password_confirmation].any? ? "security-password-confirmation-error" : "security-password-confirmation-hint" } %>
+                </div>
                 <% if password_form_failed && @user.errors[:password_confirmation].any? %>
                   <p id="security-password-confirmation-error" class="account-field-error"><%= @user.errors.full_messages_for(:password_confirmation).to_sentence %></p>
                 <% else %>
